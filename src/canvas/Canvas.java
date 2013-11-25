@@ -15,6 +15,7 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
 /**
@@ -24,6 +25,7 @@ import javax.swing.SwingUtilities;
 public class Canvas extends JPanel {
     // image where the user's drawing is stored
     private Image drawingBuffer;
+    private JToggleButton toggle = new JToggleButton("Erase Mode", false);
     
     
     /**
@@ -34,6 +36,7 @@ public class Canvas extends JPanel {
     public Canvas(int width, int height) {
         this.setPreferredSize(new Dimension(width, height));
         addDrawingController();
+        this.add(toggle);
         // note: we can't call makeDrawingBuffer here, because it only
         // works *after* this canvas has been added to a window.  Have to
         // wait until paintComponent() is first called.
@@ -117,9 +120,15 @@ public class Canvas extends JPanel {
     private void drawLineSegment(int x1, int y1, int x2, int y2) {
         Graphics2D g = (Graphics2D) drawingBuffer.getGraphics();
         
-        g.setColor(Color.BLACK);
-        g.drawLine(x1, y1, x2, y2);
-        
+        if (toggle.isSelected()) {
+        	g.setColor(Color.WHITE);
+        	g.setStroke(new BasicStroke(10));;
+        	g.drawLine(x1, y1, x2, y2);
+        }
+        else {
+        	g.setColor(Color.BLACK);
+        	g.drawLine(x1, y1, x2, y2);
+        }
         // IMPORTANT!  every time we draw on the internal drawing buffer, we
         // have to notify Swing to repaint this component on the screen.
         this.repaint();
