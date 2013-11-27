@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -30,7 +31,7 @@ import javax.swing.table.DefaultTableModel;
 public class EntryGUI extends JFrame {
 
 	private final JPanel panel;
-	private final JButton loadButton;
+	private final JLabel loadButton;
 	private final JButton newButton;
 	private final JTextField loadName;
 	private final JTable availableCanvases;
@@ -43,9 +44,9 @@ public class EntryGUI extends JFrame {
 		this.setTitle("Welcome to Whiteboard");
 		
 		//JFrame component initialization
-		loadButton = new JButton ();
+		loadButton = new JLabel("Load Whiteboard:");
 		loadButton.setName("loadButton");
-		loadButton.setText("Load");
+		loadButton.setText("Load Whiteboard:");
 		
 		newButton = new JButton();
 		newButton.setName("newButton");
@@ -108,15 +109,6 @@ public class EntryGUI extends JFrame {
 	 * components must already be initialized
 	 */
 	private void addListeners() {
-		
-		//add listener for mouse clicks on loadButton
-		loadButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				//TODO: load WhiteboardGUI
-			}
-		});
 		
 		//add listener for enter key stroke while cursor is in loadName text field
 		loadName.addActionListener(new ActionListener() {
