@@ -125,7 +125,7 @@ public class Canvas extends JPanel {
 //        if (toggle.isSelected()) {
         if(User.getCurrentBrush()== User.ERASE){
         	g.setColor(Color.WHITE);
-        	g.setStroke(new BasicStroke(10));;
+        	g.setStroke(new BasicStroke(getStroke(User.getCurrentSize())));
         	g.drawLine(x1, y1, x2, y2);
         }
         else {
