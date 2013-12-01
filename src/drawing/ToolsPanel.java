@@ -18,89 +18,91 @@ import javax.swing.SwingUtilities;
  * Interface for user-customizable settings for drawing on the canvas. Contains
  * options for brush types, brush sizes, and colors.
  * 
+ * Each toolsPanel is linked with a User that keeps track ot the currentBrush and size and 
+ * color selected....is this even necessary?????????
  * TODO:
  *      Change size buttons to JSlider
  *      Change color buttons to JColorChooser
  */
 @SuppressWarnings("serial")
 public class ToolsPanel extends JPanel implements ActionListener {
-    // CLASS CONSTANTS
-    // all values refer to respective index in relevant list
-    /**
-     * Brush setting to draw
-     */
-    public static final int DRAW = 0;
-    
-    /**
-     * Brush setting to erase
-     */
-    public static final int ERASE = 1;
-    
-    /**
-     * Brush size to small
-     */
-    public static final int SMALL = 0;
-    
-    /**
-     * Brush size to medium
-     */
-    public static final int MEDIUM = 1;
-    
-    /**
-     * Brush size to large
-     */
-    public static final int LARGE = 2;
-    
-    /**
-     * Brush color to black (#000000)
-     */
-    public static final int BLACK = 0;
-    
-    /**
-     * Brush color to red (#FF0000)
-     */
-    public static final int RED = 1;
-    
-    /**
-     * Brush color to orange (#FF7700)
-     */
-    public static final int ORANGE = 2;
-    
-    /**
-     * Brush color to yellow (#FFFF00)
-     */
-    public static final int YELLOW = 3;
-    
-    /**
-     * Brush color to green (#00FF00)
-     */
-    public static final int GREEN = 4;
-    
-    /**
-     * Brush color to blue (#0000FF)
-     */
-    public static final int BLUE = 5;
+//    // CLASS CONSTANTS
+//    // all values refer to respective index in relevant list
+//    /**
+//     * Brush setting to draw
+//     */
+//    public static final int DRAW = 0;
+//    
+//    /**
+//     * Brush setting to erase
+//     */
+//    public static final int ERASE = 1;
+//    
+//    /**
+//     * Brush size to small
+//     */
+//    public static final int SMALL = 0;
+//    
+//    /**
+//     * Brush size to medium
+//     */
+//    public static final int MEDIUM = 1;
+//    
+//    /**
+//     * Brush size to large
+//     */
+//    public static final int LARGE = 2;
+//    
+//    /**
+//     * Brush color to black (#000000)
+//     */
+//    public static final int BLACK = 0;
+//    
+//    /**
+//     * Brush color to red (#FF0000)
+//     */
+//    public static final int RED = 1;
+//    
+//    /**
+//     * Brush color to orange (#FF7700)
+//     */
+//    public static final int ORANGE = 2;
+//    
+//    /**
+//     * Brush color to yellow (#FFFF00)
+//     */
+//    public static final int YELLOW = 3;
+//    
+//    /**
+//     * Brush color to green (#00FF00)
+//     */
+//    public static final int GREEN = 4;
+//    
+//    /**
+//     * Brush color to blue (#0000FF)
+//     */
+//    public static final int BLUE = 5;
     
     /**
      * Maximum number of buttons allowed in one row
      */
     private static final int MAX_ROW_BUTTONS = 3;
     
-    // INSTANCE VARIABLES
-    /**
-     * Current brush setting (see brush constants)
-     */
-    private int currentBrush;
-    
-    /**
-     * Current brush size (see size constants)
-     */
-    private int currentSize;
-    
-    /**
-     * Current brush color (see color constants)
-     */
-    private int currentColor;
+//    // INSTANCE VARIABLES
+//    /**
+//     * Current brush setting (see brush constants)
+//     */
+//    private int currentBrush;
+//    
+//    /**
+//     * Current brush size (see size constants)
+//     */
+//    private int currentSize;
+//    
+//    /**
+//     * Current brush color (see color constants)
+//     */
+//    private int currentColor;
     
     
     // GUI COMPONENTS
@@ -301,13 +303,13 @@ public class ToolsPanel extends JPanel implements ActionListener {
      */
     private void initialize() {
         drawButton.setSelected(true);
-        currentBrush = DRAW;
+//        currentBrush = DRAW;<-done in the user class
         
         smallButton.setSelected(true);
-        currentSize = SMALL;
+//        currentSize = SMALL;
         
         blackButton.setSelected(true);
-        currentColor = BLACK;
+//        currentColor = BLACK;
     }
     
     /**
@@ -342,42 +344,80 @@ public class ToolsPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent ae) {
         String command = ae.getActionCommand();
         if (command.equals("draw")) {
-            brushButtons.get(currentBrush).setSelected(false);
-            currentBrush = DRAW;
+            brushButtons.get(User.getCurrentBrush()).setSelected(false);
+            User.setCurrentBrush(User.DRAW);//how to eventually keep track of which user 
+            								//if using this event right
         } else if (command.equals("erase")) {
-            brushButtons.get(currentBrush).setSelected(false);
-            currentBrush = ERASE;
+            brushButtons.get(User.getCurrentBrush()).setSelected(false);
+            User.setCurrentBrush(User.ERASE);
         } else if (command.equals("small")) {
-            sizeButtons.get(currentSize).setSelected(false);
-            currentSize = SMALL;
+            sizeButtons.get(User.getCurrentSize()).setSelected(false);
+//            currentSize = SMALL;
+            User.setCurrentSize(User.SMALL);
         } else if (command.equals("medium")) {
-            sizeButtons.get(currentSize).setSelected(false);
-            currentSize = MEDIUM;
+            sizeButtons.get(User.getCurrentSize()).setSelected(false);
+//            currentSize = MEDIUM;
+            User.setCurrentSize(User.MEDIUM);
         } else if (command.equals("large")) {
-            sizeButtons.get(currentSize).setSelected(false);
-            currentSize = LARGE;
+            sizeButtons.get(User.getCurrentSize()).setSelected(false);
+//            currentSize = LARGE;
+            User.setCurrentSize(User.LARGE);
         } else if (command.equals("black")) {
-            colorButtons.get(currentColor).setSelected(false);
-            currentColor = BLACK;
+            colorButtons.get(User.getCurrentColor()).setSelected(false);
+//            currentColor = BLACK;
+            User.setCurrentColor(User.BLACK);
         } else if (command.equals("red")) {
-            colorButtons.get(currentColor).setSelected(false);
-            currentColor = RED;
+            colorButtons.get(User.getCurrentColor()).setSelected(false);
+//            currentColor = RED;
+            User.setCurrentColor(User.RED);
         } else if (command.equals("orange")) {
-            colorButtons.get(currentColor).setSelected(false);
-            currentColor = ORANGE;
+            colorButtons.get(User.getCurrentColor()).setSelected(false);
+//            currentColor = ORANGE;
+            User.setCurrentColor(User.BLACK);
         } else if (command.equals("yellow")) {
-            colorButtons.get(currentColor).setSelected(false);
-            currentColor = YELLOW;
+            colorButtons.get(User.getCurrentColor()).setSelected(false);
+//            currentColor = YELLOW;
+            User.setCurrentColor(User.YELLOW);
         } else if (command.equals("green")) {
-            colorButtons.get(currentColor).setSelected(false);
-            currentColor = GREEN;
+            colorButtons.get(User.getCurrentColor()).setSelected(false);
+//            currentColor = GREEN;
+            User.setCurrentColor(User.GREEN);
         } else if (command.equals("blue")) {
-            colorButtons.get(currentColor).setSelected(false);
-            currentColor = BLUE;
+            colorButtons.get(User.getCurrentColor()).setSelected(false);
+//            currentColor = BLUE;
+            User.setCurrentColor(User.BLUE);
         } else {
             System.out.println("Action not recognized");
         }
     }
+    
+//    /**
+//     * Gets the current size of the brush selected
+//     * 
+//     * @return current size of brush
+//     */
+//    private int getCurrentSize(){
+//    	return currentSize;
+//    }
+//    
+//    /**
+//     * Gets the current brush type selected
+//     * 
+//     * @return current brush type
+//     */
+//    private int getCurrentBrush(){
+//    	return currentBrush;
+//    }
+//   
+//    /**
+//     * Gets the current color of the brush selected
+//     * 
+//     * @return current brush color
+//     */
+//    private int getCurrentColor(){
+//    	return currentColor;
+//    }
+  
     
     /**
      * For testing purposes
