@@ -373,7 +373,7 @@ public class ToolsPanel extends JPanel implements ActionListener {
         } else if (command.equals("orange")) {
             colorButtons.get(User.getCurrentColor()).setSelected(false);
 //            currentColor = ORANGE;
-            User.setCurrentColor(User.BLACK);
+            User.setCurrentColor(User.ORANGE);
         } else if (command.equals("yellow")) {
             colorButtons.get(User.getCurrentColor()).setSelected(false);
 //            currentColor = YELLOW;

@@ -58,6 +58,9 @@ public class User {
      */
     public static final int BLUE = 5;
     
+    
+    
+    
   // INSTANCE VARIABLES
   /**
    * Current brush setting (see brush constants)

@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
+import drawing.User;
+
 /**
  * Canvas represents a drawing surface that allows the user to draw
  * on it freehand, with the mouse.
@@ -25,7 +27,7 @@ import javax.swing.SwingUtilities;
 public class Canvas extends JPanel {
     // image where the user's drawing is stored
     private Image drawingBuffer;
-    private JToggleButton toggle = new JToggleButton("Erase Mode", false);
+//    private JToggleButton toggle = new JToggleButton("Erase Mode", false);
     
     
     /**
@@ -36,7 +38,7 @@ public class Canvas extends JPanel {
     public Canvas(int width, int height) {
         this.setPreferredSize(new Dimension(width, height));
         addDrawingController();
-        this.add(toggle);
+//        this.add(toggle);
         // note: we can't call makeDrawingBuffer here, because it only
         // works *after* this canvas has been added to a window.  Have to
         // wait until paintComponent() is first called.
@@ -120,14 +122,18 @@ public class Canvas extends JPanel {
     private void drawLineSegment(int x1, int y1, int x2, int y2) {
         Graphics2D g = (Graphics2D) drawingBuffer.getGraphics();
         
-        if (toggle.isSelected()) {
+//        if (toggle.isSelected()) {
+        if(User.getCurrentBrush()== User.ERASE){
         	g.setColor(Color.WHITE);
         	g.setStroke(new BasicStroke(10));;
         	g.drawLine(x1, y1, x2, y2);
         }
         else {
-        	g.setColor(Color.BLACK);
+//        	g.setColor(Color.BLACK);
+        	g.setColor(getColor(User.getCurrentColor()));
+        	g.setStroke(new BasicStroke(getStroke(User.getCurrentSize())));
         	g.drawLine(x1, y1, x2, y2);
+        	
         }
         // IMPORTANT!  every time we draw on the internal drawing buffer, we
         // have to notify Swing to repaint this component on the screen.
@@ -180,6 +186,43 @@ public class Canvas extends JPanel {
     }
     
     
+    private Color getColor(int userCurrentColor){
+    	Color color;
+    	switch(userCurrentColor){
+    	case 0: color = Color.black;
+    		break;
+    	case 1: color = Color.red;
+    		break;
+    	case 2: color = Color.orange;
+			break;
+    	case 3: color = Color.yellow;
+			break;
+    	case 4: color = Color.green;
+			break;
+    	case 5: color = Color.blue;
+			break;
+    	case 6: color = Color.red;
+			break;
+    	default: color = Color.black;
+    		break;
+    	}
+    	return color;
+    }
+    
+    private int getStroke(int userCurrentSize){
+    	int size;
+    	switch(userCurrentSize){
+    	case 0: size = 5;
+    		break;
+    	case 1: size = 10;
+    		break;
+    	case 2: size = 20;
+			break;
+    	default:size = 10;
+    		break;
+    	}
+    	return size;
+    }
     /*
      * Main program. Make a window containing a Canvas.
      */
