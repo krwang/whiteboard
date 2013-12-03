@@ -11,6 +11,11 @@ import javax.swing.SwingUtilities;
 import canvas.Canvas;
 import drawing.ToolsPanel;
 
+/**
+ * this class combines the canvas and tools panel in one 
+ * JFrame to present a unfied appearance for the GUI
+ *
+ */
 public class WhiteboardGUI extends JFrame{
 	private final ToolsPanel toolsPanel;
 	private final Canvas canvas;
