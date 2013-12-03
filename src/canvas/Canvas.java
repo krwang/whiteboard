@@ -23,6 +23,8 @@ import drawing.User;
 /**
  * Canvas represents a drawing surface that allows the user to draw
  * on it freehand, with the mouse.
+ * 
+ * @param drawingBuffer: stores the instance of the drawn image on the canvas
  */
 public class Canvas extends JPanel {
     // image where the user's drawing is stored
@@ -65,7 +67,7 @@ public class Canvas extends JPanel {
     private void makeDrawingBuffer() {
         drawingBuffer = createImage(getWidth(), getHeight());
         fillWithWhite();
-        drawSmile();
+//        drawSmile();
     }
     
     /*
