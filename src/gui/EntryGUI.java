@@ -8,6 +8,7 @@ import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -15,7 +16,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-//TODO: add swing workers
+//TODO: add swing workers, dispose on action
 
 /**
  * This class contains code for a EntryGUI. The EntryGUI allows the user to 
@@ -42,14 +43,14 @@ public class EntryGUI extends JFrame {
 	//Text field for user to input name of Whiteboard to load
 	private final JTextField loadName;
 	
-	//Table containing all Whiteboards available to load
-	private final JTable availableCanvases;
-	
+	//List containing all Whiteboards available to load
+	private final JList<String> availableCanvases;
+		
 	public EntryGUI() {
 		super("Whiteboard");
 		
 		//JFrame setup
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setTitle("Welcome to Whiteboard");
 		
 		//JFrame component initialization
@@ -66,26 +67,12 @@ public class EntryGUI extends JFrame {
 		loadName.setMinimumSize(new Dimension(200, 25));
 		loadName.setMaximumSize(new Dimension(1000, 25));
 		
-		addListeners();
+		addListeners(this);
 		
-		DefaultTableModel model = new DefaultTableModel();
-		availableCanvases = new JTable() {
-			
-			@Override
-			//makes the cells of availableCanvases uneditable
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-			
-		};
-		availableCanvases.setRowSelectionAllowed(false);
-		availableCanvases.setName("availableCanvases");
-		model.addColumn("Canvases");
-		availableCanvases.setModel(model);
-		availableCanvases.removeEditor();
+		availableCanvases = new JList<String>();
 		
 		//fill availableCanvases with canvases saved on the server
-		fillTable();
+		fillList();
 		
 		//organizing layout of EntryGUI
 		panel = new JPanel();
@@ -117,7 +104,7 @@ public class EntryGUI extends JFrame {
 	 * add and bind listeners to the EntryGUI components
 	 * components must already be initialized
 	 */
-	private void addListeners() {
+	private void addListeners(final EntryGUI gui) {
 		
 		//add listener for enter key stroke while cursor is in loadName text field
 		loadName.addActionListener(new ActionListener() {
@@ -137,15 +124,15 @@ public class EntryGUI extends JFrame {
 					public void run() {
 						NameGUI name = new NameGUI();
 						name.setVisible(true);
+						gui.dispose();
 					}
 				});
 			}
-			
 		});
 	}
 	
-	private synchronized void fillTable() {
-		//TODO: fill table with saved Canvases
+	private synchronized void fillList() {
+		//TODO: fill list with saved Canvases
 	}
 	
 	/**
@@ -166,7 +153,7 @@ public class EntryGUI extends JFrame {
 		private final JPanel panel;
 		
 		//Button for user to click on to create a new Whiteboard
-		private final JButton create;
+		private final JLabel create;
 		
 		//Text field for user to enter the name of the new Whiteboard
 		private final JTextField name;
@@ -175,10 +162,10 @@ public class EntryGUI extends JFrame {
 			super("New Whiteboard");
 			
 			//JFrame setup
-			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			this.setTitle("New Whiteboard");
 			
-			create = new JButton();
+			create = new JLabel();
 			create.setName("create");
 			create.setText("Create Under Name:");
 			
@@ -187,7 +174,7 @@ public class EntryGUI extends JFrame {
 			name.setMinimumSize(new Dimension(200, 25));
 			name.setMaximumSize(new Dimension(1000, 25));
 			
-			addListeners();
+			addListeners(this);
 			
 			panel = new JPanel();
 			panel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -214,22 +201,75 @@ public class EntryGUI extends JFrame {
 		 * add and bind listeners to the NameGUI components
 		 * components must already be initialized
 		 */
-		private void addListeners() {
+		private void addListeners(final NameGUI gui) {
 			
-			//add listener for mouse clicks on create button
-			create.addActionListener(new ActionListener() {
-				
+			//add listener for enter key stroke while cursor is in the name text field
+			name.addActionListener(new ActionListener() {
+			
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					//TODO: Save name
+					//TODO: Save name on server
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							WhiteboardGUI main = new WhiteboardGUI();
-							main.setVisible(true);
+							UserGUI user = new UserGUI(name.getText());
+							user.setVisible(true);
+							gui.dispose();
 						}
 					});
 				}
 			});
+			
+		}
+	}
+	
+	/**
+	 * TODO: class javadoc
+	 * @author krwang
+	 */
+	
+	private class UserGUI extends JFrame{
+		
+		private final JPanel panel;
+		
+		//Text field for user to enter the name of the new Whiteboard
+		private final JTextField name;
+		
+		
+		private UserGUI(String whiteboardName) {
+			super("Enter a Username");
+					
+			//JFrame setup
+			this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			this.setTitle("Enter a Username");
+			
+			name = new JTextField();
+			name.setName("name");
+			name.setMinimumSize(new Dimension(300, 25));
+			name.setMaximumSize(new Dimension(1000, 25));
+			
+			addListeners(this, whiteboardName);
+			
+			panel = new JPanel();
+			panel.setBorder(new EmptyBorder(5, 5, 5, 5));
+			this.setContentPane(panel);
+			GroupLayout layout = new GroupLayout(panel);
+			panel.setLayout(layout);
+			layout.setAutoCreateGaps(true);
+			layout.setAutoCreateContainerGaps(true);
+			layout.setHorizontalGroup(layout.createParallelGroup()
+					.addComponent(name));
+			layout.setVerticalGroup(layout.createParallelGroup()
+					.addComponent(name));
+			
+			//frame the NameGUI around the default components
+			this.pack();
+		}
+		
+		/**
+		 * add and bind listeners to the NameGUI components
+		 * components must already be initialized
+		 */
+		private void addListeners(final UserGUI gui, final String whiteboardName) {
 			
 			//add listener for enter key stroke while cursor is in the name text field
 			name.addActionListener(new ActionListener() {
@@ -239,8 +279,17 @@ public class EntryGUI extends JFrame {
 					//TODO: Save name
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							WhiteboardGUI main = new WhiteboardGUI();
-							main.setVisible(true);
+							if (!name.getText().equals("") && !name.getText().equals("ENTER A USERNAME STUPID")) {
+								//TODO: send username to server
+								WhiteboardGUI whiteboard = new WhiteboardGUI(whiteboardName);
+								whiteboard.setVisible(true);
+								gui.dispose();
+							}
+							else {
+								name.setText("ENTER A USERNAME STUPID");
+								name.setSelectionStart(0);
+								name.setSelectionEnd(name.getText().length());
+							}
 						}
 					});
 				}
@@ -253,8 +302,8 @@ public class EntryGUI extends JFrame {
 	public static void main(final String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				EntryGUI main = new EntryGUI();
-				main.setVisible(true);
+				EntryGUI gui = new EntryGUI();
+				gui.setVisible(true);
 			}
 		});
 	}
