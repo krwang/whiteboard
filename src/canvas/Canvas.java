@@ -29,8 +29,15 @@ import drawing.User;
 public class Canvas extends JPanel {
     // image where the user's drawing is stored
     private Image drawingBuffer;
+    private final int DEFAULT_WIDTH = 800;
+    private final int DEFAULT_HEIGHT = 600;
 //    private JToggleButton toggle = new JToggleButton("Erase Mode", false);
     
+    //ADDING THIS
+    public Canvas(){
+    	this.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
+        addDrawingController();
+    }
     
     /**
      * Make a canvas.
