@@ -15,7 +15,7 @@ public class WhiteboardGUI extends JFrame{
 	private final ToolsPanel toolsPanel;
 	private final Canvas canvas;
 	
-	public WhiteboardGUI(){
+	public WhiteboardGUI(String name){
 		toolsPanel = new ToolsPanel();
 		canvas = new Canvas(800,800);
 		
@@ -39,7 +39,8 @@ public class WhiteboardGUI extends JFrame{
 						.addComponent(toolsPanel))
 				);  
 		
-		setTitle("Whiteboard");//should set title to soemthing sepcific for diff whiteboard
+		//assign the title of the WhiteboardGUI to be the name of the canvas being accessed
+		setTitle(name);
 		pack();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

@@ -8,6 +8,7 @@ import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -15,7 +16,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-//TODO: add swing workers
+//TODO: add swing workers, dispose on action
 
 /**
  * This class contains code for a EntryGUI. The EntryGUI allows the user to 
@@ -35,6 +36,7 @@ public class EntryGUI extends JFrame {
 
 	private final JPanel panel;
 	private final JLabel loadButton;
+	private final JLabel username;
 	
 	//Button for user to click on to create a new Whiteboard
 	private final JButton newButton;
@@ -42,14 +44,17 @@ public class EntryGUI extends JFrame {
 	//Text field for user to input name of Whiteboard to load
 	private final JTextField loadName;
 	
-	//Table containing all Whiteboards available to load
-	private final JTable availableCanvases;
+	//List containing all Whiteboards available to load
+	private final JList<String> availableCanvases;
+	
+	//Text field for user to input a preferred username
+	private final JTextField usernameInput;
 	
 	public EntryGUI() {
 		super("Whiteboard");
 		
 		//JFrame setup
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setTitle("Welcome to Whiteboard");
 		
 		//JFrame component initialization
@@ -68,24 +73,19 @@ public class EntryGUI extends JFrame {
 		
 		addListeners();
 		
-		DefaultTableModel model = new DefaultTableModel();
-		availableCanvases = new JTable() {
-			
-			@Override
-			//makes the cells of availableCanvases uneditable
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-			
-		};
-		availableCanvases.setRowSelectionAllowed(false);
-		availableCanvases.setName("availableCanvases");
-		model.addColumn("Canvases");
-		availableCanvases.setModel(model);
-		availableCanvases.removeEditor();
+		availableCanvases = new JList<String>();
 		
 		//fill availableCanvases with canvases saved on the server
 		fillTable();
+		
+		usernameInput = new JTextField();
+		usernameInput.setName("Username Input");
+		usernameInput.setMinimumSize(new Dimension(200, 25));
+		usernameInput.setMaximumSize(new Dimension(1000, 25));
+		
+		username = new JLabel();
+		username.setName("username");
+		username.setText("Please enter a username");
 		
 		//organizing layout of EntryGUI
 		panel = new JPanel();
@@ -97,12 +97,18 @@ public class EntryGUI extends JFrame {
 		layout.setAutoCreateContainerGaps(true);
 		layout.setHorizontalGroup(layout.createParallelGroup()
 				.addGroup(layout.createSequentialGroup()
+						.addComponent(username)
+						.addComponent(usernameInput))
+				.addGroup(layout.createSequentialGroup()
 						.addComponent(loadButton)
 						.addComponent(loadName)
 						.addComponent(newButton))
 				.addComponent(availableCanvases));
 		layout.setVerticalGroup(layout.createParallelGroup()
 				.addGroup(layout.createSequentialGroup()
+						.addGroup(layout.createParallelGroup()
+								.addComponent(username)
+								.addComponent(usernameInput))
 						.addGroup(layout.createParallelGroup()
 								.addComponent(loadButton)
 								.addComponent(loadName)
@@ -140,7 +146,6 @@ public class EntryGUI extends JFrame {
 					}
 				});
 			}
-			
 		});
 	}
 	
@@ -166,7 +171,7 @@ public class EntryGUI extends JFrame {
 		private final JPanel panel;
 		
 		//Button for user to click on to create a new Whiteboard
-		private final JButton create;
+		private final JLabel create;
 		
 		//Text field for user to enter the name of the new Whiteboard
 		private final JTextField name;
@@ -175,10 +180,10 @@ public class EntryGUI extends JFrame {
 			super("New Whiteboard");
 			
 			//JFrame setup
-			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			this.setTitle("New Whiteboard");
 			
-			create = new JButton();
+			create = new JLabel();
 			create.setName("create");
 			create.setText("Create Under Name:");
 			
@@ -216,21 +221,6 @@ public class EntryGUI extends JFrame {
 		 */
 		private void addListeners() {
 			
-			//add listener for mouse clicks on create button
-			create.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					//TODO: Save name
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							WhiteboardGUI main = new WhiteboardGUI();
-							main.setVisible(true);
-						}
-					});
-				}
-			});
-			
 			//add listener for enter key stroke while cursor is in the name text field
 			name.addActionListener(new ActionListener() {
 			
@@ -239,8 +229,8 @@ public class EntryGUI extends JFrame {
 					//TODO: Save name
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							WhiteboardGUI main = new WhiteboardGUI();
-							main.setVisible(true);
+							WhiteboardGUI gui = new WhiteboardGUI(name.getText());
+							gui.setVisible(true);
 						}
 					});
 				}
@@ -253,8 +243,8 @@ public class EntryGUI extends JFrame {
 	public static void main(final String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				EntryGUI main = new EntryGUI();
-				main.setVisible(true);
+				EntryGUI gui = new EntryGUI();
+				gui.setVisible(true);
 			}
 		});
 	}
