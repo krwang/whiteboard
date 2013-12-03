@@ -1,10 +1,19 @@
 package server;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import canvas.Canvas;
 
 public class WhiteboardServer {
+	private HashMap<String,Canvas> canvasMap= new HashMap<String,Canvas>();
 	
 	/**
 	 * server will take in whiteboard name and output the corresponding
@@ -33,7 +42,7 @@ public class WhiteboardServer {
 	public void serve() throws IOException{
 		while(true){
 			Socket socket = serverSocket.accept();
-		}
+		
 		try{
 			handle(socket);
 		}catch(IOException e){
@@ -41,6 +50,52 @@ public class WhiteboardServer {
 		}finally{
 			socket.close();
 		}
+		}
 	}
 	
+	//where will the server get it's input from??what will read to it?
+	private void handle(Socket socket) throws IOException{
+		System.err.println("client connected");
+		
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+        try {
+            // each request from the client is whiteboardName
+            for (String line = in.readLine(); line != null; line = in.readLine()) {
+                System.err.println("request: " + line);
+                try {
+                	if(canvas.contains(o))
+                    int x = Integer.valueOf(line);
+                    
+                    // compute answer and send back to client
+                    int y = x*x;     
+                    System.err.println("reply: " + y);
+                    out.print(y + "\n");
+                } catch (NumberFormatException e) {
+                    // complain about ill-formatted request
+                    System.err.println("reply: err");
+                    out.println("err");
+                }
+                
+                // VERY IMPORTANT! flush our buffer so the client gets the reply
+                out.flush();
+            }
+        } finally {        
+            out.close();
+            in.close();
+        }
+	}
+	
+    /**
+     * Start a WhiteboardServer running on the default port.
+     */
+    public static void main(String[] args) {
+        try {
+            WhiteboardServer server = new WhiteboardServer(SERVER_PORT);
+            server.serve();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
