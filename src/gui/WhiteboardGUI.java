@@ -50,13 +50,14 @@ public class WhiteboardGUI extends JFrame{
 
 	}
 	
-	public static void main(final String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				WhiteboardGUI main = new WhiteboardGUI();
-
-				main.setVisible(true);
-			}
-		});
-	}
+	//DELETE THIS AT SOME POINT
+//	public static void main(final String[] args) {
+//		SwingUtilities.invokeLater(new Runnable() {
+//			public void run() {
+//				WhiteboardGUI main = new WhiteboardGUI();
+//
+//				main.setVisible(true);
+//			}
+//		});
+//	}
 }

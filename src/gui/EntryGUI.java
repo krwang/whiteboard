@@ -18,7 +18,10 @@ import javax.swing.table.DefaultTableModel;
 //TODO: add swing workers
 
 /**
- * This class contains code for a EntryGUI
+ * This class contains code for a EntryGUI. The EntryGUI allows the user to 
+ * either create a new Whiteboard and input the name of the Whiteboard
+ * or load a previously created Whiteboard by name. There will be a table at the bottom
+ * that contains all previously created Whiteboards. 
  * 
  * TODO: thread safety argument
  * 
@@ -32,8 +35,14 @@ public class EntryGUI extends JFrame {
 
 	private final JPanel panel;
 	private final JLabel loadButton;
+	
+	//Button for user to click on to create a new Whiteboard
 	private final JButton newButton;
+	
+	//Text field for user to input name of Whiteboard to load
 	private final JTextField loadName;
+	
+	//Table containing all Whiteboards available to load
 	private final JTable availableCanvases;
 	
 	public EntryGUI() {
@@ -141,7 +150,9 @@ public class EntryGUI extends JFrame {
 	
 	/**
 	 * This class contains code for a NameGUI, which is 
-	 * created when the newButton of EntryGUI is clicked on
+	 * created when the newButton of EntryGUI is clicked on.
+	 * The NameGUI is used for inputting the name of the 
+	 * Whiteboard about to be created
 	 * 
 	 * TODO: thread safety argument
 	 * 
@@ -153,7 +164,11 @@ public class EntryGUI extends JFrame {
 	private class NameGUI extends JFrame{
 		
 		private final JPanel panel;
+		
+		//Button for user to click on to create a new Whiteboard
 		private final JButton create;
+		
+		//Text field for user to enter the name of the new Whiteboard
 		private final JTextField name;
 		
 		private NameGUI() {
@@ -195,6 +210,10 @@ public class EntryGUI extends JFrame {
 			this.pack();
 		}
 		
+		/**
+		 * add and bind listeners to the NameGUI components
+		 * components must already be initialized
+		 */
 		private void addListeners() {
 			
 			//add listener for mouse clicks on create button
@@ -202,7 +221,13 @@ public class EntryGUI extends JFrame {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					//TODO: make new WhiteboardGUI
+					//TODO: Save name
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							WhiteboardGUI main = new WhiteboardGUI();
+							main.setVisible(true);
+						}
+					});
 				}
 			});
 			
@@ -211,13 +236,20 @@ public class EntryGUI extends JFrame {
 			
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					//TODO: create new WhiteboardGUI
+					//TODO: Save name
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							WhiteboardGUI main = new WhiteboardGUI();
+							main.setVisible(true);
+						}
+					});
 				}
 			});
 			
 		}
 	}
 	
+	//DELETE THIS AT SOME POINT
 	public static void main(final String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
