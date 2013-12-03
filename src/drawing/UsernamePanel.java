@@ -3,8 +3,8 @@ package drawing;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+//nothing in here of use yet SORRY
 public class UsernamePanel extends JPanel{
-	ArrayList 
 	
 	public UsernamePanel(){
 		super();
