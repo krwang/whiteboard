@@ -33,6 +33,8 @@ public class Canvas extends JPanel {
     private final int DEFAULT_HEIGHT = 600;
 //    private JToggleButton toggle = new JToggleButton("Erase Mode", false);
     
+    //TODO: add list of users accessing this canvas????
+    
     //ADDING THIS
     public Canvas(){
     	this.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));

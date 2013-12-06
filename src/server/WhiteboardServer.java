@@ -126,6 +126,7 @@ public class WhiteboardServer {
 	        }else{// (tokens[0].equals("draw")) or erase {
 //	        	Color color = getColor(tokens[1]); 
 //	        	Size size = getStroke(tokens[2]);
+	        	//can we access the user brush settings
 	        	int x1 = Integer.parseInt(tokens[1]);
 	        	int x2 = Integer.parseInt(tokens[2]);
 	        	int y1 = Integer.parseInt(tokens[3]);
