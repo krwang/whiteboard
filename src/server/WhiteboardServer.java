@@ -9,20 +9,23 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import canvas.Canvas;
 
 public class WhiteboardServer {
-	private HashMap<String,Canvas> canvasMap= new HashMap<String,Canvas>();
+	private HashMap<String,Canvas> canvasMap;
+	private HashMap<String,ArrayList<Socket>> sockets;
+	private final ArrayBlockingQueue<Object[]> queue;
+	public static final int SERVER_PORT = 5050;
 
+	private ServerSocket serverSocket;
 	/**
 	 * server will take in whiteboard name and output the corresponding
 	 * whiteboard
 	 */
 
-	public static final int SERVER_PORT = 5050;
-
-	private ServerSocket serverSocket;
+	
 
 	/**
 	 * Make a SquareServer that listens for connections on port.
@@ -31,6 +34,10 @@ public class WhiteboardServer {
 	public WhiteboardServer(int port) throws IOException{
 		System.out.println("server started in port " + port);
 		serverSocket = new ServerSocket(port);
+		canvasMap= new HashMap<String,Canvas>();
+		sockets = new HashMap<String,ArrayList<Socket>>();
+		queue = new ArrayBlockingQueue<Object[]>(1000);
+		
 	}
 
 	/**
@@ -67,39 +74,29 @@ public class WhiteboardServer {
 	}
 
 	//where will the server get it's input from??what will read to it?
-	//handles a single client connection
-	private void handle(Socket socket) throws IOException{
-		System.err.println("client connected");
+	/**
+	 * Handles a single client connection and puts all client inputs 
+	 * into the queue.
+	 * @param socket     socket through which the client is connected
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	private void handle(Socket socket) throws IOException, InterruptedException{
+		System.out.println("client connected");
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-
-		Canvas output = new Canvas();
 
 		try {
 			// each request from the client is whiteboardName
 			for (String line = in.readLine(); line != null; line = in.readLine()) {
 				System.err.println("request: " + line);
 				try {
-					if(canvasMap.containsKey(line)){
-						//open that canvas
-						output = canvasMap.get(line);
-					}
-					else{
-						canvasMap.put(line, output);
-					}
-					//how do you return the output board????
-					System.err.println("returning Whiteboard " + line);
-					//returning answer to user...idk if this is necessary
-					out.print("returning Whiteboard " + line);
-				} catch (NumberFormatException e) {
+					queue.put(new Object[]{line, socket, out});
+				} catch (Exception e) {
 					// complain about ill-formatted request
-					System.err.println("reply: err");
-					out.println("err");
+					e.printStackTrace();
 				}
-
-				// VERY IMPORTANT! flush our buffer so the client gets the reply
-				out.flush();
 			}
 		} finally {        
 			out.close();
