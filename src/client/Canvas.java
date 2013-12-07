@@ -1,4 +1,4 @@
-package canvas;
+package client;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
-import drawing.User;
+import client.User;
 
 /**
  * Canvas represents a drawing surface that allows the user to draw

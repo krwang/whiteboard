@@ -1,4 +1,4 @@
-package drawing;
+package client;
 
 public class User {
     // CLASS CONSTANTS

@@ -1,4 +1,4 @@
-package gui;
+package client;
 
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -9,8 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import canvas.Canvas;
-import drawing.ToolsPanel;
+import client.Canvas;
+import client.ToolsPanel;
 
 /**
  * this class combines the canvas and tools panel in one 
@@ -20,7 +20,7 @@ import drawing.ToolsPanel;
 @SuppressWarnings("serial")
 public class WhiteboardGUI extends JFrame{
 	private final ToolsPanel toolsPanel;
-	private final Canvas canvas;
+	final Canvas canvas;
 	private final JButton switchButton;
 	
 	public WhiteboardGUI(String name){

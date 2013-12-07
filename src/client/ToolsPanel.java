@@ -1,6 +1,4 @@
-package drawing;
-
-import gui.EntryGUI;
+package client;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

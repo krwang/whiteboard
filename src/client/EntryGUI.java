@@ -1,4 +1,4 @@
-package gui;
+package client;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-//TODO: add swing workers, dispose on action
+//TODO: add swing workers
 
 /**
  * This class contains code for a EntryGUI. The EntryGUI allows the user to 
