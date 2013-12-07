@@ -1,22 +1,13 @@
-package gui;
+package client;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 
-//TODO: add swing workers, dispose on action
+//TODO: add swing workers
 
 /**
  * This class contains code for a EntryGUI. The EntryGUI allows the user to 
@@ -208,7 +199,7 @@ public class EntryGUI extends JFrame {
 			
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					//TODO: Save name on server
+					//TODO: Save name on server, ensure name is unique
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							UserGUI user = new UserGUI(name.getText());
@@ -276,11 +267,10 @@ public class EntryGUI extends JFrame {
 			
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					//TODO: Save name
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							if (!name.getText().equals("") && !name.getText().equals("ENTER A USERNAME STUPID")) {
-								//TODO: send username to server
+								//TODO: save username to canvas
 								WhiteboardGUI whiteboard = new WhiteboardGUI(whiteboardName);
 								whiteboard.setVisible(true);
 								gui.dispose();

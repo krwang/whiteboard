@@ -1,4 +1,4 @@
-package canvas;
+package client;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
-import drawing.User;
+import client.User;
 
 /**
  * Canvas represents a drawing surface that allows the user to draw
@@ -32,6 +32,8 @@ public class Canvas extends JPanel {
     private final int DEFAULT_WIDTH = 800;
     private final int DEFAULT_HEIGHT = 600;
 //    private JToggleButton toggle = new JToggleButton("Erase Mode", false);
+    
+    //TODO: add list of users accessing this canvas????
     
     //ADDING THIS
     public Canvas(){
