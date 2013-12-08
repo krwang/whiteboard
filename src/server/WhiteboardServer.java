@@ -11,11 +11,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import canvas.Canvas;
+import client.Canvas;
 
 public class WhiteboardServer {
 	private HashMap<String,Canvas> canvasMap;
-	private HashMap<String,ArrayList<Socket>> sockets;
+	private HashMap<String,ArrayList<Socket>> sockets;//by using sockets, you can only 
+											//really user one username the whole time
 	private final ArrayBlockingQueue<Object[]> queue;
 	public static final int SERVER_PORT = 5050;
 
@@ -29,6 +30,8 @@ public class WhiteboardServer {
 
 	/**
 	 * Make a SquareServer that listens for connections on port.
+	 * It also takes commands put in the queue and sends the output
+	 * of them back to the client
 	 * @param port port number, requires 0 <= port <= 65535.
 	 */
 	public WhiteboardServer(int port) throws IOException{
@@ -37,6 +40,20 @@ public class WhiteboardServer {
 		canvasMap= new HashMap<String,Canvas>();
 		sockets = new HashMap<String,ArrayList<Socket>>();
 		queue = new ArrayBlockingQueue<Object[]>(1000);
+		
+		Thread thread = new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				while(true){
+					try{
+						output(queue.take());
+					}
+				}
+				
+			}
+			
+		});
 		
 	}
 
@@ -56,6 +73,9 @@ public class WhiteboardServer {
 					try{
 						handle(socket);
 					}catch(IOException e){
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}finally{
 						try {
@@ -104,16 +124,49 @@ public class WhiteboardServer {
 		}
 	}
 
-	private String handleRequest(String input){
-		String regex = "(username -?\\d+)|(draw -?\\d+ -?\\d+)|(erase -?\\d+ -?\\d+)|"
-				+ "(whiteboard -?\\d+)";
-		
+	/**
+	 * handles the client's input and returns the corresponding output
+	 * @param input
+	 * @return
+	 */
+	private String handleRequest(String input, Socket socket){
+		String regex = "(open \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|"
+				+ "(erase \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|(bye \\w+)";
+		String output;
 		 if ( ! input.matches(regex)) {
 	            // invalid input
 	            return null;
 	     }
+		
 		 
 		 String[] tokens = input.split(" ");
+		 
+		 /**
+		  * If the whiteboard already exists, then the new socket gets added
+		  * to the hashmap mapping whiteboard names to sockets
+		  * 
+		  * If the whiteboard does not exist, then the whiteboard gets added
+		  * to the hashmap of whiteboard names to canvases. Also, the client
+		  * socket will be added to hashmap of whiteboard names to sockets
+		  */
+		 	if(tokens[0].equals("open")){
+		 		String boardName = tokens[1];
+		 		
+		 		if(canvasMap.containsKey(boardName)){
+		 			ArrayList<Socket> socketValue = sockets.get(boardName);
+		 			socketValue.add(socket);
+		 			sockets.put(boardName, socketValue);
+		 		}
+		 		else{
+			 		canvasMap.put(boardName, new Canvas());
+			 		ArrayList<Socket> socketValue = new ArrayList<Socket>();
+			 		socketValue.add(socket);
+			 		sockets.put(boardName, socketValue);
+		 		}
+		 		
+		 	}
+		 	
+		 	
 	        if (tokens[0].equals("username")) {
 	        	String username = tokens[1];
 	        	return username;
