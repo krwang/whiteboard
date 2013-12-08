@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import client.Canvas;
@@ -18,6 +19,7 @@ public class WhiteboardServer {
 	private HashMap<String,ArrayList<Socket>> sockets;//by using sockets, you can only 
 											//really user one username the whole time
 	private final ArrayBlockingQueue<Object[]> queue;
+	private static HashSet<String> usernames;
 	public static final int SERVER_PORT = 5050;
 
 	private ServerSocket serverSocket;
@@ -125,14 +127,15 @@ public class WhiteboardServer {
 	}
 
 	/**
+	 * open takes in whiteboard name and username
 	 * handles the client's input and returns the corresponding output
 	 * @param input
 	 * @return
 	 */
-	private String handleRequest(String input, Socket socket){
-		String regex = "(open \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|"
+	private String[] handleRequest(String input, Socket socket){
+		String regex = "(open \\w+ \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|"
 				+ "(erase \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|(bye \\w+)";
-		String output;
+		String[] output;
 		 if ( ! input.matches(regex)) {
 	            // invalid input
 	            return null;
@@ -163,9 +166,22 @@ public class WhiteboardServer {
 			 		socketValue.add(socket);
 			 		sockets.put(boardName, socketValue);
 		 		}
+		 		usernames.add(tokens[2]);
+		 		output = new String[]{"open",boardName};
+		 		return output;
 		 		
 		 	}
-		 	
+		 	else if(tokens[0].equals("draw")){
+		 		Canvas canvas
+		 		
+		 		
+		 	}
+		 	else if(tokens[0].equals("erase")){
+		 		
+		 	}
+		 	else{//tokens[0].equals("bye")
+		 		
+		 	}
 		 	
 	        if (tokens[0].equals("username")) {
 	        	String username = tokens[1];
@@ -187,6 +203,10 @@ public class WhiteboardServer {
 	        } 
 	        // Should never get here--make sure to return in each of the valid cases above.
 	        throw new UnsupportedOperationException();
+	}
+	
+	public static boolean containsUsername(String username){
+		return(usernames.contains(username));
 	}
 	/**
 	 * make tokens so that first word is the command, words after are the parameter
