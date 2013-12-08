@@ -11,12 +11,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 import client.Canvas;
+import client.User;
 
 public class WhiteboardServer {
-	private HashMap<String,Canvas> canvasMap;
-	private HashMap<String,ArrayList<Socket>> sockets;//by using sockets, you can only 
+	private ConcurrentHashMap<String,Canvas> canvasMap;
+	private ConcurrentHashMap<String,ArrayList<Socket>> sockets;//by using sockets, you can only 
 											//really user one username the whole time
 	private final ArrayBlockingQueue<Object[]> queue;
 	private static HashSet<String> usernames;
@@ -39,8 +41,8 @@ public class WhiteboardServer {
 	public WhiteboardServer(int port) throws IOException{
 		System.out.println("server started in port " + port);
 		serverSocket = new ServerSocket(port);
-		canvasMap= new HashMap<String,Canvas>();
-		sockets = new HashMap<String,ArrayList<Socket>>();
+		canvasMap= new ConcurrentHashMap<String,Canvas>();
+		sockets = new ConcurrentHashMap<String,ArrayList<Socket>>();
 		queue = new ArrayBlockingQueue<Object[]>(1000);
 		
 		Thread thread = new Thread(new Runnable(){
@@ -136,6 +138,7 @@ public class WhiteboardServer {
 		String regex = "(open \\w+ \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|"
 				+ "(erase \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|(bye \\w+)";
 		String[] output;
+		Canvas canvas;
 		 if ( ! input.matches(regex)) {
 	            // invalid input
 	            return null;
@@ -167,13 +170,22 @@ public class WhiteboardServer {
 			 		sockets.put(boardName, socketValue);
 		 		}
 		 		usernames.add(tokens[2]);
+		 		canvas = canvasMap.get(boardName);
 		 		output = new String[]{"open",boardName};
 		 		return output;
 		 		
 		 	}
 		 	else if(tokens[0].equals("draw")){
-		 		Canvas canvas
-		 		
+		 		//assuming canvas is already initialized, as in the open method 
+		 		//has run first(is that bad?)
+		 		int color = Integer.parseInt(tokens[1]);//<--will be the color represented as an int
+		 		int size = Integer.parseInt(tokens[2]);//size represented as an int
+		 		int x1 = Integer.parseInt(tokens[3]);
+		 		int y1 = Integer.parseInt(tokens[4]);
+		 		int x2 = Integer.parseInt(tokens[5]);
+		 		int y2 = Integer.parseInt(tokens[6]);
+		 		canvas.drawLineSegment(User.DRAW, color,size, x1,y1,x2,y2);
+		 		output = new String[]{"draw", color, size, x1, y1, x2, y2};
 		 		
 		 	}
 		 	else if(tokens[0].equals("erase")){

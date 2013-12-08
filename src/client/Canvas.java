@@ -129,12 +129,14 @@ public class Canvas extends JPanel {
     /*
      * Draw a line between two points (x1, y1) and (x2, y2), specified in
      * pixels relative to the upper-left corner of the drawing buffer.
+     * this method is PUBLIC because it will only be accessed by unique references
      */
-    private void drawLineSegment(int x1, int y1, int x2, int y2) {
+    public void drawLineSegment(int brushType, int currentColor, int currentSize, int x1, int y1, int x2, int y2) {
         Graphics2D g = (Graphics2D) drawingBuffer.getGraphics();
         
 //        if (toggle.isSelected()) {
-        if(User.getCurrentBrush()== User.ERASE){
+        if(User.getCurrentBrush()== User.ERASE){//instead of the user class, the whiteboard
+        										//client will have the instances of the brush etc
         	g.setColor(Color.WHITE);
         	g.setStroke(new BasicStroke(getStroke(User.getCurrentSize())));
         	g.drawLine(x1, y1, x2, y2);
