@@ -9,13 +9,17 @@ import java.awt.event.ActionListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+
+import server.WhiteboardServer;
 
 //TODO: add swing workers
 
@@ -152,6 +156,7 @@ public class EntryGUI extends JFrame implements ActionListener {
 		
 		//frame the JottoGUI around the default components
 		setContentPane(panel);
+		setResizable(false);
 	    setTitle("Welcome to Whiteboard");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -159,12 +164,51 @@ public class EntryGUI extends JFrame implements ActionListener {
 	}
 	
 	public void actionPerformed(ActionEvent ae) {
-	    if (!userField.getText().isEmpty() && !boardField.getText().isEmpty()) {
+	    boolean valid = true;
+	    String username = userField.getText();
+	    String boardname = boardField.getText();
+	    
+	    StringBuilder errorText = new StringBuilder("<html>");
+	    
+	    if (username.isEmpty()) {
+	        errorText.append("Username field cannot be empty.");
+	        valid = false;
+	    } else if (WhiteboardServer.containsUsername(username)) {
+	        errorText.append("This username is not available.");
+	        valid = false;
+	    }
+	    
+	    if (boardname.isEmpty()) {
+	        if (errorText.length() > 5) {
+	            errorText.append("<br>");
+	        }
+	        
+	        errorText.append("Whiteboard field cannot be empty.");
+	        valid = false;
+	    }
+	    
+	    errorText.append("</html>");
+	    
+	    if (valid) {
 	        final WhiteboardGUI whiteboard = new WhiteboardGUI(boardField.getText());
 	        SwingUtilities.invokeLater(new Runnable() {
 	            public void run() {
 	                whiteboard.setVisible(true);
 	                dispose();
+	            }
+	        });
+	    } else {
+	        final JDialog error = new JDialog(this, "Error", true);
+	        error.setLayout(new GridBagLayout());
+	        error.add(new JLabel(errorText.toString(), SwingConstants.CENTER));
+	        error.pack();
+	        error.setSize(new Dimension(250, 100));
+	        error.setResizable(false);
+	        error.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	        error.setLocationRelativeTo(this);
+	        SwingUtilities.invokeLater(new Runnable() {
+	            public void run() {
+	                error.setVisible(true);
 	            }
 	        });
 	    }
