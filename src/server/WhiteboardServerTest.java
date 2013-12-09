@@ -28,13 +28,27 @@ public class WhiteboardServerTest {
 	 * 		a)input = "bye"
 	 * 		check that output = {bye}
 	 * 
+	 * To test containsUsername method:
+	 * 1) test when username is in the arraylist--should return true
+	 * 2) test when username is not in arraylist--should return false
 	 * 
+	 * To test server in general:
+	 * 1) adding a new whiteboard and updating canvasMap accordingly
+	 * 2) loading an existing whiteboard and updating the canvasMap accordingly
+	 * 3) draw on a whiteboard and update canvas accordingly
+	 * 4) erase on whiteboard and update canvas accordingly
+	 * 5) close whiteboard
+	 * 
+	 * To test server for concurrency, we'll open the same whiteboard through 2 different 
+	 * clients, client 1, and client 2: 
+	 * 1) 1 draws, and 2 draws in same location at same time
+	 * 2) 1 draws and 2 erases in same location at same time
+	 * 3) 1 draws and 2 draws in same location
+	 * 4) 1 draws and 2 erases in same location
+	 * 5) 1 closes, see if 2's username list updates
+	 * 6) 1 is open, then open 2 and see if 1's list updates
 	 * 
 	 * 
 	 * 	 * open a new board--make sure that the canvas is added to the canvasMap under
-	 * 
 	 */
-	
-	
-
 }
