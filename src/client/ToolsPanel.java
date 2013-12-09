@@ -171,12 +171,24 @@ public class ToolsPanel extends JPanel implements ActionListener {
      */
     private final ArrayList<JToggleButton> colorButtons;
     
+    /**
+     * Button for switching Canvases
+     */
+    private final JButton switchButton;
+    
+    /**
+     * Reference to GUI container
+     */
+    private final WhiteboardGUI gui;
+    
     // METHODS
     /**
      * Default constructor for creating a ToolsPanel
      */
-    public ToolsPanel() {
+    public ToolsPanel(WhiteboardGUI parent) {
         super();
+        
+        gui = parent;
         
         Insets standard = new Insets(15, 5, 5, 5);
         
@@ -289,6 +301,14 @@ public class ToolsPanel extends JPanel implements ActionListener {
         gbc.gridy = 5;
         addButtons(colorButtons, gbc);
         
+        switchButton = new JButton("Switch Canvas");
+		switchButton.setActionCommand("switch");
+        gbc.gridx = 0;
+        gbc.gridy = 7;
+        gbc.gridwidth = 3;
+        gbc.insets = new Insets(30, 0, 0, 0);
+        add(switchButton, gbc);
+        
         initialize();
     }
     
@@ -381,6 +401,9 @@ public class ToolsPanel extends JPanel implements ActionListener {
             colorButtons.get(User.getCurrentColor()).setSelected(false);
 //            currentColor = BLUE;
             User.setCurrentColor(User.BLUE);
+        } else if (command.equals("switch")) {
+        	new EntryGUI().setVisible(true);
+			gui.dispose();
         } else {
             System.out.println("Action not recognized");
         }
@@ -412,24 +435,23 @@ public class ToolsPanel extends JPanel implements ActionListener {
 //    private int getCurrentColor(){
 //    	return currentColor;
 //    }
-  
     
-    /**
-     * For testing purposes
-     * 
-     * @param args Standard command line input
-     */
-    public static void main(String[] args) {
-        final JFrame frame = new JFrame();
-        frame.add(new ToolsPanel());
-        frame.pack();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                frame.setVisible(true);
-            }
-        });
-    }
+//    /**
+//     * For testing purposes
+//     * 
+//     * @param args Standard command line input
+//     */
+//    public static void main(String[] args) {
+//        final JFrame frame = new JFrame();
+//        frame.add(new ToolsPanel());
+//        frame.pack();
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setLocationRelativeTo(null);
+//        SwingUtilities.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                frame.setVisible(true);
+//            }
+//        });
+//    }
 }
