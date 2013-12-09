@@ -58,9 +58,6 @@ public class User {
      */
     public static final int BLUE = 5;
     
-    
-    
-    
   // INSTANCE VARIABLES
   /**
    * Current brush setting (see brush constants)
@@ -82,6 +79,7 @@ public class User {
 	 * or should this receive an arraylist of toolspanels???from the multiple screens?
 	 * or should they just be seen as different users?
 	 */
+	@SuppressWarnings("static-access")
 	public User(ToolsPanel toolsPanel){
 		this.currentSize = SMALL;
 		this.currentColor =BLACK;

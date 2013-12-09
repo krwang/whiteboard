@@ -1,22 +1,11 @@
 package client;
 
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
 import client.User;
 
 /**
@@ -25,6 +14,7 @@ import client.User;
  * 
  * @param drawingBuffer: stores the instance of the drawn image on the canvas
  */
+@SuppressWarnings("serial")
 public class Canvas extends JPanel {
     // image where the user's drawing is stored
     private Image drawingBuffer;
@@ -93,39 +83,6 @@ public class Canvas extends JPanel {
     }
     
     /*
-     * Draw a happy smile on the drawing buffer.
-     */
-    private void drawSmile() {
-        final Graphics2D g = (Graphics2D) drawingBuffer.getGraphics();
-
-        // all positions and sizes below are in pixels
-        final Rectangle smileBox = new Rectangle(20, 20, 100, 100); // x, y, width, height
-        final Point smileCenter = new Point(smileBox.x + smileBox.width/2, smileBox.y + smileBox.height/2);
-        final int smileStrokeWidth = 3;
-        final Dimension eyeSize = new Dimension(9, 9);
-        final Dimension eyeOffset = new Dimension(smileBox.width/6, smileBox.height/6);
-        
-        g.setColor(Color.BLACK);
-        g.setStroke(new BasicStroke(smileStrokeWidth));
-        
-        // draw the smile -- an arc inscribed in smileBox, starting at -30 degrees (southeast)
-        // and covering 120 degrees
-        g.drawArc(smileBox.x, smileBox.y, smileBox.width, smileBox.height, -30, -120);
-        
-        // draw some eyes to make it look like a smile rather than an arc
-        for (int side: new int[] { -1, 1 }) {
-            g.fillOval(smileCenter.x + side * eyeOffset.width - eyeSize.width/2,
-                       smileCenter.y - eyeOffset.height - eyeSize.width/2,
-                       eyeSize.width,
-                       eyeSize.height);
-        }
-        
-        // IMPORTANT!  every time we draw on the internal drawing buffer, we
-        // have to notify Swing to repaint this component on the screen.
-        this.repaint();
-    }
-    
-    /*
      * Draw a line between two points (x1, y1) and (x2, y2), specified in
      * pixels relative to the upper-left corner of the drawing buffer.
      * this method is PUBLIC because it will only be accessed by unique references
@@ -134,16 +91,16 @@ public class Canvas extends JPanel {
         Graphics2D g = (Graphics2D) drawingBuffer.getGraphics();
         
 //        if (toggle.isSelected()) {
-        if(User.getCurrentBrush()== User.ERASE){//instead of the user class, the whiteboard
-        										//client will have the instances of the brush etc
+        if(brushType == User.ERASE){//instead of the user class, the whiteboard
+        							//client will have the instances of the brush etc
         	g.setColor(Color.WHITE);
-        	g.setStroke(new BasicStroke(getStroke(User.getCurrentSize())));
+        	g.setStroke(new BasicStroke(getStroke(currentSize)));
         	g.drawLine(x1, y1, x2, y2);
         }
         else {
 //        	g.setColor(Color.BLACK);
-        	g.setColor(getColor(User.getCurrentColor()));
-        	g.setStroke(new BasicStroke(getStroke(User.getCurrentSize())));
+        	g.setColor(getColor(currentColor));
+        	g.setStroke(new BasicStroke(getStroke(currentSize)));
         	g.drawLine(x1, y1, x2, y2);
         	
         }
@@ -184,7 +141,7 @@ public class Canvas extends JPanel {
         public void mouseDragged(MouseEvent e) {
             int x = e.getX();
             int y = e.getY();
-            drawLineSegment(lastX, lastY, x, y);
+            drawLineSegment(User.getCurrentBrush(), User.getCurrentColor(), User.getCurrentSize(), lastX, lastY, x, y);
             lastX = x;
             lastY = y;
         }
@@ -201,22 +158,22 @@ public class Canvas extends JPanel {
     private Color getColor(int userCurrentColor){
     	Color color;
     	switch(userCurrentColor){
-    	case 0: color = Color.black;
-    		break;
-    	case 1: color = Color.red;
-    		break;
-    	case 2: color = Color.orange;
-			break;
-    	case 3: color = Color.yellow;
-			break;
-    	case 4: color = Color.green;
-			break;
-    	case 5: color = Color.blue;
-			break;
-    	case 6: color = Color.red;
-			break;
-    	default: color = Color.black;
-    		break;
+	    	case 0: color = Color.black;
+	    		break;
+	    	case 1: color = Color.red;
+	    		break;
+	    	case 2: color = Color.orange;
+				break;
+	    	case 3: color = Color.yellow;
+				break;
+	    	case 4: color = Color.green;
+				break;
+	    	case 5: color = Color.blue;
+				break;
+	    	case 6: color = Color.red;
+				break;
+	    	default: color = Color.black;
+	    		break;
     	}
     	return color;
     }
@@ -224,32 +181,66 @@ public class Canvas extends JPanel {
     private int getStroke(int userCurrentSize){
     	int size;
     	switch(userCurrentSize){
-    	case 0: size = 5;
-    		break;
-    	case 1: size = 10;
-    		break;
-    	case 2: size = 20;
-			break;
-    	default:size = 10;
-    		break;
+	    	case 0: size = 5;
+	    		break;
+	    	case 1: size = 10;
+	    		break;
+	    	case 2: size = 20;
+				break;
+	    	default:size = 10;
+	    		break;
     	}
     	return size;
     }
-    /*
-     * Main program. Make a window containing a Canvas.
-     */
-    public static void main(String[] args) {
-        // set up the UI (on the event-handling thread)
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                JFrame window = new JFrame("Freehand Canvas");
-                window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                window.setLayout(new BorderLayout());
-                Canvas canvas = new Canvas(800, 600);
-                window.add(canvas, BorderLayout.CENTER);
-                window.pack();
-                window.setVisible(true);
-            }
-        });
-    }
+    
+//  /*
+//  * Draw a happy smile on the drawing buffer.
+//  */
+// private void drawSmile() {
+//     final Graphics2D g = (Graphics2D) drawingBuffer.getGraphics();
+//
+//     // all positions and sizes below are in pixels
+//     final Rectangle smileBox = new Rectangle(20, 20, 100, 100); // x, y, width, height
+//     final Point smileCenter = new Point(smileBox.x + smileBox.width/2, smileBox.y + smileBox.height/2);
+//     final int smileStrokeWidth = 3;
+//     final Dimension eyeSize = new Dimension(9, 9);
+//     final Dimension eyeOffset = new Dimension(smileBox.width/6, smileBox.height/6);
+//     
+//     g.setColor(Color.BLACK);
+//     g.setStroke(new BasicStroke(smileStrokeWidth));
+//     
+//     // draw the smile -- an arc inscribed in smileBox, starting at -30 degrees (southeast)
+//     // and covering 120 degrees
+//     g.drawArc(smileBox.x, smileBox.y, smileBox.width, smileBox.height, -30, -120);
+//     
+//     // draw some eyes to make it look like a smile rather than an arc
+//     for (int side: new int[] { -1, 1 }) {
+//         g.fillOval(smileCenter.x + side * eyeOffset.width - eyeSize.width/2,
+//                    smileCenter.y - eyeOffset.height - eyeSize.width/2,
+//                    eyeSize.width,
+//                    eyeSize.height);
+//     }
+//     
+//     // IMPORTANT!  every time we draw on the internal drawing buffer, we
+//     // have to notify Swing to repaint this component on the screen.
+//     this.repaint();
+// }
+    
+//    /*
+//     * Main program. Make a window containing a Canvas.
+//     */
+//    public static void main(String[] args) {
+//        // set up the UI (on the event-handling thread)
+//        SwingUtilities.invokeLater(new Runnable() {
+//            public void run() {
+//                JFrame window = new JFrame("Freehand Canvas");
+//                window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//                window.setLayout(new BorderLayout());
+//                Canvas canvas = new Canvas(800, 600);
+//                window.add(canvas, BorderLayout.CENTER);
+//                window.pack();
+//                window.setVisible(true);
+//            }
+//        });
+//    }
 }
