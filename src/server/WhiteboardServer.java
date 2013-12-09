@@ -51,7 +51,9 @@ public class WhiteboardServer {
 			public void run() {
 				while(true){
 					try{
-						output(queue.take());
+						sendOutput(queue.take());
+					}catch(Exception e){
+						e.printStackTrace();
 					}
 				}
 
@@ -146,6 +148,15 @@ public class WhiteboardServer {
      * @param obj
      * @throws IOException
      */
+	public void sendOutput(Object[] obj){
+		String input = (String)obj[0];
+		Socket socket = (Socket)obj[1];
+		PrintWriter output = (PrintWriter)obj[2];
+		
+		Object[] outputParsed = handleRequest(input, socket);
+		
+		
+	}
 
 	/**
 	 * open takes in whiteboard name and username
@@ -153,10 +164,10 @@ public class WhiteboardServer {
 	 * @param input
 	 * @return
 	 */
-	private String[] handleRequest(String input, Socket socket){
+	private Object[] handleRequest(String input, Socket socket){
 		String regex = "(open \\w+ \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|"
 				+ "(erase \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|(bye \\w+)";
-		String[] output;
+		Object[] output;
 		Canvas canvas;
 		if ( ! input.matches(regex)) {
 			// invalid input
@@ -190,7 +201,7 @@ public class WhiteboardServer {
 			}
 			usernames.add(tokens[2]);
 			canvas = canvasMap.get(boardName);
-			output = new String[]{"open",boardName};
+			output = new Object[]{new Object[]{"open",boardName}, boardName};
 			return output;
 
 		}
@@ -211,9 +222,9 @@ public class WhiteboardServer {
 			String boardName = tokens[7];
 			canvas = canvasMap.get(boardName);
 			canvas.drawLineSegment(User.DRAW, color,size, x1,y1,x2,y2);
-			output = new String[]{"draw", tokens[1], tokens[2], tokens[3], tokens[4],
+			output = new Object[]{"draw", tokens[1], tokens[2], tokens[3], tokens[4],
 					tokens[5], tokens[6]};
-			return output;
+			return new Object[]{output, boardName};
 
 		}
 		
@@ -234,7 +245,7 @@ public class WhiteboardServer {
 			canvas.drawLineSegment(User.ERASE, color,size, x1,y1,x2,y2);
 			output = new String[]{"erase", tokens[1], tokens[2], tokens[3], tokens[4],
 					tokens[5], tokens[6]};
-			return output;
+			return new Object[]{output, boardName};
 			//repeat code...this might be bad......
 		}
 		else if(tokens[0].equals("bye")){
@@ -248,6 +259,7 @@ public class WhiteboardServer {
 	public static boolean containsUsername(String username){
 		return(usernames.contains(username));
 	}
+	
 	/**
 	 * make tokens so that first word is the command, words after are the parameter
 	 * username  name
