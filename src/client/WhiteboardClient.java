@@ -3,18 +3,44 @@ package client;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.Random;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 
 public class WhiteboardClient {
 	private final WhiteboardGUI gui;
-	private final int socketID;
+	private final Socket socket;
+	private WhiteboardClientThread thread;
+	private DataInputStream dataIn;
+	private DataOutputStream dataOut;
 	
-	public WhiteboardClient() {
+	public WhiteboardClient(Socket socket) {
 		//TODO: need to figure out how to get the WhiteboardGUI in here...
 		//maybe make the entry gui return the created or loaded WhiteboardGUI??
-		gui = new WhiteboardGUI("gui");
-		socketID = Math.abs((new Random()).nextInt()); //TODO: make sure ID's aren't repeated		
+		this.gui = new WhiteboardGUI("gui");
 		addDrawingController();
+		this.socket = socket;
+	}
+	
+	public void start() throws IOException {
+		// change input stream to Server output stream?
+		dataIn = new DataInputStream(System.in);
+		dataOut = new DataOutputStream(socket.getOutputStream());
+		if (thread == null) {
+			thread = new WhiteboardClientThread(socket, this);
+		}
+	}
+	
+	public void stop() throws IOException {
+		if (dataIn != null) dataIn.close();
+		if (dataOut != null) dataOut.close();
+		if (socket != null) socket.close();
+		thread.close();
+	}
+	
+	public void handle(String message) {
+		//TODO: write regex and stuff
 	}
 	
 	public void sendMessage(int x1, int y1, int x2, int y2, int size, int color) {
