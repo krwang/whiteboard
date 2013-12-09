@@ -1,14 +1,9 @@
 package client;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-
 import javax.swing.JPanel;
 
 import client.User;
-import client.WhiteboardGUI.DrawingController;
 
 /**
  * Canvas represents a drawing surface that allows the user to draw

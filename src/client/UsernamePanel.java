@@ -1,15 +1,37 @@
 package client;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
-//nothing in here of use yet SORRY
+import javax.swing.*;
+
+@SuppressWarnings("serial")
 public class UsernamePanel extends JPanel{
+	private final JLabel title;
+	private final JList<String> usernameList;
+	private final WhiteboardGUI gui;
 	
-	public UsernamePanel(){
+	public UsernamePanel(WhiteboardGUI parent) {
 		super();
-		JLabel title = new JLabel("Users currently editing:");
 		
+		gui = parent;
+		
+		setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(3, 3, 3, 3);
+		
+		title = new JLabel("Users currently editing:");
+		title.setText("Users currently editing:");
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		add(title, gbc);
+		
+		usernameList = new JList<String>();
+		usernameList.setName("usernameList");		
+		gbc.gridy = 1;
+		add(usernameList, gbc);
 	}
-
 }

@@ -1,22 +1,8 @@
 package client;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import server.WhiteboardServer;
@@ -67,7 +53,7 @@ public class EntryGUI extends JFrame implements ActionListener {
     private final JButton newButton;
     
 	//List containing all Whiteboards available to load
-	private final JList<String> availableCanvases;
+	//private final JList<String> availableCanvases;
 		
 	public EntryGUI() {
 		super();
@@ -93,6 +79,7 @@ public class EntryGUI extends JFrame implements ActionListener {
 		boardField.setColumns(15);
 		boardField.setMinimumSize(new Dimension(200, 25));
 		boardField.setMaximumSize(new Dimension(1000, 25));
+		boardField.addActionListener(this);
 		gbc.gridx = 1;
 		panel.add(boardField, gbc);
 		
@@ -108,6 +95,7 @@ public class EntryGUI extends JFrame implements ActionListener {
         userField.setName("name");
         userField.setMinimumSize(new Dimension(200, 25));
         userField.setMaximumSize(new Dimension(1000, 25));
+        userField.addActionListener(this);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 1;
         panel.add(userField, gbc);
@@ -122,37 +110,11 @@ public class EntryGUI extends JFrame implements ActionListener {
         
 		//addListeners(this);
 		
-		availableCanvases = new JList<String>();
+        //DefaultListModel<String> model = new DefaultListModel<String>();
+		//availableCanvases = new JList<String>(model);
 		
 		//fill availableCanvases with canvases saved on the server
-		fillList();
-		
-		//organizing layout of EntryGUI
-//		panel = new JPanel();
-//		panel.setBorder(new EmptyBorder(5, 5, 5, 5));
-//		this.setContentPane(panel);
-//		GroupLayout layout = new GroupLayout(panel);
-//		panel.setLayout(layout);
-//		layout.setAutoCreateGaps(true);
-//		layout.setAutoCreateContainerGaps(true);
-//		layout.setHorizontalGroup(layout.createParallelGroup()
-//				.addGroup(layout.createSequentialGroup()
-//						.addComponent(boardLabel)
-//						.addComponent(boardField))
-//				.addGroup(layout.createSequentialGroup()
-//				        .addComponent(userLabel)
-//				        .addComponent(userField)
-//				        .addComponent(newButton))
-//				.addComponent(availableCanvases));
-//		layout.setVerticalGroup(layout.createParallelGroup()
-//                .addGroup(layout.createSequentialGroup()
-//                        .addComponent(boardLabel)
-//                        .addComponent(boardField))
-//                .addGroup(layout.createSequentialGroup()
-//                        .addComponent(userLabel)
-//                        .addComponent(userField)
-//                        .addComponent(newButton))
-//                .addComponent(availableCanvases));
+		//fillList();
 		
 		//frame the JottoGUI around the default components
 		setContentPane(panel);
@@ -246,19 +208,15 @@ public class EntryGUI extends JFrame implements ActionListener {
 //		});
 //	}
 	
-	private synchronized void fillList() {
-		//TODO: fill list with saved Canvases
-	}
-	
 //	/**
 //	 * This class contains code for a NameGUI, which is 
 //	 * created when the newButton of EntryGUI is clicked on.
 //	 * The NameGUI is used for inputting the name of the 
 //	 * Whiteboard about to be created
 //	 * 
-//	 * TODO: thread safety argument
+//	 * thread safety argument
 //	 * 
-//	 * TODO: testing strategy
+//	 * testing strategy
 //	 * 
 //	 * @author krwang
 //	 *
@@ -338,7 +296,7 @@ public class EntryGUI extends JFrame implements ActionListener {
 //	}
 //	
 //	/**
-//	 * TODO: class javadoc
+//	 * class javadoc
 //	 * @author krwang
 //	 */
 //	
@@ -420,6 +378,5 @@ public class EntryGUI extends JFrame implements ActionListener {
 				gui.setVisible(true);
 			}
 		});
-	}
-	
+	}	
 }
