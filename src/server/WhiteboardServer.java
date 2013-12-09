@@ -127,6 +127,25 @@ public class WhiteboardServer {
 			in.close();
 		}
 	}
+	
+	/**
+     * Is called when an update is retrieved and removed from the queue,
+     * calls handleRequest on the update and depending on what is returned
+     * by handleRequest, sends necessary output back to clients
+     * 
+     * handleRequest returns a String array of the form [sendAll, output,
+     * filename]:
+     * 		sendAll - true if output should be sent to all sockets reading
+     * from or writing to that file, false if output should only be sent to
+     * the current socket
+     * 		output - output String to be sent to sockets, but if output is
+     * "bye," then the socket is removed from the ArrayList of sockets
+     * mapped to that File
+     * 		fileName - name of file currently being edited
+     * 
+     * @param obj
+     * @throws IOException
+     */
 
 	/**
 	 * open takes in whiteboard name and username
