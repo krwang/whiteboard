@@ -16,21 +16,15 @@ import client.Canvas;
 import client.User;
 
 public class WhiteboardServer {
-	private ConcurrentHashMap<String,Canvas> canvasMap;
-	private ConcurrentHashMap<String,ArrayList<Socket>> sockets;//by using sockets, you can only 
-	//really use one username the whole time
+	private static ConcurrentHashMap<String,Canvas> canvasMap;
+	private static ConcurrentHashMap<String,ArrayList<Socket>> sockets;//by using sockets, you can only 
+	//really user one username the whole time
+
 	private final ArrayBlockingQueue<Object[]> queue;
 	private static HashSet<String> usernames = new HashSet<String>();
 	public static final int SERVER_PORT = 5050;
 
 	private ServerSocket serverSocket;
-	/**
-	 * server will take in whiteboard name and output the corresponding
-	 * whiteboard
-	 */
-
-
-
 	/**
 	 * Make a SquareServer that listens for connections on port.
 	 * It also takes commands put in the queue and sends the output
@@ -118,6 +112,7 @@ public class WhiteboardServer {
 			for (String line = in.readLine(); line != null; line = in.readLine()) {
 				System.err.println("request: " + line);
 				try {
+					
 					queue.put(new Object[]{line, socket, out});
 				} catch (Exception e) {
 					// complain about ill-formatted request
@@ -172,27 +167,23 @@ public class WhiteboardServer {
 				socketOut.flush();
 			}
 		}
-
-
-
 	}
 
 	/**
 	 * open takes in whiteboard name and username
+	 * boardName must be valid already when this is called
 	 * handles the client's input and returns the corresponding output
 	 * @param input
 	 * @return
 	 */
 	private Object[] handleRequest(String input, Socket socket){
-		String regex = "(open \\w+ \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|"
-				+ "(erase \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|(bye \\w+)";
+		String regex = "(add \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|(bye \\w+)";
 		Object[] output;
 		Canvas canvas;
 		if ( ! input.matches(regex)) {
 			// invalid input
 			return null;
 		}
-
 
 		String[] tokens = input.split(" ");
 
@@ -204,25 +195,15 @@ public class WhiteboardServer {
 		 * to the hashmap of whiteboard names to canvases. Also, the client
 		 * socket will be added to hashmap of whiteboard names to sockets
 		 */
-		if(tokens[0].equals("open")){
+		if(tokens[0].equals("add")){
 			String boardName = tokens[1];
+			//assume that the canvas is already in canvas map no matter what
 
-			if(canvasMap.containsKey(boardName)){
-				ArrayList<Socket> socketValue = sockets.get(boardName);
-				socketValue.add(socket);
-				sockets.put(boardName, socketValue);
-			}
-			else{
-				canvasMap.put(boardName, new Canvas());
-				ArrayList<Socket> socketValue = new ArrayList<Socket>();
-				socketValue.add(socket);
-				sockets.put(boardName, socketValue);
-			}
-			usernames.add(tokens[2]);
-			canvas = canvasMap.get(boardName);
-			output = new Object[]{new Object[]{"open",boardName}, boardName};
+			ArrayList<Socket> socketValue = sockets.get(boardName);
+			socketValue.add(socket);
+			sockets.put(boardName, socketValue);
+			output = new Object[]{new Object[]{"add",boardName}, boardName};
 			return output;
-
 		}
 
 		/**
@@ -240,33 +221,12 @@ public class WhiteboardServer {
 			int y2 = Integer.parseInt(tokens[6]);
 			String boardName = tokens[7];
 			canvas = canvasMap.get(boardName);
-			canvas.drawLineSegment(User.DRAW, color,size, x1,y1,x2,y2);
+			canvas.drawLineSegment(color,size, x1,y1,x2,y2);
 			output = new Object[]{"draw", tokens[1], tokens[2], tokens[3], tokens[4],
 					tokens[5], tokens[6]};
 			return new Object[]{output, boardName};
-
 		}
 
-		/**
-		 * updates the master copy of the whiteboard the client is referencing 
-		 * by performing the erase input from the client on the master whiteboard
-		 */
-		else if(tokens[0].equals("erase")){
-			int color = Integer.parseInt(tokens[1]);//<--will be the color represented as an int
-			//what to do with this color thing?????
-			int size = Integer.parseInt(tokens[2]);//size represented as an int
-			int x1 = Integer.parseInt(tokens[3]);
-			int y1 = Integer.parseInt(tokens[4]);
-			int x2 = Integer.parseInt(tokens[5]);
-			int y2 = Integer.parseInt(tokens[6]);
-			String boardName = tokens[7];
-			canvas = canvasMap.get(boardName);
-			canvas.drawLineSegment(User.ERASE, color,size, x1,y1,x2,y2);
-			output = new String[]{"erase", tokens[1], tokens[2], tokens[3], tokens[4],
-					tokens[5], tokens[6]};
-			return new Object[]{output, boardName};
-			//repeat code...this might be bad......
-		}
 		else if(tokens[0].equals("bye")){
 			return new String[]{"bye"};
 		}
@@ -274,11 +234,27 @@ public class WhiteboardServer {
 			throw new UnsupportedOperationException();
 		}
 	}
+	
+	public static Canvas getBoard(String boardName, String userName){
+			if(!canvasMap.containsKey(boardName)){
+				canvasMap.put(boardName, new Canvas());
+			}
+			usernames.add(userName);
+			Canvas canvas = canvasMap.get(boardName);
+			return canvas;
+	}
 
 	public static boolean containsUsername(String username){
 		return(usernames.contains(username));
 	}
 
+	public static ArrayList<String> getCanvasMapNames(){
+		ArrayList<String> names = new ArrayList<String>();
+		for(String key : canvasMap.keySet()){
+			names.add(key);
+		}
+		return names;
+	}
 	/**
 	 * make tokens so that first word is the command, words after are the parameter
 	 * username  name

@@ -3,16 +3,7 @@ package client;
 public class User {
     // CLASS CONSTANTS
     // all values refer to respective index in relevant list
-    /**
-     * Brush setting to draw
-     */
-    public static final int DRAW = 0;
-    
-    /**
-     * Brush setting to erase
-     */
-    public static final int ERASE = 1;
-    
+   
     /**
      * Brush size to small
      */
@@ -58,12 +49,12 @@ public class User {
      */
     public static final int BLUE = 5;
     
+    /**
+     * Brush color to white
+     */
+    public static final int WHITE = 6;
+    
   // INSTANCE VARIABLES
-  /**
-   * Current brush setting (see brush constants)
-   */
-  private static int currentBrush;
-  
   /**
    * Current brush size (see size constants)
    */
@@ -83,11 +74,6 @@ public class User {
 	public User(ToolsPanel toolsPanel){
 		this.currentSize = SMALL;
 		this.currentColor =BLACK;
-		this.currentBrush =DRAW;
-	}
-	
-	public static void setCurrentBrush(int newBrush){
-		currentBrush = newBrush;
 	}
 	
 	public static void setCurrentSize(int newSize){
@@ -98,10 +84,7 @@ public class User {
 		currentColor = newColor;
 	}
 	
-	public static int getCurrentBrush(){
-		return currentBrush;
-	}
-	
+
 	public static int getCurrentSize(){
 		return currentSize;
 	}

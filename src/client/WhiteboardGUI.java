@@ -113,7 +113,7 @@ public class WhiteboardGUI extends JFrame{
         public void mouseDragged(MouseEvent e) {
             int x = e.getX();
             int y = e.getY();
-            canvas.drawLineSegment(User.getCurrentBrush(), User.getCurrentColor(), User.getCurrentSize(), lastX, lastY, x, y);
+            canvas.drawLineSegment(User.getCurrentColor(), User.getCurrentSize(), lastX, lastY, x, y);
             lastX = x;
             lastY = y;
         }
