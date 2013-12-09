@@ -21,7 +21,7 @@ public class WhiteboardServer {
 	private ConcurrentHashMap<String,ArrayList<Socket>> sockets;//by using sockets, you can only 
 	//really user one username the whole time
 	private final ArrayBlockingQueue<Object[]> queue;
-	private static HashSet<String> usernames;
+	private static HashSet<String> usernames = new HashSet<String>();
 	public static final int SERVER_PORT = 5050;
 
 	private ServerSocket serverSocket;
@@ -60,6 +60,7 @@ public class WhiteboardServer {
 			}
 
 		});
+		thread.start();
 
 	}
 
@@ -129,41 +130,52 @@ public class WhiteboardServer {
 			in.close();
 		}
 	}
-	
+
 	/**
-     * Is called when an update is retrieved and removed from the queue,
-     * calls handleRequest on the update and depending on what is returned
-     * by handleRequest, sends necessary output back to clients
-     * 
-     * handleRequest returns a String array of the form [sendAll, output,
-     * filename]:
-     * 		sendAll - true if output should be sent to all sockets reading
-     * from or writing to that file, false if output should only be sent to
-     * the current socket
-     * 		output - output String to be sent to sockets, but if output is
-     * "bye," then the socket is removed from the ArrayList of sockets
-     * mapped to that File
-     * 		fileName - name of file currently being edited
-     * 
-     * @param obj
-     * @throws IOException
-     */
+	 * Is called when an update is retrieved and removed from the queue,
+	 * calls handleRequest on the update and depending on what is returned
+	 * by handleRequest, sends necessary output back to clients
+	 * 
+	 * handleRequest returns a String array of the form [sendAll, output,
+	 * filename]:
+	 * 		sendAll - true if output should be sent to all sockets reading
+	 * from or writing to that file, false if output should only be sent to
+	 * the current socket
+	 * 		output - output String to be sent to sockets, but if output is
+	 * "bye," then the socket is removed from the ArrayList of sockets
+	 * mapped to that File
+	 * 		fileName - name of file currently being edited
+	 * 
+	 * @param obj
+	 * @throws IOException
+	 */
 	public void sendOutput(Object[] obj) throws IOException{
 		String input = (String)obj[0];
 		Socket socket = (Socket)obj[1];
 		PrintWriter out = (PrintWriter)obj[2];
-		
+
 		Object[] outputParsed = handleRequest(input, socket);
 		String[] output = (String[])outputParsed[0];
 		String boardName = (String)outputParsed[1];
-		
-		for(Socket otherSocket: sockets.get(boardName)){
-			PrintWriter socketOut = new PrintWriter(otherSocket.getOutputStream(),true);
-			socketOut.println(output);
-			socketOut.flush();
+
+		out.println(output);
+		out.flush();
+
+		if(output[0].equals("bye")){
+			//where do i close the input stream???
+			out.close();
+			sockets.get(socket).remove(socket);
 		}
-		
-		
+		else{
+			for(Socket otherSocket: sockets.get(boardName)){
+				PrintWriter socketOut = new PrintWriter(otherSocket.getOutputStream(),true);
+				socketOut.println(output);
+				socketOut.flush();
+			}
+		}
+
+
+
 	}
 
 	/**
@@ -213,7 +225,7 @@ public class WhiteboardServer {
 			return output;
 
 		}
-		
+
 		/**
 		 * draws the draw input from the client onto the master copy of the
 		 * whiteboard that the client is referencing to update the master copy
@@ -235,7 +247,7 @@ public class WhiteboardServer {
 			return new Object[]{output, boardName};
 
 		}
-		
+
 		/**
 		 * updates the master copy of the whiteboard the client is referencing 
 		 * by performing the erase input from the client on the master whiteboard
@@ -267,7 +279,7 @@ public class WhiteboardServer {
 	public static boolean containsUsername(String username){
 		return(usernames.contains(username));
 	}
-	
+
 	/**
 	 * make tokens so that first word is the command, words after are the parameter
 	 * username  name
