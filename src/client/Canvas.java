@@ -133,7 +133,7 @@ public class Canvas extends JPanel {
      */
     public void drawLineSegment(int brushType, int currentColor, int currentSize, int x1, int y1, int x2, int y2) {
         Graphics2D g = (Graphics2D) drawingBuffer.getGraphics();
-        
+        //let currentColor be white or maybe nothing if it's erasing instead????
 //        if (toggle.isSelected()) {
         if(User.getCurrentBrush()== User.ERASE){//instead of the user class, the whiteboard
         										//client will have the instances of the brush etc
