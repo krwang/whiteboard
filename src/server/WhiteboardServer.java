@@ -20,6 +20,7 @@ public class WhiteboardServer {
 	private static ConcurrentHashMap<String,Canvas> canvasMap;
 	private static ConcurrentHashMap<String,ArrayList<Socket>> sockets;//by using sockets, you can only 
 	//really user one username the whole time
+
 	private final ArrayBlockingQueue<Object[]> queue;
 	private static HashSet<String> usernames = new HashSet<String>();
 	public static final int SERVER_PORT = 5050;

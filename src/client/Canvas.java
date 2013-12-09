@@ -6,7 +6,9 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
+
 import client.User;
+import client.WhiteboardGUI.DrawingController;
 
 /**
  * Canvas represents a drawing surface that allows the user to draw
@@ -27,7 +29,6 @@ public class Canvas extends JPanel {
     //ADDING THIS
     public Canvas(){
     	this.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
-        addDrawingController();
     }
     
     /**
@@ -37,7 +38,6 @@ public class Canvas extends JPanel {
      */
     public Canvas(int width, int height) {
         this.setPreferredSize(new Dimension(width, height));
-        addDrawingController();
 //        this.add(toggle);
         // note: we can't call makeDrawingBuffer here, because it only
         // works *after* this canvas has been added to a window.  Have to
@@ -108,52 +108,6 @@ public class Canvas extends JPanel {
         // have to notify Swing to repaint this component on the screen.
         this.repaint();
     }
-    
-    /*
-     * Add the mouse listener that supports the user's freehand drawing.
-     */
-    private void addDrawingController() {
-        DrawingController controller = new DrawingController();
-        addMouseListener(controller);
-        addMouseMotionListener(controller);
-    }
-    
-    /*
-     * DrawingController handles the user's freehand drawing.
-     */
-    private class DrawingController implements MouseListener, MouseMotionListener {
-        // store the coordinates of the last mouse event, so we can
-        // draw a line segment from that last point to the point of the next mouse event.
-        private int lastX, lastY; 
-
-        /*
-         * When mouse button is pressed down, start drawing.
-         */
-        public void mousePressed(MouseEvent e) {
-            lastX = e.getX();
-            lastY = e.getY();
-        }
-
-        /*
-         * When mouse moves while a button is pressed down,
-         * draw a line segment.
-         */
-        public void mouseDragged(MouseEvent e) {
-            int x = e.getX();
-            int y = e.getY();
-            drawLineSegment(User.getCurrentBrush(), User.getCurrentColor(), User.getCurrentSize(), lastX, lastY, x, y);
-            lastX = x;
-            lastY = y;
-        }
-
-        // Ignore all these other mouse events.
-        public void mouseMoved(MouseEvent e) { }
-        public void mouseClicked(MouseEvent e) { }
-        public void mouseReleased(MouseEvent e) { }
-        public void mouseEntered(MouseEvent e) { }
-        public void mouseExited(MouseEvent e) { }
-    }
-    
     
     private Color getColor(int userCurrentColor){
     	Color color;

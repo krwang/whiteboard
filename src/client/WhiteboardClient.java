@@ -11,16 +11,19 @@ import java.net.Socket;
 public class WhiteboardClient {
 	private final WhiteboardGUI gui;
 	private final Socket socket;
+	private final String username;
 	private WhiteboardClientThread thread;
 	private DataInputStream dataIn;
 	private DataOutputStream dataOut;
 	
-	public WhiteboardClient(Socket socket) {
+	public WhiteboardClient(String user, String board) {
 		//TODO: need to figure out how to get the WhiteboardGUI in here...
 		//maybe make the entry gui return the created or loaded WhiteboardGUI??
-		this.gui = new WhiteboardGUI("gui");
+		username = user;
+		this.gui = new WhiteboardGUI(board, this);
 		addDrawingController();
-		this.socket = socket;
+		socket = new Socket();
+		//this.socket = socket;
 	}
 	
 	public void start() throws IOException {
