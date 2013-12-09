@@ -2,7 +2,6 @@ package client;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,14 +10,14 @@ import java.util.Random;
 
 import server.WhiteboardServer;
 
-public class WhiteboardServerThread extends Thread{
+public class WhiteboardClientThread {
 	private final Socket socket;
 	private final WhiteboardServer server;
 	private final int ID;
 	private DataInputStream dataIn;
 	private DataOutputStream dataOut;
 	
-	public WhiteboardServerThread(Socket socket, WhiteboardServer server) {
+	public WhiteboardClientThread(Socket socket, WhiteboardServer server) {
 		this.socket = socket;
 		this.server = server;
 		this.ID = Math.abs((new Random()).nextInt());
@@ -47,5 +46,4 @@ public class WhiteboardServerThread extends Thread{
 			this.dataOut.close();
 		}
 	}
-	
 }
