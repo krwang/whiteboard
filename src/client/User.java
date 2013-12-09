@@ -56,6 +56,11 @@ public class User {
     
   // INSTANCE VARIABLES
   /**
+   * Current brush setting (see brush constants)
+   */
+  private static int currentBrush;
+  
+  /**
    * Current brush size (see size constants)
    */
   private static int currentSize;
@@ -76,6 +81,10 @@ public class User {
 		this.currentColor =BLACK;
 	}
 	
+	public static void setCurrentBrush(int newBrush){
+		currentBrush = newBrush;
+	}
+	
 	public static void setCurrentSize(int newSize){
 		currentSize = newSize;
 	}
@@ -84,7 +93,10 @@ public class User {
 		currentColor = newColor;
 	}
 	
-
+	public static int getCurrentBrush(){
+		return currentBrush;
+	}
+	
 	public static int getCurrentSize(){
 		return currentSize;
 	}

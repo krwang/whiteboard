@@ -229,7 +229,7 @@ public class WhiteboardServer {
 		}
 
 		else if(tokens[0].equals("bye")){
-			return new String[]{"bye"};
+			return new Object[]{"bye"};
 		}
 		else{
 			throw new UnsupportedOperationException();

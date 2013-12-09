@@ -23,6 +23,12 @@ public class WhiteboardServerTest {
 	 * 3) To test "erase" token:
 	 * 	  a)input = "erase  0 6 2 18 20 boardname" (erases a medium line from (1,1) to (18,20)
 	 *    check that output = {{draw 2 0 1 1 18 20}, {boardname}}
+	 *    
+	 * 4) To test "bye" token: 
+	 * 		a)input = "bye"
+	 * 		check that output = {bye}
+	 * 
+	 * 
 	 * 
 	 * 
 	 * 	 * open a new board--make sure that the canvas is added to the canvasMap under
