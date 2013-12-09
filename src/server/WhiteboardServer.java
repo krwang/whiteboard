@@ -172,13 +172,13 @@ public class WhiteboardServer {
 
 	/**
 	 * open takes in whiteboard name and username
+	 * boardName must be valid already when this is called
 	 * handles the client's input and returns the corresponding output
 	 * @param input
 	 * @return
 	 */
 	private Object[] handleRequest(String input, Socket socket){
-		String regex = "(add \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|"
-				+ "(erase \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|(bye \\w+)";
+		String regex = "(add \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|(bye \\w+)";
 		Object[] output;
 		Canvas canvas;
 		if ( ! input.matches(regex)) {
@@ -200,7 +200,6 @@ public class WhiteboardServer {
 			String boardName = tokens[1];
 			//assume that the canvas is already in canvas map no matter what
 
-//			if(canvasMap.containsKey(boardName)){
 			ArrayList<Socket> socketValue = sockets.get(boardName);
 			socketValue.add(socket);
 			sockets.put(boardName, socketValue);
@@ -223,32 +222,12 @@ public class WhiteboardServer {
 			int y2 = Integer.parseInt(tokens[6]);
 			String boardName = tokens[7];
 			canvas = canvasMap.get(boardName);
-			canvas.drawLineSegment(User.DRAW, color,size, x1,y1,x2,y2);
+			canvas.drawLineSegment(color,size, x1,y1,x2,y2);
 			output = new Object[]{"draw", tokens[1], tokens[2], tokens[3], tokens[4],
 					tokens[5], tokens[6]};
 			return new Object[]{output, boardName};
 		}
 
-		/**
-		 * updates the master copy of the whiteboard the client is referencing 
-		 * by performing the erase input from the client on the master whiteboard
-		 */
-		else if(tokens[0].equals("erase")){
-			int color = Integer.parseInt(tokens[1]);//<--will be the color represented as an int
-			//what to do with this color thing?????
-			int size = Integer.parseInt(tokens[2]);//size represented as an int
-			int x1 = Integer.parseInt(tokens[3]);
-			int y1 = Integer.parseInt(tokens[4]);
-			int x2 = Integer.parseInt(tokens[5]);
-			int y2 = Integer.parseInt(tokens[6]);
-			String boardName = tokens[7];
-			canvas = canvasMap.get(boardName);
-			canvas.drawLineSegment(User.ERASE, color,size, x1,y1,x2,y2);
-			output = new String[]{"erase", tokens[1], tokens[2], tokens[3], tokens[4],
-					tokens[5], tokens[6]};
-			return new Object[]{output, boardName};
-			//repeat code...this might be bad......
-		}
 		else if(tokens[0].equals("bye")){
 			return new String[]{"bye"};
 		}
@@ -270,6 +249,13 @@ public class WhiteboardServer {
 		return(usernames.contains(username));
 	}
 
+	public static ArrayList<String> getCanvasMapNames(){
+		ArrayList<String> names = new ArrayList<String>();
+		for(String key : canvasMap.keySet()){
+			names.add(key);
+		}
+		return names;
+	}
 	/**
 	 * make tokens so that first word is the command, words after are the parameter
 	 * username  name

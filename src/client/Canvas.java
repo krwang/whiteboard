@@ -18,183 +18,116 @@ import client.WhiteboardGUI.DrawingController;
  */
 @SuppressWarnings("serial")
 public class Canvas extends JPanel {
-    // image where the user's drawing is stored
-    private Image drawingBuffer;
-    private final int DEFAULT_WIDTH = 800;
-    private final int DEFAULT_HEIGHT = 600;
-//    private JToggleButton toggle = new JToggleButton("Erase Mode", false);
-    
-    //TODO: add list of users accessing this canvas????
-    
-    //ADDING THIS
-    public Canvas(){
-    	this.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
-    }
-    
-    /**
-     * Make a canvas.
-     * @param width width in pixels
-     * @param height height in pixels
-     */
-    public Canvas(int width, int height) {
-        this.setPreferredSize(new Dimension(width, height));
-//        this.add(toggle);
-        // note: we can't call makeDrawingBuffer here, because it only
-        // works *after* this canvas has been added to a window.  Have to
-        // wait until paintComponent() is first called.
-    }
-    
-    /**
-     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
-     */
-    @Override
-    public void paintComponent(Graphics g) {
-        // If this is the first time paintComponent() is being called,
-        // make our drawing buffer.
-        if (drawingBuffer == null) {
-            makeDrawingBuffer();
-        }
-        
-        // Copy the drawing buffer to the screen.
-        g.drawImage(drawingBuffer, 0, 0, null);
-    }
-    
-    /*
-     * Make the drawing buffer and draw some starting content for it.
-     */
-    private void makeDrawingBuffer() {
-        drawingBuffer = createImage(getWidth(), getHeight());
-        fillWithWhite();
-//        drawSmile();
-    }
-    
-    /*
-     * Make the drawing buffer entirely white.
-     */
-    private void fillWithWhite() {
-        final Graphics2D g = (Graphics2D) drawingBuffer.getGraphics();
+	// image where the user's drawing is stored
+	private Image drawingBuffer;
+	private final int DEFAULT_WIDTH = 800;
+	private final int DEFAULT_HEIGHT = 600;
 
-        g.setColor(Color.WHITE);
-        g.fillRect(0,  0,  getWidth(), getHeight());
-        
-        // IMPORTANT!  every time we draw on the internal drawing buffer, we
-        // have to notify Swing to repaint this component on the screen.
-        this.repaint();
-    }
-    
-    /*
-     * Draw a line between two points (x1, y1) and (x2, y2), specified in
-     * pixels relative to the upper-left corner of the drawing buffer.
-     * this method is PUBLIC because it will only be accessed by unique references
-     */
-    public void drawLineSegment(int brushType, int currentColor, int currentSize, int x1, int y1, int x2, int y2) {
-        Graphics2D g = (Graphics2D) drawingBuffer.getGraphics();
-        //let currentColor be white or maybe nothing if it's erasing instead????
-//        if (toggle.isSelected()) {
-        if(brushType == User.ERASE){//instead of the user class, the whiteboard
-        							//client will have the instances of the brush etc
-        	g.setColor(Color.WHITE);
-        	g.setStroke(new BasicStroke(getStroke(currentSize)));
-        	g.drawLine(x1, y1, x2, y2);
-        }
-        else {
-//        	g.setColor(Color.BLACK);
-        	g.setColor(getColor(currentColor));
-        	g.setStroke(new BasicStroke(getStroke(currentSize)));
-        	g.drawLine(x1, y1, x2, y2);
-        	
-        }
-        // IMPORTANT!  every time we draw on the internal drawing buffer, we
-        // have to notify Swing to repaint this component on the screen.
-        this.repaint();
-    }
-    
-    private Color getColor(int userCurrentColor){
-    	Color color;
-    	switch(userCurrentColor){
-	    	case 0: color = Color.black;
-	    		break;
-	    	case 1: color = Color.red;
-	    		break;
-	    	case 2: color = Color.orange;
-				break;
-	    	case 3: color = Color.yellow;
-				break;
-	    	case 4: color = Color.green;
-				break;
-	    	case 5: color = Color.blue;
-				break;
-	    	case 6: color = Color.red;
-				break;
-	    	default: color = Color.black;
-	    		break;
-    	}
-    	return color;
-    }
-    
-    private int getStroke(int userCurrentSize){
-    	int size;
-    	switch(userCurrentSize){
-	    	case 0: size = 5;
-	    		break;
-	    	case 1: size = 10;
-	    		break;
-	    	case 2: size = 20;
-				break;
-	    	default:size = 10;
-	    		break;
-    	}
-    	return size;
-    }
-    
-//  /*
-//  * Draw a happy smile on the drawing buffer.
-//  */
-// private void drawSmile() {
-//     final Graphics2D g = (Graphics2D) drawingBuffer.getGraphics();
-//
-//     // all positions and sizes below are in pixels
-//     final Rectangle smileBox = new Rectangle(20, 20, 100, 100); // x, y, width, height
-//     final Point smileCenter = new Point(smileBox.x + smileBox.width/2, smileBox.y + smileBox.height/2);
-//     final int smileStrokeWidth = 3;
-//     final Dimension eyeSize = new Dimension(9, 9);
-//     final Dimension eyeOffset = new Dimension(smileBox.width/6, smileBox.height/6);
-//     
-//     g.setColor(Color.BLACK);
-//     g.setStroke(new BasicStroke(smileStrokeWidth));
-//     
-//     // draw the smile -- an arc inscribed in smileBox, starting at -30 degrees (southeast)
-//     // and covering 120 degrees
-//     g.drawArc(smileBox.x, smileBox.y, smileBox.width, smileBox.height, -30, -120);
-//     
-//     // draw some eyes to make it look like a smile rather than an arc
-//     for (int side: new int[] { -1, 1 }) {
-//         g.fillOval(smileCenter.x + side * eyeOffset.width - eyeSize.width/2,
-//                    smileCenter.y - eyeOffset.height - eyeSize.width/2,
-//                    eyeSize.width,
-//                    eyeSize.height);
-//     }
-//     
-//     // IMPORTANT!  every time we draw on the internal drawing buffer, we
-//     // have to notify Swing to repaint this component on the screen.
-//     this.repaint();
-// }
-    
-//    /*
-//     * Main program. Make a window containing a Canvas.
-//     */
-//    public static void main(String[] args) {
-//        // set up the UI (on the event-handling thread)
-//        SwingUtilities.invokeLater(new Runnable() {
-//            public void run() {
-//                JFrame window = new JFrame("Freehand Canvas");
-//                window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//                window.setLayout(new BorderLayout());
-//                Canvas canvas = new Canvas(800, 600);
-//                window.add(canvas, BorderLayout.CENTER);
-//                window.pack();
-//                window.setVisible(true);
-//            }
-//        });
-//    }
+	public Canvas(){
+		this.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
+	}
+
+	/**
+	 * Make a canvas.
+	 * @param width width in pixels
+	 * @param height height in pixels
+	 */
+	public Canvas(int width, int height) {
+		this.setPreferredSize(new Dimension(width, height));
+		// note: we can't call makeDrawingBuffer here, because it only
+		// works *after* this canvas has been added to a window.  Have to
+		// wait until paintComponent() is first called.
+	}
+
+	/**
+	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+	 */
+	@Override
+	public void paintComponent(Graphics g) {
+		// If this is the first time paintComponent() is being called,
+		// make our drawing buffer.
+		if (drawingBuffer == null) {
+			makeDrawingBuffer();
+		}
+
+		// Copy the drawing buffer to the screen.
+		g.drawImage(drawingBuffer, 0, 0, null);
+	}
+
+	/*
+	 * Make the drawing buffer and draw some starting content for it.
+	 */
+	private void makeDrawingBuffer() {
+		drawingBuffer = createImage(getWidth(), getHeight());
+		fillWithWhite();
+	}
+
+	/*
+	 * Make the drawing buffer entirely white.
+	 */
+	private void fillWithWhite() {
+		final Graphics2D g = (Graphics2D) drawingBuffer.getGraphics();
+
+		g.setColor(Color.WHITE);
+		g.fillRect(0,  0,  getWidth(), getHeight());
+
+		// IMPORTANT!  every time we draw on the internal drawing buffer, we
+		// have to notify Swing to repaint this component on the screen.
+		this.repaint();
+	}
+
+	/*
+	 * Draw a line between two points (x1, y1) and (x2, y2), specified in
+	 * pixels relative to the upper-left corner of the drawing buffer.
+	 * this method is PUBLIC because it will only be accessed by unique references
+	 */
+	public void drawLineSegment(int currentColor, int currentSize, int x1, int y1, int x2, int y2) {
+		Graphics2D g = (Graphics2D) drawingBuffer.getGraphics();
+
+		g.setColor(getColor(currentColor));
+		g.setStroke(new BasicStroke(getStroke(currentSize)));
+		g.drawLine(x1, y1, x2, y2);
+
+		// IMPORTANT!  every time we draw on the internal drawing buffer, we
+		// have to notify Swing to repaint this component on the screen.
+		this.repaint();
+	}
+
+	private Color getColor(int userCurrentColor){
+		Color color;
+		switch(userCurrentColor){
+		case 0: color = Color.black;
+		break;
+		case 1: color = Color.red;
+		break;
+		case 2: color = Color.orange;
+		break;
+		case 3: color = Color.yellow;
+		break;
+		case 4: color = Color.green;
+		break;
+		case 5: color = Color.blue;
+		break;
+		case 6: color = Color.white;
+		break;
+		default: color = Color.black;
+		break;
+		}
+		return color;
+	}
+
+	private int getStroke(int userCurrentSize){
+		int size;
+		switch(userCurrentSize){
+		case 0: size = 5;
+		break;
+		case 1: size = 10;
+		break;
+		case 2: size = 20;
+		break;
+		default:size = 10;
+		break;
+		}
+		return size;
+	}
 }
