@@ -15,7 +15,6 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
 import client.User;
