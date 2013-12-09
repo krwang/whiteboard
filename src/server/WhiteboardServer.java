@@ -158,8 +158,8 @@ public class WhiteboardServer {
 		String[] output = (String[])outputParsed[0];
 		String boardName = (String)outputParsed[1];
 
-		out.println(output);
-		out.flush();
+//		out.println(output);
+//		out.flush();<-might not need this
 
 		if(output[0].equals("bye")){
 			//where do i close the input stream???
