@@ -148,12 +148,20 @@ public class WhiteboardServer {
      * @param obj
      * @throws IOException
      */
-	public void sendOutput(Object[] obj){
+	public void sendOutput(Object[] obj) throws IOException{
 		String input = (String)obj[0];
 		Socket socket = (Socket)obj[1];
-		PrintWriter output = (PrintWriter)obj[2];
+		PrintWriter out = (PrintWriter)obj[2];
 		
 		Object[] outputParsed = handleRequest(input, socket);
+		String[] output = (String[])outputParsed[0];
+		String boardName = (String)outputParsed[1];
+		
+		for(Socket otherSocket: sockets.get(boardName)){
+			PrintWriter socketOut = new PrintWriter(otherSocket.getOutputStream(),true);
+			socketOut.println(output);
+			socketOut.flush();
+		}
 		
 		
 	}
