@@ -19,9 +19,9 @@ import client.User;
 public class WhiteboardServer {
 	private ConcurrentHashMap<String,Canvas> canvasMap;
 	private ConcurrentHashMap<String,ArrayList<Socket>> sockets;//by using sockets, you can only 
-	//really user one username the whole time
+	//really use one username the whole time
 	private final ArrayBlockingQueue<Object[]> queue;
-	private static HashSet<String> usernames;
+	private static HashSet<String> usernames = new HashSet<String>();
 	public static final int SERVER_PORT = 5050;
 
 	private ServerSocket serverSocket;

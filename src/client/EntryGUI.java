@@ -190,13 +190,14 @@ public class EntryGUI extends JFrame implements ActionListener {
 	    errorText.append("</html>");
 	    
 	    if (valid) {
-	        final WhiteboardGUI whiteboard = new WhiteboardGUI(boardField.getText());
-	        SwingUtilities.invokeLater(new Runnable() {
-	            public void run() {
-	                whiteboard.setVisible(true);
-	                dispose();
-	            }
-	        });
+	    	new WhiteboardClient(username, boardname);
+//	        final WhiteboardGUI whiteboard = new WhiteboardGUI(boardField.getText());
+//	        SwingUtilities.invokeLater(new Runnable() {
+//	            public void run() {
+//	                whiteboard.setVisible(true);
+//	                dispose();
+//	            }
+//	        });
 	    } else {
 	        final JDialog error = new JDialog(this, "Error", true);
 	        error.setLayout(new GridBagLayout());
