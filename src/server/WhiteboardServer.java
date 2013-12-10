@@ -22,7 +22,7 @@ public class WhiteboardServer {
 	private final ArrayBlockingQueue<Object[]> queue;
 	private static HashSet<String> usernames = new HashSet<String>();
 	public static final int SERVER_PORT = 5050;
-
+	private final Thread thread;
 	private ServerSocket serverSocket;
 	/**
 	 * Make a SquareServer that listens for connections on port.
@@ -36,7 +36,7 @@ public class WhiteboardServer {
 		sockets = new ConcurrentHashMap<String,ArrayList<Socket>>();
 		queue = new ArrayBlockingQueue<Object[]>(1000);
 
-		Thread thread = new Thread(new Runnable(){
+		thread = new Thread(new Runnable(){
 
 			@Override
 			public void run() {
@@ -101,25 +101,29 @@ public class WhiteboardServer {
 	 */
 	private void handle(Socket socket) throws IOException, InterruptedException{
 		System.out.println("client connected");
+		try{
+			System.out.println("before");
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
+			System.out.println("after");
+			try {
+				// each request from the client is whiteboardName
+				System.out.println("inside");
+				for (String line = in.readLine(); line != null; line = in.readLine()) {
+					System.err.println("request: " + line);
 
-		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-
-		try {
-			// each request from the client is whiteboardName
-			for (String line = in.readLine(); line != null; line = in.readLine()) {
-				System.err.println("request: " + line);
-				try {
-					
 					queue.put(new Object[]{line, socket, out});
-				} catch (Exception e) {
-					// complain about ill-formatted request
-					e.printStackTrace();
 				}
+			} catch(Exception e){
+				e.printStackTrace();
 			}
-		} finally {        
-			out.close();
-			in.close();
+			finally {        
+
+				out.close();
+				in.close();
+			}
+		}catch(IOException e){
+			e.printStackTrace();
 		}
 	}
 
@@ -151,21 +155,21 @@ public class WhiteboardServer {
 		String[] output = (String[])outputParsed[0];
 		String boardName = (String)outputParsed[1];
 
-//		out.println(output);
-//		out.flush();<-might not need this
+		//		out.println(output);
+		//		out.flush();<-might not need this
 
 		if(output[0].equals("bye")){
 			//where do i close the input stream???
-//			out.close();
+			//			out.close();
 			sockets.get(socket).remove(socket);
 		}
-//		else{
+		//		else{
 		for(Socket otherSocket: sockets.get(boardName)){
 			PrintWriter socketOut = new PrintWriter(otherSocket.getOutputStream(),true);
 			socketOut.println(output);
 			socketOut.flush();
 		}
-//		}
+		//		}
 	}
 
 	/**
@@ -248,20 +252,21 @@ public class WhiteboardServer {
 		else if(tokens[0].equals("bye")){
 			System.out.println("bye");
 			String userName = tokens[1];
+			String boardName = tokens[2];
 			return new Object[]{new Object[]{"bye", userName}, boardName};
 		}
 		else{
 			throw new UnsupportedOperationException();
 		}
 	}
-	
+
 	public static Canvas getBoard(String boardName, String userName){
-			if(!canvasMap.containsKey(boardName)){
-				canvasMap.put(boardName, new Canvas());
-			}
-			usernames.add(userName);
-			Canvas canvas = canvasMap.get(boardName);
-			return canvas;
+		if(!canvasMap.containsKey(boardName)){
+			canvasMap.put(boardName, new Canvas());
+		}
+		usernames.add(userName);
+		Canvas canvas = canvasMap.get(boardName);
+		return canvas;
 	}
 
 	public static boolean containsUsername(String username){
