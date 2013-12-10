@@ -40,6 +40,7 @@ public class WhiteboardClient {
 	}
 	
 	public void stop() throws IOException {
+		System.out.println("stopped");
 		byeRequest();
 		if (dataIn != null) dataIn.close();
 		if (dataOut != null) dataOut.close();
@@ -104,18 +105,21 @@ public class WhiteboardClient {
 	public void addRequest() throws IOException {
 		String request = "add " + boardName + username;
 		dataOut.writeUTF(request);
+		dataOut.flush();
 		System.out.println(request);
 	}
 	
 	public void drawRequest(int x1, int y1, int x2, int y2, int size, int color) throws IOException {
 		String request = String.format("draw %s %s %d %d %d %d %s", color, size, x1, y1, x2, y2, gui.getTitle());
 		dataOut.writeUTF(request);
+		dataOut.flush();
 		System.out.println(request);
 	}
 	
 	public void byeRequest() throws IOException {
 		String request = "bye " + boardName + username;
 		dataOut.writeUTF(request);
+		dataOut.flush();
 		System.out.println(request);
 	}
 	

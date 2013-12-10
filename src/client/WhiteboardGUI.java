@@ -6,6 +6,8 @@ import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 
 import javax.swing.JFrame;
@@ -13,11 +15,11 @@ import javax.swing.SwingUtilities;
 
 /**
  * this class combines the canvas and tools panel in one 
- * JFrame to present a unfied appearance for the GUI
+ * JFrame to present a unified appearance for the GUI
  *
  */
 @SuppressWarnings("serial")
-public class WhiteboardGUI extends JFrame {
+public class WhiteboardGUI extends JFrame implements WindowListener {
 	/**
 	 * Brush type to draw
 	 */
@@ -158,6 +160,7 @@ public class WhiteboardGUI extends JFrame {
 		setResizable(false);
 		pack();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		addWindowListener(this);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				setVisible(true);
@@ -200,6 +203,7 @@ public class WhiteboardGUI extends JFrame {
 		setResizable(false);
 		pack();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		addWindowListener(this);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				setVisible(true);
@@ -281,4 +285,39 @@ public class WhiteboardGUI extends JFrame {
 		public void mouseEntered(MouseEvent e) { }
 		public void mouseExited(MouseEvent e) { }
 	}
+
+	@Override
+	public void windowActivated(WindowEvent we) {}
+
+	@Override
+	public void windowClosed(WindowEvent we) {
+		System.out.println("closed");
+		try {
+			client.stop();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void windowClosing(WindowEvent we) {
+		System.out.println("closing");
+		try {
+			client.stop();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent we) {}
+
+	@Override
+	public void windowDeiconified(WindowEvent we) {}
+
+	@Override
+	public void windowIconified(WindowEvent we) {}
+
+	@Override
+	public void windowOpened(WindowEvent we) {}
 }
