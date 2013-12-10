@@ -9,6 +9,7 @@ import server.WhiteboardServer;
 
 public class WhiteboardClient {
 	private final WhiteboardGUI gui;
+	private final String boardName;
 	private final Socket socket;
 	private final String username;
 	private WhiteboardClientThread thread;
@@ -19,11 +20,12 @@ public class WhiteboardClient {
 		//TODO: need to figure out how to get the WhiteboardGUI in here...
 		//maybe make the entry gui return the created or loaded WhiteboardGUI??
 		username = user;
+		boardName = board;
 		//addDrawingController();
 		socket = new Socket("localhost", 5050);
 		start();
 		Canvas canvas = WhiteboardServer.getBoard(board, user);
-		addRequest(board);
+		addRequest();
 		this.gui = new WhiteboardGUI(board, canvas, this);
 		//this.socket = socket;
 	}
@@ -38,6 +40,7 @@ public class WhiteboardClient {
 	}
 	
 	public void stop() throws IOException {
+		byeRequest();
 		if (dataIn != null) dataIn.close();
 		if (dataOut != null) dataOut.close();
 		if (socket != null) socket.close();
@@ -98,14 +101,20 @@ public class WhiteboardClient {
 		}
 	}
 	
-	public void addRequest(String boardName) throws IOException {
-		String request = "add " + boardName;
+	public void addRequest() throws IOException {
+		String request = "add " + boardName + username;
 		dataOut.writeUTF(request);
 		System.out.println(request);
 	}
 	
 	public void drawRequest(int x1, int y1, int x2, int y2, int size, int color) throws IOException {
 		String request = String.format("draw %s %s %d %d %d %d %s", color, size, x1, y1, x2, y2, gui.getTitle());
+		dataOut.writeUTF(request);
+		System.out.println(request);
+	}
+	
+	public void byeRequest() throws IOException {
+		String request = "bye " + boardName + username;
 		dataOut.writeUTF(request);
 		System.out.println(request);
 	}
