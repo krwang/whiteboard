@@ -1,10 +1,13 @@
 package client;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
+
 import javax.swing.DefaultListModel;
+
 import server.WhiteboardServer;
 
 public class WhiteboardClient {
@@ -13,8 +16,10 @@ public class WhiteboardClient {
 	private final Socket socket;
 	private final String username;
 	private WhiteboardClientThread thread;
-	private DataInputStream dataIn;
-	private DataOutputStream dataOut;
+	private BufferedReader dataIn;
+	private PrintWriter dataOut;
+	//private DataInputStream dataIn;
+	//private DataOutputStream dataOut;
 	
 	public WhiteboardClient(String user, String board) throws IOException {
 		//TODO: need to figure out how to get the WhiteboardGUI in here...
@@ -32,8 +37,8 @@ public class WhiteboardClient {
 	
 	public void start() throws IOException {
 		// change input stream to Server output stream?
-		dataIn = new DataInputStream(System.in);
-		dataOut = new DataOutputStream(socket.getOutputStream());
+		dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		dataOut = new PrintWriter(socket.getOutputStream(), true);
 		if (thread == null) {
 			thread = new WhiteboardClientThread(socket, this);
 		}
@@ -104,22 +109,22 @@ public class WhiteboardClient {
 	
 	public void addRequest() throws IOException {
 		String request = "add " + boardName + username;
-		dataOut.writeUTF(request);
-		dataOut.flush();
+		dataOut.println(request);
+		//dataOut.flush();
 		System.out.println(request);
 	}
 	
 	public void drawRequest(int x1, int y1, int x2, int y2, int size, int color) throws IOException {
 		String request = String.format("draw %s %s %d %d %d %d %s", color, size, x1, y1, x2, y2, gui.getTitle());
-		dataOut.writeUTF(request);
-		dataOut.flush();
+		dataOut.println(request);
+		//dataOut.flush();
 		System.out.println(request);
 	}
 	
 	public void byeRequest() throws IOException {
 		String request = "bye " + boardName + username;
-		dataOut.writeUTF(request);
-		dataOut.flush();
+		dataOut.println(request);
+		//dataOut.flush();
 		System.out.println(request);
 	}
 	
