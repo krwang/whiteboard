@@ -22,7 +22,7 @@ public class WhiteboardServer {
 	private final ArrayBlockingQueue<Object[]> queue;
 	private static HashSet<String> usernames = new HashSet<String>();
 	public static final int SERVER_PORT = 5050;
-
+	private final Thread thread;
 	private ServerSocket serverSocket;
 	/**
 	 * Make a SquareServer that listens for connections on port.
@@ -36,7 +36,7 @@ public class WhiteboardServer {
 		sockets = new ConcurrentHashMap<String,ArrayList<Socket>>();
 		queue = new ArrayBlockingQueue<Object[]>(1000);
 
-		Thread thread = new Thread(new Runnable(){
+		thread = new Thread(new Runnable(){
 
 			@Override
 			public void run() {
