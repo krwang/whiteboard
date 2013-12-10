@@ -1,6 +1,7 @@
 package client;
 
 import java.awt.*;
+
 import javax.swing.JPanel;
 
 /**
@@ -76,7 +77,7 @@ public class Canvas extends JPanel {
 	 */
 	public void drawLineSegment(int currentColor, int currentSize, int x1, int y1, int x2, int y2) {
 		Graphics2D g = (Graphics2D) drawingBuffer.getGraphics();
-
+		
 		g.setColor(getColor(currentColor));
 		g.setStroke(new BasicStroke(getStroke(currentSize)));
 		g.drawLine(x1, y1, x2, y2);

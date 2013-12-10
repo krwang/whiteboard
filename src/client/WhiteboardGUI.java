@@ -17,62 +17,142 @@ import javax.swing.SwingUtilities;
  *
  */
 @SuppressWarnings("serial")
-public class WhiteboardGUI extends JFrame{
+public class WhiteboardGUI extends JFrame {
+	/**
+	 * Brush type to draw
+	 */
+	public static final int DRAW = 0;
+
+	/**
+	 * Brush type to erase
+	 */
+	public static final int ERASE = 0;
+
+	/**
+	 * Brush size to small
+	 */
+	public static final int SMALL = 0;
+
+	/**
+	 * Brush size to medium
+	 */
+	public static final int MEDIUM = 1;
+
+	/**
+	 * Brush size to large
+	 */
+	public static final int LARGE = 2;
+
+	/**
+	 * Brush color to black (#000000)
+	 */
+	public static final int BLACK = 0;
+
+	/**
+	 * Brush color to red (#FF0000)
+	 */
+	public static final int RED = 1;
+
+	/**
+	 * Brush color to orange (#FF7700)
+	 */
+	public static final int ORANGE = 2;
+
+	/**
+	 * Brush color to yellow (#FFFF00)
+	 */
+	public static final int YELLOW = 3;
+
+	/**
+	 * Brush color to green (#00FF00)
+	 */
+	public static final int GREEN = 4;
+
+	/**
+	 * Brush color to blue (#0000FF)
+	 */
+	public static final int BLUE = 5;
+
+	/**
+	 * Brush color to white
+	 */
+	public static final int WHITE = 6;
+
+	// INSTANCE VARIABLES
+	/**
+	 * Current brush setting (see brush constants)
+	 */
+	private int currentBrush;
+
+	/**
+	 * Current brush size (see size constants)
+	 */
+	private int currentSize;
+
+	/**
+	 * Current brush color (see color constants)
+	 */
+	private int currentColor;
+
 	final UsernamePanel usernamePanel;
 	private final ToolsPanel toolsPanel;
 	final Canvas canvas;
 	private final WhiteboardClient client;
-	
+
 	public WhiteboardGUI(String name, WhiteboardClient client){
 		this.client = client;
 		
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(3, 3, 3, 3);
-        
-        usernamePanel = new UsernamePanel(this);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        add(usernamePanel, gbc);
-        
+		currentBrush = DRAW;
+		currentSize = SMALL;
+		currentColor = BLACK;
+
+		setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(3, 3, 3, 3);
+
+		usernamePanel = new UsernamePanel(this);
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		add(usernamePanel, gbc);
+
 		canvas = new Canvas(800,800);
 		addDrawingController(canvas);
 		gbc.gridx = 1;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
 		add(canvas, gbc);
-        
+
 		toolsPanel = new ToolsPanel(this);
 		gbc.weightx = 0;
 		gbc.weighty = 0;
 		gbc.gridx = 2;
 		add(toolsPanel, gbc);
-		
-//		Container cp = this.getContentPane();
-//		GroupLayout layout = new GroupLayout(cp);
-//		cp.setLayout(layout);
-//		layout.setAutoCreateGaps(true);
-//		layout.setAutoCreateContainerGaps(true);
-//	
-//		layout.setHorizontalGroup(
-//				layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-//				.addComponent(switchButton)
-//				.addGroup(layout.createSequentialGroup()
-//						.addComponent(toolsPanel)
-//						.addComponent(canvas)
-//						.addComponent(usernamePanel))
-//				);
-//		
-//		layout.setVerticalGroup(
-//				layout.createSequentialGroup()
-//				.addComponent(switchButton)
-//				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-//						.addComponent(toolsPanel)
-//						.addComponent(canvas)
-//						.addComponent(usernamePanel))
-//				);  
-		
+
+		//		Container cp = this.getContentPane();
+		//		GroupLayout layout = new GroupLayout(cp);
+		//		cp.setLayout(layout);
+		//		layout.setAutoCreateGaps(true);
+		//		layout.setAutoCreateContainerGaps(true);
+		//	
+		//		layout.setHorizontalGroup(
+		//				layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+		//				.addComponent(switchButton)
+		//				.addGroup(layout.createSequentialGroup()
+		//						.addComponent(toolsPanel)
+		//						.addComponent(canvas)
+		//						.addComponent(usernamePanel))
+		//				);
+		//		
+		//		layout.setVerticalGroup(
+		//				layout.createSequentialGroup()
+		//				.addComponent(switchButton)
+		//				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+		//						.addComponent(toolsPanel)
+		//						.addComponent(canvas)
+		//						.addComponent(usernamePanel))
+		//				);  
+
 		//assign the title of the WhiteboardGUI to be the name of the canvas being accessed
 		setTitle(name);
 		setResizable(false);
@@ -84,33 +164,37 @@ public class WhiteboardGUI extends JFrame{
 			}
 		});
 	}
-	
+
 	public WhiteboardGUI(String name, Canvas canvas, WhiteboardClient client){
 		this.client = client;
 		
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(3, 3, 3, 3);
-        
-        usernamePanel = new UsernamePanel(this);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        add(usernamePanel, gbc);
-        
+		currentBrush = DRAW;
+		currentSize = SMALL;
+		currentColor = BLACK;
+		
+		setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(3, 3, 3, 3);
+
+		usernamePanel = new UsernamePanel(this);
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		add(usernamePanel, gbc);
+
 		this.canvas = canvas;
 		addDrawingController(canvas);
 		gbc.gridx = 1;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
 		add(canvas, gbc);
-        
+
 		toolsPanel = new ToolsPanel(this);
 		gbc.weightx = 0;
 		gbc.weighty = 0;
 		gbc.gridx = 2;
 		add(toolsPanel, gbc);
-		
+
 		//assign the title of the WhiteboardGUI to be the name of the canvas being accessed
 		setTitle(name);
 		setResizable(false);
@@ -122,51 +206,79 @@ public class WhiteboardGUI extends JFrame{
 			}
 		});
 	}
-	
-	private void addDrawingController(Canvas canvas) {
-        DrawingController controller = new DrawingController();
-        canvas.addMouseListener(controller);
-        canvas.addMouseMotionListener(controller);
+
+	public void setCurrentBrush(int newBrush) {
+		currentBrush = newBrush;
 	}
 	
+	public void setCurrentSize(int newSize) {
+		currentSize = newSize;
+	}
+	
+	public void setCurrentColor(int newColor) {
+		currentColor = newColor;
+	}
+	
+	public int getCurrentBrush() {
+		return currentBrush;
+	}
+	
+	public int getCurrentSize() {
+		return currentSize;
+	}
+	
+	public int getCurrentColor() {
+		return currentColor;
+	}
+	
+	private void addDrawingController(Canvas canvas) {
+		DrawingController controller = new DrawingController();
+		canvas.addMouseListener(controller);
+		canvas.addMouseMotionListener(controller);
+	}
+
 	/*
-     * DrawingController handles the user's freehand drawing.
-     */
-    public class DrawingController implements MouseListener, MouseMotionListener {
-        // store the coordinates of the last mouse event, so we can
-        // draw a line segment from that last point to the point of the next mouse event.
-        private int lastX, lastY; 
+	 * DrawingController handles the user's freehand drawing.
+	 */
+	public class DrawingController implements MouseListener, MouseMotionListener {
+		// store the coordinates of the last mouse event, so we can
+		// draw a line segment from that last point to the point of the next mouse event.
+		private int lastX, lastY; 
 
-        /*
-         * When mouse button is pressed down, start drawing.
-         */
-        public void mousePressed(MouseEvent e) {
-            lastX = e.getX();
-            lastY = e.getY();
-        }
+		/*
+		 * When mouse button is pressed down, start drawing.
+		 */
+		public void mousePressed(MouseEvent e) {
+			lastX = e.getX();
+			lastY = e.getY();
+		}
 
-        /*
-         * When mouse moves while a button is pressed down,
-         * draw a line segment.
-         */
-        public void mouseDragged(MouseEvent e) {
-            int x = e.getX();
-            int y = e.getY();
-            canvas.drawLineSegment(User.getCurrentColor(), User.getCurrentSize(), lastX, lastY, x, y);
-            try {
-				client.drawRequest(lastX, lastY, x, y, User.getCurrentColor(), User.getCurrentSize());
+		/*
+		 * When mouse moves while a button is pressed down,
+		 * draw a line segment.
+		 */
+		public void mouseDragged(MouseEvent e) {
+			int x = e.getX();
+			int y = e.getY();
+			int color = currentColor;
+			if (currentBrush == ERASE) {
+				color = WHITE;
+			}
+			canvas.drawLineSegment(color, currentSize, lastX, lastY, x, y);
+			try {
+				client.drawRequest(lastX, lastY, x, y, color, currentSize);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-            lastX = x;
-            lastY = y;
-        }
+			lastX = x;
+			lastY = y;
+		}
 
-        // Ignore all these other mouse events.
-        public void mouseMoved(MouseEvent e) { }
-        public void mouseClicked(MouseEvent e) { }
-        public void mouseReleased(MouseEvent e) { }
-        public void mouseEntered(MouseEvent e) { }
-        public void mouseExited(MouseEvent e) { }
-    }
+		// Ignore all these other mouse events.
+		public void mouseMoved(MouseEvent e) { }
+		public void mouseClicked(MouseEvent e) { }
+		public void mouseReleased(MouseEvent e) { }
+		public void mouseEntered(MouseEvent e) { }
+		public void mouseExited(MouseEvent e) { }
+	}
 }

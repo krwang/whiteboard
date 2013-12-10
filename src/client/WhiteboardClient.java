@@ -104,7 +104,7 @@ public class WhiteboardClient {
 	}
 	
 	public void drawRequest(int x1, int y1, int x2, int y2, int size, int color) throws IOException {
-		String request = String.format("draw %c %s %x %y %w %y %n", color, size, x1, y1, x2, y2, gui.getTitle());
+		String request = String.format("draw %s %s %n %n %n %n %s", color, size, x1, y1, x2, y2, gui.getTitle());
 		dataOut.writeUTF(request);
 	}
 	
