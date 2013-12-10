@@ -248,6 +248,7 @@ public class WhiteboardServer {
 		else if(tokens[0].equals("bye")){
 			System.out.println("bye");
 			String userName = tokens[1];
+			String boardName = tokens[2];
 			return new Object[]{new Object[]{"bye", userName}, boardName};
 		}
 		else{
