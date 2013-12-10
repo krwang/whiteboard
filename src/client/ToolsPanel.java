@@ -302,6 +302,7 @@ public class ToolsPanel extends JPanel implements ActionListener {
         addButtons(colorButtons, gbc);
         
         switchButton = new JButton("Switch Canvas");
+        switchButton.addActionListener(this);
 		switchButton.setActionCommand("switch");
         gbc.gridx = 0;
         gbc.gridy = 7;

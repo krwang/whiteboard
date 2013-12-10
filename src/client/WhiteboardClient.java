@@ -10,9 +10,15 @@ import javax.swing.DefaultListModel;
 
 import server.WhiteboardServer;
 
+/**
+ * TODO: class declaration
+ * @author krwang
+ *
+ */
+
 public class WhiteboardClient {
 	private final WhiteboardGUI gui;
-	private final String boardName;
+	private final String canvasName;
 	private final Socket socket;
 	private final String username;
 	private WhiteboardClientThread thread;
@@ -21,20 +27,34 @@ public class WhiteboardClient {
 	//private DataInputStream dataIn;
 	//private DataOutputStream dataOut;
 	
-	public WhiteboardClient(String user, String board) throws IOException {
+	/**
+	 * creates a local Whiteboard Client. Connects to the localhost server through a socket
+	 * and sends a request to connect to board
+	 * @param user is the username inputted into the EntryGUI, used to identify the user on the server
+	 * @param canvas is the canvas to be connected to. Either the server will create it or the client will load it
+	 * @throws IOException
+	 */
+	public WhiteboardClient(String user, String canvas) throws IOException {
 		//TODO: need to figure out how to get the WhiteboardGUI in here...
 		//maybe make the entry gui return the created or loaded WhiteboardGUI??
 		username = user;
-		boardName = board;
-		//addDrawingController();
+		canvasName = canvas;
+		
+		//creating a new socket and connecting it to the server
 		socket = new Socket("localhost", 5050);
+		
 		start();
-		Canvas canvas = WhiteboardServer.getBoard(board, user);
+		
+		//create the WhiteboardGUI with the specified canvas
+		Canvas canvasCopy = WhiteboardServer.getBoard(canvas, user);
 		addRequest();
-		this.gui = new WhiteboardGUI(board, canvas, this);
-		//this.socket = socket;
+		this.gui = new WhiteboardGUI(canvas, canvasCopy, this);
 	}
 	
+	/**
+	 * opens all data streams and opens a client thread
+	 * @throws IOException
+	 */
 	public void start() throws IOException {
 		// change input stream to Server output stream?
 		dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -44,6 +64,11 @@ public class WhiteboardClient {
 		}
 	}
 	
+	/**
+	 * sends notice to the server about disconnecting and closes
+	 * the data streams, the socket, and the thread	
+	 * @throws IOException
+	 */
 	public void stop() throws IOException {
 		System.out.println("stopped");
 		byeRequest();
@@ -53,6 +78,10 @@ public class WhiteboardClient {
 		thread.close();
 	}
 	
+	/**
+	 * handles requests from the server and updates the canvas accordingly
+	 * @param message
+	 */
 	public void handle(String message) {
 		String regex = "(add \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|(bye \\w+)";
 		if ( ! message.matches(regex)) {
@@ -107,13 +136,28 @@ public class WhiteboardClient {
 		}
 	}
 	
+	/**
+	 * sends an add request to the server, so that the server adds the user
+	 * to the list of users accessing the specified canvas and sends the canvas to the client
+	 * @throws IOException
+	 */
 	public void addRequest() throws IOException {
-		String request = "add " + boardName + username;
+		String request = "add " + canvasName + username;
 		dataOut.println(request);
 		//dataOut.flush();
 		System.out.println(request);
 	}
 	
+	/**
+	 * sends a draw request to the server, so the server will update the central canvas version
+	 * @param x1 is the starting x coordinate of the drawing on the canvas
+	 * @param y1 is the starting y coordinate of the drawing on the canvas
+	 * @param x2 is the ending x coordinate of the drawing on the canvas
+	 * @param y2 is the ending y coordinate of the drawing on the canvas
+	 * @param size is the current size of the brush being used
+	 * @param color is the current color of the brush being used
+	 * @throws IOException
+	 */
 	public void drawRequest(int x1, int y1, int x2, int y2, int size, int color) throws IOException {
 		String request = String.format("draw %s %s %d %d %d %d %s", color, size, x1, y1, x2, y2, gui.getTitle());
 		dataOut.println(request);
@@ -121,8 +165,13 @@ public class WhiteboardClient {
 		System.out.println(request);
 	}
 	
+	/**
+	 * sends a bye request to the server, so the server can remove the user from
+	 * the list of users accessing the canvas currently
+	 * @throws IOException
+	 */
 	public void byeRequest() throws IOException {
-		String request = "bye " + boardName + username;
+		String request = "bye " + canvasName + username;
 		dataOut.println(request);
 		//dataOut.flush();
 		System.out.println(request);

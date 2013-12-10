@@ -6,12 +6,18 @@ import java.awt.Insets;
 
 import javax.swing.*;
 
+/**
+ * this class contains code for the username panel
+ * that will be contained in the WhiteboardGUI
+ * @author bschang
+ *
+ */
 @SuppressWarnings("serial")
 public class UsernamePanel extends JPanel{
 	private final JLabel title;
 	final JList<String> usernameList;
 	private final WhiteboardGUI gui;
-	
+
 	public UsernamePanel(WhiteboardGUI parent) {
 		super();
 		
