@@ -156,7 +156,7 @@ public class WhiteboardServer {
 
 		if(output[0].equals("bye")){
 			//where do i close the input stream???
-			out.close();
+//			out.close();
 			sockets.get(socket).remove(socket);
 		}
 //		else{
@@ -178,7 +178,7 @@ public class WhiteboardServer {
 	private Object[] handleRequest(String input, Socket socket){
 		System.out.println("handleRequest");
 		System.out.println("input: " + input);
-		String regex = "(add \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|(bye \\w+)";
+		String regex = "(add \\w+ \\w+ \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+ \\w+)|(bye \\w+ \\w+)";
 		Object[] output;
 		Canvas canvas;
 		if ( ! input.matches(regex)) {
@@ -248,7 +248,7 @@ public class WhiteboardServer {
 		else if(tokens[0].equals("bye")){
 			System.out.println("bye");
 			String userName = tokens[1];
-			return new Object[]{"bye", userName};
+			return new Object[]{new Object[]{"bye", userName}, boardName};
 		}
 		else{
 			throw new UnsupportedOperationException();
