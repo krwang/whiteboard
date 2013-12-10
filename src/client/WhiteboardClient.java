@@ -46,8 +46,8 @@ public class WhiteboardClient {
 		start();
 		
 		//create the WhiteboardGUI with the specified canvas
-		Canvas canvasCopy = WhiteboardServer.getBoard(canvas, user);
 		addRequest();
+		Canvas canvasCopy = WhiteboardServer.getBoard(canvas, user);
 		this.gui = new WhiteboardGUI(canvas, canvasCopy, this);
 	}
 	
