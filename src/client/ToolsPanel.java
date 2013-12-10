@@ -359,48 +359,47 @@ public class ToolsPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent ae) {
         String command = ae.getActionCommand();
         if (command.equals("draw")) {
-            brushButtons.get(User.getCurrentBrush()).setSelected(false);
-            User.setCurrentBrush(User.DRAW);//how to eventually keep track of which user 
-            								//if using this event right
+            brushButtons.get(gui.getCurrentBrush()).setSelected(false);
+            gui.setCurrentBrush(WhiteboardGUI.DRAW);
         } else if (command.equals("erase")) {
-            brushButtons.get(User.getCurrentBrush()).setSelected(false);
-            User.setCurrentBrush(User.ERASE);
+            brushButtons.get(gui.getCurrentBrush()).setSelected(false);
+            gui.setCurrentBrush(WhiteboardGUI.ERASE);
         } else if (command.equals("small")) {
-            sizeButtons.get(User.getCurrentSize()).setSelected(false);
+            sizeButtons.get(gui.getCurrentSize()).setSelected(false);
 //            currentSize = SMALL;
-            User.setCurrentSize(User.SMALL);
+            gui.setCurrentSize(WhiteboardGUI.SMALL);
         } else if (command.equals("medium")) {
-            sizeButtons.get(User.getCurrentSize()).setSelected(false);
+            sizeButtons.get(gui.getCurrentSize()).setSelected(false);
 //            currentSize = MEDIUM;
-            User.setCurrentSize(User.MEDIUM);
+            gui.setCurrentSize(WhiteboardGUI.MEDIUM);
         } else if (command.equals("large")) {
-            sizeButtons.get(User.getCurrentSize()).setSelected(false);
+            sizeButtons.get(gui.getCurrentSize()).setSelected(false);
 //            currentSize = LARGE;
-            User.setCurrentSize(User.LARGE);
+            gui.setCurrentSize(WhiteboardGUI.LARGE);
         } else if (command.equals("black")) {
-            colorButtons.get(User.getCurrentColor()).setSelected(false);
+            colorButtons.get(gui.getCurrentColor()).setSelected(false);
 //            currentColor = BLACK;
-            User.setCurrentColor(User.BLACK);
+            gui.setCurrentColor(WhiteboardGUI.BLACK);
         } else if (command.equals("red")) {
-            colorButtons.get(User.getCurrentColor()).setSelected(false);
+            colorButtons.get(gui.getCurrentColor()).setSelected(false);
 //            currentColor = RED;
-            User.setCurrentColor(User.RED);
+            gui.setCurrentColor(WhiteboardGUI.RED);
         } else if (command.equals("orange")) {
-            colorButtons.get(User.getCurrentColor()).setSelected(false);
+            colorButtons.get(gui.getCurrentColor()).setSelected(false);
 //            currentColor = ORANGE;
-            User.setCurrentColor(User.ORANGE);
+            gui.setCurrentColor(WhiteboardGUI.ORANGE);
         } else if (command.equals("yellow")) {
-            colorButtons.get(User.getCurrentColor()).setSelected(false);
+            colorButtons.get(gui.getCurrentColor()).setSelected(false);
 //            currentColor = YELLOW;
-            User.setCurrentColor(User.YELLOW);
+            gui.setCurrentColor(WhiteboardGUI.YELLOW);
         } else if (command.equals("green")) {
-            colorButtons.get(User.getCurrentColor()).setSelected(false);
+            colorButtons.get(gui.getCurrentColor()).setSelected(false);
 //            currentColor = GREEN;
-            User.setCurrentColor(User.GREEN);
+            gui.setCurrentColor(WhiteboardGUI.GREEN);
         } else if (command.equals("blue")) {
-            colorButtons.get(User.getCurrentColor()).setSelected(false);
+            colorButtons.get(gui.getCurrentColor()).setSelected(false);
 //            currentColor = BLUE;
-            User.setCurrentColor(User.BLUE);
+            gui.setCurrentColor(WhiteboardGUI.BLUE);
         } else if (command.equals("switch")) {
         	new EntryGUI().setVisible(true);
 			gui.dispose();
