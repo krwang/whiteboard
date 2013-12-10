@@ -1,6 +1,5 @@
 package client;
 
-import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -10,7 +9,7 @@ import javax.swing.*;
 @SuppressWarnings("serial")
 public class UsernamePanel extends JPanel{
 	private final JLabel title;
-	private final JList<String> usernameList;
+	final JList<String> usernameList;
 	private final WhiteboardGUI gui;
 	
 	public UsernamePanel(WhiteboardGUI parent) {
@@ -30,6 +29,7 @@ public class UsernamePanel extends JPanel{
 		add(title, gbc);
 		
 		usernameList = new JList<String>();
+		usernameList.setModel(new DefaultListModel<String>());
 		usernameList.setName("usernameList");		
 		gbc.gridy = 1;
 		add(usernameList, gbc);

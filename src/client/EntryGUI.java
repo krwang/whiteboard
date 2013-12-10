@@ -2,6 +2,8 @@ package client;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -152,7 +154,12 @@ public class EntryGUI extends JFrame implements ActionListener {
 	    errorText.append("</html>");
 	    
 	    if (valid) {
-	    	new WhiteboardClient(username, boardname);
+	    	try {
+				new WhiteboardClient(username, boardname);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    	dispose();
 //	        final WhiteboardGUI whiteboard = new WhiteboardGUI(boardField.getText());
 //	        SwingUtilities.invokeLater(new Runnable() {
 //	            public void run() {

@@ -4,6 +4,16 @@ public class User {
     // CLASS CONSTANTS
     // all values refer to respective index in relevant list
    
+	/**
+	 * Brush type to draw
+	 */
+	public static final int DRAW = 0;
+	
+	/**
+	 * Brush type to erase
+	 */
+	public static final int ERASE = 0;
+	
     /**
      * Brush size to small
      */
