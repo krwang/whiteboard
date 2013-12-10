@@ -151,14 +151,15 @@ public class WhiteboardServer {
 		Socket socket = (Socket)obj[1];
 		PrintWriter out = (PrintWriter)obj[2];
 
-		Object[] outputParsed = handleRequest(input, socket);
-		String[] output = (String[])outputParsed[0];
-		String boardName = (String)outputParsed[1];
+		String[] outputParsed = handleRequest(input, socket);
+		String output = outputParsed[0];
+		String boardName = outputParsed[1];
 
 		//		out.println(output);
 		//		out.flush();<-might not need this
+		String[] tokens = input.split(" ");
 
-		if(output[0].equals("bye")){
+		if(tokens[0].equals("bye")){
 			//where do i close the input stream???
 			//			out.close();
 			sockets.get(socket).remove(socket);
@@ -179,7 +180,7 @@ public class WhiteboardServer {
 	 * @param input
 	 * @return
 	 */
-	private Object[] handleRequest(String input, Socket socket){
+	private String[] handleRequest(String input, Socket socket){
 		System.out.println("handleRequest");
 		System.out.println("input: " + input);
 		String regex = "(add \\w+ \\w+ \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+ \\w+)|(bye \\w+ \\w+)";
@@ -211,8 +212,7 @@ public class WhiteboardServer {
 			ArrayList<Socket> socketValue = sockets.get(boardName);
 			socketValue.add(socket);
 			sockets.put(boardName, socketValue);
-			output = new Object[]{new Object[]{"add", boardName, userName}, boardName};
-			return output;
+			return new String[]{input, boardName};
 		}
 
 		/**
@@ -238,6 +238,7 @@ public class WhiteboardServer {
 
 			String boardName = tokens[7];
 			canvas = canvasMap.get(boardName);
+			System.out.println("canvas name " + canvas);
 			canvas.drawLineSegment(color,size, x1,y1,x2,y2);
 			output = new Object[]{"draw", tokens[1], tokens[2], tokens[3], tokens[4],
 					tokens[5], tokens[6]};
@@ -246,18 +247,19 @@ public class WhiteboardServer {
 				System.out.print(output[i] + ",");
 			}
 			System.out.println("boardName " + boardName);
-			return new Object[]{output, boardName};
+			return new String[]{input, boardName};
 		}
 
 		else if(tokens[0].equals("bye")){
 			System.out.println("bye");
 			String userName = tokens[1];
 			String boardName = tokens[2];
-			return new Object[]{new Object[]{"bye", userName}, boardName};
+			return new String[]{input, boardName};
 		}
 		else{
 			throw new UnsupportedOperationException();
 		}
+		
 	}
 
 	public static Canvas getBoard(String boardName, String userName){
