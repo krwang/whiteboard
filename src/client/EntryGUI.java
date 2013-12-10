@@ -14,8 +14,7 @@ import server.WhiteboardServer;
 /**
  * This class contains code for a EntryGUI. The EntryGUI allows the user to 
  * either create a new Whiteboard and input the name of the Whiteboard
- * or load a previously created Whiteboard by name. There will be a table at the bottom
- * that contains all previously created Whiteboards. 
+ * or load a previously created Whiteboard by name. 
  * 
  * TODO: thread safety argument
  * 
@@ -377,7 +376,7 @@ public class EntryGUI extends JFrame implements ActionListener {
 //		}
 //	}
 	
-	//DELETE THIS AT SOME POINT
+	//DELETE THIS AT SOME POINT maybe...
 	public static void main(final String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

@@ -19,10 +19,6 @@ public class WhiteboardServerTest {
 	 *    check that output = {{draw 2 0 1 1 18 20}, {boardname}}
 	 *  
 	 *  do i need to check that the master copy has it drawn on it?
-	 * 
-	 * 3) To test "erase" token:
-	 * 	  a)input = "erase  0 6 2 18 20 boardname" (erases a medium line from (1,1) to (18,20)
-	 *    check that output = {{draw 2 0 1 1 18 20}, {boardname}}
 	 *    
 	 * 4) To test "bye" token: 
 	 * 		a)input = "bye"
@@ -49,6 +45,6 @@ public class WhiteboardServerTest {
 	 * 6) 1 is open, then open 2 and see if 1's list updates
 	 * 
 	 * 
-	 * 	 * open a new board--make sure that the canvas is added to the canvasMap under
+	 ** open a new board--make sure that the canvas is added to the canvasMap under
 	 */
 }
