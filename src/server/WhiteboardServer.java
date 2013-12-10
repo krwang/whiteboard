@@ -16,7 +16,7 @@ import client.Canvas;
 import client.User;
 
 public class WhiteboardServer {
-	private static ConcurrentHashMap<String,Canvas> canvasMap;
+	private static ConcurrentHashMap<String,Canvas> canvasMap = new ConcurrentHashMap<String, Canvas>();
 	private static ConcurrentHashMap<String,ArrayList<Socket>> sockets;//by using sockets, you can only 
 	//really user one username the whole time
 
@@ -34,7 +34,6 @@ public class WhiteboardServer {
 	public WhiteboardServer(int port) throws IOException{
 		System.out.println("server started in port " + port);
 		serverSocket = new ServerSocket(port);
-		canvasMap= new ConcurrentHashMap<String,Canvas>();
 		sockets = new ConcurrentHashMap<String,ArrayList<Socket>>();
 		queue = new ArrayBlockingQueue<Object[]>(1000);
 
@@ -160,13 +159,13 @@ public class WhiteboardServer {
 			out.close();
 			sockets.get(socket).remove(socket);
 		}
-		else{
-			for(Socket otherSocket: sockets.get(boardName)){
-				PrintWriter socketOut = new PrintWriter(otherSocket.getOutputStream(),true);
-				socketOut.println(output);
-				socketOut.flush();
-			}
+//		else{
+		for(Socket otherSocket: sockets.get(boardName)){
+			PrintWriter socketOut = new PrintWriter(otherSocket.getOutputStream(),true);
+			socketOut.println(output);
+			socketOut.flush();
 		}
+//		}
 	}
 
 	/**
@@ -197,12 +196,13 @@ public class WhiteboardServer {
 		 */
 		if(tokens[0].equals("add")){
 			String boardName = tokens[1];
+			String userName = tokens[2];
 			//assume that the canvas is already in canvas map no matter what
 
 			ArrayList<Socket> socketValue = sockets.get(boardName);
 			socketValue.add(socket);
 			sockets.put(boardName, socketValue);
-			output = new Object[]{new Object[]{"add",boardName}, boardName};
+			output = new Object[]{new Object[]{"add", boardName, userName}, boardName};
 			return output;
 		}
 
@@ -228,7 +228,8 @@ public class WhiteboardServer {
 		}
 
 		else if(tokens[0].equals("bye")){
-			return new Object[]{"bye"};
+			String userName = tokens[1];
+			return new Object[]{"bye", userName};
 		}
 		else{
 			throw new UnsupportedOperationException();

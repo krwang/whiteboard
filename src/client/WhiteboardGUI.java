@@ -6,6 +6,7 @@ import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -17,7 +18,7 @@ import javax.swing.SwingUtilities;
  */
 @SuppressWarnings("serial")
 public class WhiteboardGUI extends JFrame{
-	private final UsernamePanel usernamePanel;
+	final UsernamePanel usernamePanel;
 	private final ToolsPanel toolsPanel;
 	final Canvas canvas;
 	private final WhiteboardClient client;
@@ -84,6 +85,44 @@ public class WhiteboardGUI extends JFrame{
 		});
 	}
 	
+	public WhiteboardGUI(String name, Canvas canvas, WhiteboardClient client){
+		this.client = client;
+		
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(3, 3, 3, 3);
+        
+        usernamePanel = new UsernamePanel(this);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        add(usernamePanel, gbc);
+        
+		this.canvas = canvas;
+		addDrawingController(canvas);
+		gbc.gridx = 1;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		add(canvas, gbc);
+        
+		toolsPanel = new ToolsPanel(this);
+		gbc.weightx = 0;
+		gbc.weighty = 0;
+		gbc.gridx = 2;
+		add(toolsPanel, gbc);
+		
+		//assign the title of the WhiteboardGUI to be the name of the canvas being accessed
+		setTitle(name);
+		setResizable(false);
+		pack();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				setVisible(true);
+			}
+		});
+	}
+	
 	private void addDrawingController(Canvas canvas) {
         DrawingController controller = new DrawingController();
         canvas.addMouseListener(controller);
@@ -114,6 +153,11 @@ public class WhiteboardGUI extends JFrame{
             int x = e.getX();
             int y = e.getY();
             canvas.drawLineSegment(User.getCurrentColor(), User.getCurrentSize(), lastX, lastY, x, y);
+            try {
+				client.drawRequest(lastX, lastY, x, y, User.getCurrentColor(), User.getCurrentSize());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
             lastX = x;
             lastY = y;
         }

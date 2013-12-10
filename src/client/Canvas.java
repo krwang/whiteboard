@@ -3,8 +3,6 @@ package client;
 import java.awt.*;
 import javax.swing.JPanel;
 
-import client.User;
-
 /**
  * Canvas represents a drawing surface that allows the user to draw
  * on it freehand, with the mouse.
