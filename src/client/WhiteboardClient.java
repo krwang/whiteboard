@@ -101,11 +101,13 @@ public class WhiteboardClient {
 	public void addRequest(String boardName) throws IOException {
 		String request = "add " + boardName;
 		dataOut.writeUTF(request);
+		System.out.println(request);
 	}
 	
 	public void drawRequest(int x1, int y1, int x2, int y2, int size, int color) throws IOException {
-		String request = String.format("draw %s %s %n %n %n %n %s", color, size, x1, y1, x2, y2, gui.getTitle());
+		String request = String.format("draw %s %s %d %d %d %d %s", color, size, x1, y1, x2, y2, gui.getTitle());
 		dataOut.writeUTF(request);
+		System.out.println(request);
 	}
 	
 //	/*

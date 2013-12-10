@@ -13,7 +13,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 import client.Canvas;
-import client.User;
 
 public class WhiteboardServer {
 	private static ConcurrentHashMap<String,Canvas> canvasMap = new ConcurrentHashMap<String, Canvas>();

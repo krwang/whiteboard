@@ -26,7 +26,7 @@ public class WhiteboardGUI extends JFrame {
 	/**
 	 * Brush type to erase
 	 */
-	public static final int ERASE = 0;
+	public static final int ERASE = 1;
 
 	/**
 	 * Brush size to small

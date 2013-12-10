@@ -358,6 +358,7 @@ public class ToolsPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String command = ae.getActionCommand();
+        System.out.println(command);
         if (command.equals("draw")) {
             brushButtons.get(gui.getCurrentBrush()).setSelected(false);
             gui.setCurrentBrush(WhiteboardGUI.DRAW);
