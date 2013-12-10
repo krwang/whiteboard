@@ -16,7 +16,7 @@ import client.Canvas;
 
 public class WhiteboardServer {
 	private static ConcurrentHashMap<String,Canvas> canvasMap = new ConcurrentHashMap<String, Canvas>();
-	private static ConcurrentHashMap<String,ArrayList<Socket>> sockets;//by using sockets, you can only 
+	private static ConcurrentHashMap<String,ArrayList<Socket>> sockets = new ConcurrentHashMap<String,ArrayList<Socket>>();;//by using sockets, you can only 
 	//really user one username the whole time
 
 	private final ArrayBlockingQueue<Object[]> queue;
@@ -33,7 +33,7 @@ public class WhiteboardServer {
 	public WhiteboardServer(int port) throws IOException{
 		System.out.println("server started in port " + port);
 		serverSocket = new ServerSocket(port);
-		sockets = new ConcurrentHashMap<String,ArrayList<Socket>>();
+
 		queue = new ArrayBlockingQueue<Object[]>(1000);
 
 		thread = new Thread(new Runnable(){
@@ -183,7 +183,7 @@ public class WhiteboardServer {
 	private String[] handleRequest(String input, Socket socket){
 		System.out.println("handleRequest");
 		System.out.println("input: " + input);
-		String regex = "(add \\w+ \\w+ \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+ \\w+)|(bye \\w+ \\w+)";
+		String regex = "(add \\w+ \\w+)|(draw \\d+ \\d+ \\d+ \\d+ \\d+ \\d+ \\w+)|(bye \\w+ \\w+)";
 		Object[] output;
 		Canvas canvas;
 		if ( ! input.matches(regex)) {
@@ -208,10 +208,14 @@ public class WhiteboardServer {
 			System.out.println("add boardName " + boardName);
 			System.out.println("add userName " + userName);
 			//assume that the canvas is already in canvas map no matter what
-
-			ArrayList<Socket> socketValue = sockets.get(boardName);
+			ArrayList<Socket> socketValue = new ArrayList<Socket>();
 			socketValue.add(socket);
-			sockets.put(boardName, socketValue);
+			sockets.putIfAbsent(boardName, socketValue);
+			ArrayList<Socket> priorSocketValue = sockets.get(boardName);
+			if(!priorSocketValue.contains(socket)){
+				priorSocketValue.add(socket);
+				sockets.put(boardName, priorSocketValue);
+			}
 			return new String[]{input, boardName};
 		}
 
@@ -237,6 +241,7 @@ public class WhiteboardServer {
 			System.out.println("draw y2 " + y2);
 
 			String boardName = tokens[7];
+			System.out.println("boardname " + boardName);
 			canvas = canvasMap.get(boardName);
 			System.out.println("canvas name " + canvas);
 			canvas.drawLineSegment(color,size, x1,y1,x2,y2);
@@ -263,11 +268,10 @@ public class WhiteboardServer {
 	}
 
 	public static Canvas getBoard(String boardName, String userName){
-		if(!canvasMap.containsKey(boardName)){
-			canvasMap.put(boardName, new Canvas());
-		}
+		canvasMap.putIfAbsent(boardName, new Canvas());
 		usernames.add(userName);
 		Canvas canvas = canvasMap.get(boardName);
+//		System.out.println(canvasMap.get(boardName));
 		return canvas;
 	}
 

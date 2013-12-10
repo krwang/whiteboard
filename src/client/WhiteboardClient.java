@@ -142,7 +142,7 @@ public class WhiteboardClient {
 	 * @throws IOException
 	 */
 	public void addRequest() throws IOException {
-		String request = "add " + canvasName + username;
+		String request = "add " + canvasName + " " + username;
 		dataOut.println(request);
 		//dataOut.flush();
 		System.out.println(request);
@@ -171,7 +171,7 @@ public class WhiteboardClient {
 	 * @throws IOException
 	 */
 	public void byeRequest() throws IOException {
-		String request = "bye " + canvasName + username;
+		String request = "bye " + canvasName + " " + username;
 		dataOut.println(request);
 		//dataOut.flush();
 		System.out.println(request);
