@@ -143,6 +143,7 @@ public class WhiteboardServer {
 	 * @throws IOException
 	 */
 	public void sendOutput(Object[] obj) throws IOException{
+		System.out.println("send output");
 		String input = (String)obj[0];
 		Socket socket = (Socket)obj[1];
 		PrintWriter out = (PrintWriter)obj[2];
@@ -176,6 +177,8 @@ public class WhiteboardServer {
 	 * @return
 	 */
 	private Object[] handleRequest(String input, Socket socket){
+		System.out.println("handleRequest");
+		System.out.println("input: " + input);
 		String regex = "(add \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|(bye \\w+)";
 		Object[] output;
 		Canvas canvas;
@@ -195,8 +198,11 @@ public class WhiteboardServer {
 		 * socket will be added to hashmap of whiteboard names to sockets
 		 */
 		if(tokens[0].equals("add")){
+			System.out.println("add");
 			String boardName = tokens[1];
 			String userName = tokens[2];
+			System.out.println("add boardName " + boardName);
+			System.out.println("add userName " + userName);
 			//assume that the canvas is already in canvas map no matter what
 
 			ArrayList<Socket> socketValue = sockets.get(boardName);
@@ -211,6 +217,7 @@ public class WhiteboardServer {
 		 * whiteboard that the client is referencing to update the master copy
 		 */
 		else if(tokens[0].equals("draw")){
+			System.out.println("draw");
 			//assuming canvas is already initialized, as in the open method 
 			//has run first(is that bad?)
 			int color = Integer.parseInt(tokens[1]);//<--will be the color represented as an int
@@ -219,15 +226,28 @@ public class WhiteboardServer {
 			int y1 = Integer.parseInt(tokens[4]);
 			int x2 = Integer.parseInt(tokens[5]);
 			int y2 = Integer.parseInt(tokens[6]);
+			System.out.println("draw color " + color);
+			System.out.println("draw size " + size);
+			System.out.println("draw x1 " + x1);
+			System.out.println("draw y1 " + y1);
+			System.out.println("draw x2 " + x2);
+			System.out.println("draw y2 " + y2);
+
 			String boardName = tokens[7];
 			canvas = canvasMap.get(boardName);
 			canvas.drawLineSegment(color,size, x1,y1,x2,y2);
 			output = new Object[]{"draw", tokens[1], tokens[2], tokens[3], tokens[4],
 					tokens[5], tokens[6]};
+			System.out.println("draw output");
+			for(int i = 0; i < output.length; i++){
+				System.out.print(output[i] + ",");
+			}
+			System.out.println("boardName " + boardName);
 			return new Object[]{output, boardName};
 		}
 
 		else if(tokens[0].equals("bye")){
+			System.out.println("bye");
 			String userName = tokens[1];
 			return new Object[]{"bye", userName};
 		}
