@@ -193,14 +193,15 @@ public class WhiteboardServer {
 	 * open takes in whiteboard name and username
 	 * boardName must be valid already when this is called
 	 * handles the client's input and returns the corresponding output
-	 * 
+	 * puts out moves, boardname
 	 * @param input
 	 * @return
 	 */
 	private Object[] handleRequest(String input, Socket socket) {
 		System.out.println("handleRequest");
 		System.out.println("input: " + input);
-		String regex = "(add \\w+ \\w+)|(draw \\d+ \\d+ \\d+ \\d+ \\d+ \\d+ \\w+)|(bye \\w+ \\w+)";
+		String regex = "(add \\w+ \\w+)|(draw \\d+ \\d+ \\d+ \\d+ \\d+ \\d+ \\w+)|(bye \\w+ \\w+)|"
+				+ "(username \\w+)";
 //		Object[] output;
 //		Canvas canvas;
 		if ( ! input.matches(regex)) {
@@ -279,7 +280,6 @@ public class WhiteboardServer {
 			System.out.println("draw y2 " + y2);
 
 			String boardName = tokens[7];
-			System.out.println("boardname " + boardName);
 //			canvas = canvasMap.get(boardName);
 //			System.out.println("canvas name " + canvas);
 //			canvas.drawLineSegment(color,size, x1,y1,x2,y2);
@@ -297,12 +297,28 @@ public class WhiteboardServer {
 			canvasMovesMap.put(boardName, pastCanvasMoves);
 			
 			return new Object[]{pastCanvasMoves, boardName};
+			
 		} else if(tokens[0].equals("bye")) {
 			System.out.println("bye");
 //			String userName = tokens[1];
 			String boardName = tokens[2];
-			return new Object[]{input, boardName};
-		} else {
+			String username = tokens[1];
+			usernames.remove(username);
+			return new Object[]{new ArrayList<String>().add(input), boardName};
+			
+		} else if(tokens[0].equals("username")){
+			System.out.println("username");
+			String username = tokens[1];
+			if(username.isEmpty()){
+				return new Object[]{"unavailable"};
+			}
+			else if(usernames.contains(username)){
+				return new Object[]{"contains"};
+			}
+			return new Object[]{"username good"};
+			//UGHHHHHHH I DONT GET THISSSSSSSSSSS
+		}
+		else {
 			throw new UnsupportedOperationException();
 		}		
 	}
