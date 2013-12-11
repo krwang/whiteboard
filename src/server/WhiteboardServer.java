@@ -147,6 +147,7 @@ public class WhiteboardServer {
 		PrintWriter out = (PrintWriter)obj[2];
 
 		Object[] outputParsed = handleRequest(input, socket);
+		System.out.println("output parsed: " + outputParsed);
 		ArrayList<String> output = (ArrayList<String>)outputParsed[0];
 		String boardName = (String)outputParsed[1];
 		//okay, right now i'm passing out the whole list of all the moves for that particular canvas..idk if that's the right way to go about this
@@ -163,12 +164,14 @@ public class WhiteboardServer {
 		    for (String action : output) {
 	            PrintWriter socketOut = new PrintWriter(socket.getOutputStream(),true);
 	            socketOut.println(action);
+	            System.out.println(action);
 	        }
 		} else if (tokens[0].equals("draw")) {
 		    ArrayList<Socket> connected = sockets.get(boardName);
 		    for(Socket otherSocket: connected) {
 		        PrintWriter socketOut = new PrintWriter(otherSocket.getOutputStream(),true);
 		        socketOut.println(input);
+		        System.out.println(input);
 		    }
 		}
 	}

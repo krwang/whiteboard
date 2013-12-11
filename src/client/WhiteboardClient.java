@@ -165,7 +165,7 @@ public class WhiteboardClient {
         String request = "add " + canvasName + " " + username;
         dataOut.println(request);
         //dataOut.flush();
-        System.out.println(request);
+        System.out.println("Client Request: " + request);
     }
 
     /**
