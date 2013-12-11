@@ -7,3 +7,12 @@ The files in this directory should be:
 
 If you add any other documents to this directory, please add the filenames to
 the above list.
+
+HOW TO RUN THE SERVER:
+	All fields are already set in the server as class constants, so all that is
+required is to simply run the program and it will open up a socket on port 5050.
+
+HOW TO RUN THE CLIENT:
+	The client should be run using the EntryGUI. This will start a GUI from
+which the user can join or create a whiteboard. This EntryGUI requires no
+parameters to start, so it simply needs to be run to start the client.
