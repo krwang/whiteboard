@@ -17,7 +17,6 @@ import client.Canvas;
 public class WhiteboardServer {
     public static final int SERVER_PORT = 5050;
     
-	private ConcurrentHashMap<String,Canvas> canvasMap;
 	private ConcurrentHashMap<String,ArrayList<String>> canvasMovesMap;
 	private ConcurrentHashMap<String,ArrayList<Socket>> sockets;
 	private HashSet<String> usernames;
@@ -34,7 +33,6 @@ public class WhiteboardServer {
 		System.out.println("server started in port " + port);
 		serverSocket = new ServerSocket(port);
 		
-		canvasMap = new ConcurrentHashMap<String, Canvas>();
 	    canvasMovesMap = new ConcurrentHashMap<String, ArrayList<String>>();
 	    sockets = new ConcurrentHashMap<String,ArrayList<Socket>>();
 	    usernames = new HashSet<String>();
@@ -180,7 +178,11 @@ public class WhiteboardServer {
 	 * open takes in whiteboard name and username
 	 * boardName must be valid already when this is called
 	 * handles the client's input and returns the corresponding output
+<<<<<<< HEAD
+	 * puts out moves, boardname
+=======
 	 * 
+>>>>>>> 9f9f10f5679c48e1ee5e711b7207e3b5d79d3a2e
 	 * @param input
 	 * @return
 	 */
@@ -188,9 +190,9 @@ public class WhiteboardServer {
 		System.out.println("handleRequest");
 		System.out.println("input: " + input);
 		String regex = "(add \\w+ \\w+)|(draw \\d+ \\d+ \\d+ \\d+ \\d+ \\d+ \\w+)|(bye \\w+ \\w+)";
-		Object[] output;
-		Canvas canvas;
-		if (!input.matches(regex)) {
+//		Object[] output;
+//		Canvas canvas;
+		if ( ! input.matches(regex)) {
 			// invalid input
 			return null;
 		}
@@ -212,14 +214,15 @@ public class WhiteboardServer {
 			System.out.println("add boardName " + boardName);
 			System.out.println("add userName " + userName);
 			
-			//add canvas to boardname
-//			canvas = canvasMap.putIfAbsent(boardName, new Canvas());//if hasn't been created
-			canvasMap.putIfAbsent(boardName, new Canvas());//if hasn't been created
+//			//add canvas to boardname
+////			canvas = canvasMap.putIfAbsent(boardName, new Canvas());//if hasn't been created
+//			canvasMap.putIfAbsent(boardName, new Canvas());//if hasn't been created
+//
+////			if(canvas== null){
+////				canvas = canvasMap.get(boardName);
+////			}
+//			canvas = canvasMap.get(boardName);//if has alrady been created
 
-//			if(canvas== null){
-//				canvas = canvasMap.get(boardName);
-//			}
-			//canvas = canvasMap.get(boardName);//if has alrady been created
 			
 			//add socket to boardname
 			ArrayList<Socket> socketValue = new ArrayList<Socket>();
@@ -239,6 +242,8 @@ public class WhiteboardServer {
 			
 			//sends over moves from existing canvas
 			ArrayList<String> canvasMoves = canvasMovesMap.get(boardName);
+			usernames.add(userName);
+			
 			return new Object[]{canvasMoves, boardName};
 		} else if(tokens[0].equals("draw")) {
 		    /*
@@ -264,15 +269,16 @@ public class WhiteboardServer {
 
 			String boardName = tokens[7];
 			System.out.println("boardname " + boardName);
-			canvas = canvasMap.get(boardName);
-			System.out.println("canvas name " + canvas);
-			canvas.drawLineSegment(color,size, x1,y1,x2,y2);
-			output = new Object[]{"draw", tokens[1], tokens[2], tokens[3], tokens[4],
-					tokens[5], tokens[6]};
-			System.out.println("draw output");
-			for (int i = 0; i < output.length; i++) {
-				System.out.print(output[i] + ",");
-			}
+//			canvas = canvasMap.get(boardName);
+//			System.out.println("canvas name " + canvas);
+//			canvas.drawLineSegment(color,size, x1,y1,x2,y2);
+//			output = new Object[]{"draw", tokens[1], tokens[2], tokens[3], tokens[4],
+//					tokens[5], tokens[6]};
+//			System.out.println("draw output");
+//			for(int i = 0; i < output.length; i++){
+//				System.out.print(output[i] + ",");
+//			}
+
 			System.out.println("boardName " + boardName);
 			
 			ArrayList<String> pastCanvasMoves = canvasMovesMap.get(boardName);
@@ -282,7 +288,7 @@ public class WhiteboardServer {
 			return new Object[]{pastCanvasMoves, boardName};
 		} else if(tokens[0].equals("bye")) {
 			System.out.println("bye");
-			String userName = tokens[1];
+//			String userName = tokens[1];
 			String boardName = tokens[2];
 			return new Object[]{input, boardName};
 		} else {
