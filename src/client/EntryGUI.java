@@ -31,9 +31,8 @@ import javax.swing.border.EmptyBorder;
  * connected to the canvas that a new user has connected
  * 
  * Clients can open two different canvases using the same username. 
- * The client can only also open multiple copies of the same canvas under the same 
- * username, though the user is still the same in both
- * 
+ * The client can only also open multiple copies of the same canvas, but only 
+ * under different usernames  * 
  * For testing strategy, please see the EntryGUITest.java class
  * 
  * TODO: threadsafe argument

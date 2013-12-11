@@ -6,6 +6,10 @@ package client;
  * 
  *  To test the GUI setup:
  *  1) we first tested the EntryGUI(tests can be found in the EntryGUITest class)
+ *  2) we tested that the toolsPanel performed the appropriate commands of color and size and 
+ *  	type of brush (tests found in ToolsPanelTest class)
+ *  3) we tested that the userNamePanel always contained the correct number and names of the users
+ *  	currently accessing the same whiteboard (tests found in UsernamePanel class)
  * 
  * test location of drawing
 test length of drawing 
