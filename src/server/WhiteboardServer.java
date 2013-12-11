@@ -99,7 +99,6 @@ public class WhiteboardServer {
 	 */
 	private void handle(Socket socket) throws IOException, InterruptedException{
 		System.out.println("client connected");
-		System.out.println("CANVASES: " + canvasMap);
 		System.out.println("USERS: " + usernames);
 		try{
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -145,13 +144,29 @@ public class WhiteboardServer {
 		PrintWriter out = (PrintWriter)obj[2];
 
 		Object[] outputParsed = handleRequest(input, socket);
-		System.out.println("output parsed: " + outputParsed);
+		for (Object object: outputParsed) {
+			System.out.println("outputParsed: " + object);
+		}
 		ArrayList<String> output = (ArrayList<String>)outputParsed[0];
+//		for (String str: output) {
+//			PrintWriter socketOut = new PrintWriter(socket.getOutputStream(),true);
+//            socketOut.println(str);
+//            System.out.println(str);
+//		}
+		System.out.println(output);
 		String boardName = (String)outputParsed[1];
 		//okay, right now i'm passing out the whole list of all the moves for that particular canvas..idk if that's the right way to go about this
 
-		//		out.println(output);
-		//		out.flush();<-might not need this
+		if (!output.isEmpty()) {
+			for (String str: output) {
+				System.out.println("String: " + str);
+				out.println(str);
+				out.flush();//<-might not need this
+			}
+		}
+		else {
+			out.println("");
+		}
 		String[] tokens = input.split(" ");
 
 		if (tokens[0].equals("bye")) {
@@ -178,11 +193,7 @@ public class WhiteboardServer {
 	 * open takes in whiteboard name and username
 	 * boardName must be valid already when this is called
 	 * handles the client's input and returns the corresponding output
-<<<<<<< HEAD
-	 * puts out moves, boardname
-=======
 	 * 
->>>>>>> 9f9f10f5679c48e1ee5e711b7207e3b5d79d3a2e
 	 * @param input
 	 * @return
 	 */

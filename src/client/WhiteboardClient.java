@@ -48,27 +48,36 @@ public class WhiteboardClient {
         dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         dataOut = new PrintWriter(socket.getOutputStream(), true);
 
+        System.out.println("add request");
         //create the WhiteboardGUI with the specified canvas
         addRequest();
 
         Canvas c = new Canvas();
         try {
             String line;
-            while (!(line = dataIn.readLine()).equals("endinit")) {
-                String[] args = line.split(" ");
-                int color = Integer.parseInt(args[1]);//<--will be the color represented as an int
-                int size = Integer.parseInt(args[2]);//size represented as an int
-                int x1 = Integer.parseInt(args[3]);
-                int y1 = Integer.parseInt(args[4]);
-                int x2 = Integer.parseInt(args[5]);
-                int y2 = Integer.parseInt(args[6]);
-                c.drawLineSegment(color, size, x1, y1, x2, y2);
+            while (!(line = dataIn.readLine()).equals("endinit")){
+            	System.out.println("DataIn: " + line);
+            	if (!line.equals("")) {
+            		System.out.println("empty line");
+	                String[] args = line.split(" ");
+	                int color = Integer.parseInt(args[1]);//<--will be the color represented as an int
+	                int size = Integer.parseInt(args[2]);//size represented as an int
+	                int x1 = Integer.parseInt(args[3]);
+	                int y1 = Integer.parseInt(args[4]);
+	                int x2 = Integer.parseInt(args[5]);
+	                int y2 = Integer.parseInt(args[6]);
+	                c.drawLineSegment(color, size, x1, y1, x2, y2);
+            	}
+            	else {
+            		break;
+            	}
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         thread = new WhiteboardClientThread(socket, this);
         this.gui = new WhiteboardGUI(canvas, c, this);
+        System.out.println("gui created");
     }
 
     /**
@@ -82,6 +91,7 @@ public class WhiteboardClient {
         if (thread == null) {
             thread = new WhiteboardClientThread(socket, this);
         }
+        thread.run();
     }
 
     /**
@@ -103,6 +113,7 @@ public class WhiteboardClient {
      * @param message
      */
     public void handle(String message) {
+    	System.out.println("handling: ");
         // NOTE: i don't think this regex is right..
         String regex = "(add \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|(bye \\w+)";
         if ( ! message.matches(regex)) {
@@ -163,8 +174,9 @@ public class WhiteboardClient {
      */
     public void addRequest() throws IOException {
         String request = "add " + canvasName + " " + username;
+        System.out.println("canvas: " + canvasName + " Username: " + username);
         dataOut.println(request);
-        //dataOut.flush();
+        dataOut.flush();
         System.out.println("Client Request: " + request);
     }
 

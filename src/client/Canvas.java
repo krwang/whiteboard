@@ -80,8 +80,6 @@ public class Canvas extends JPanel {
 	 * this method is PUBLIC because it will only be accessed by unique references
 	 */
 	public void drawLineSegment(int currentColor, int currentSize, int x1, int y1, int x2, int y2) {
-		System.out.println("drawing buffer" + drawingBuffer);
-
 		Graphics2D g = (Graphics2D) drawingBuffer.getGraphics();
 		g.setColor(getColor(currentColor));
 		g.setStroke(new BasicStroke(getStroke(currentSize)));

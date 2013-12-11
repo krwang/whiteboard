@@ -144,28 +144,28 @@ public class EntryGUI extends JFrame implements ActionListener {
 	    
 	    StringBuilder errorText = new StringBuilder("<html>");
 	    
-	    try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
-            try {
-                // check that username is available
-                out.println("username " + username);
-                
-                String line = in.readLine();
-                if (line.equals("unavailable")) {
-                    errorText.append("Username field cannot be empty.");
-                    valid = false;
-                } else if (line.equals("contains")) {
-                    errorText.append("This username is not available.");
-                    valid = false;
-                }
-            } finally {
-                out.close();
-                in.close();
-            }
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
+//	    try {
+//            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//            PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
+//            try {
+//                // check that username is available
+//                out.println("username " + username);
+//                
+//                String line = in.readLine();
+//                if (line.equals("unavailable")) {
+//                    errorText.append("Username field cannot be empty.");
+//                    valid = false;
+//                } else if (line.equals("contains")) {
+//                    errorText.append("This username is not available.");
+//                    valid = false;
+//                }
+//            } finally {
+//                out.close();
+//                in.close();
+//            }
+//        } catch(IOException e) {
+//            e.printStackTrace();
+//        }
 	    
 	    if (boardname.isEmpty()) {
 	        if (errorText.length() > 5) {
