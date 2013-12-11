@@ -143,15 +143,22 @@ public class EntryGUI extends JFrame implements ActionListener {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
             try {
-                // check that username is available
-                out.println("username " + boardname  + " " + username);
-                
-                String line = in.readLine();
-                if (line.equals("unavailable")) {
-                    errorText.append("Username field cannot be empty.");
-                    valid = false;
-                } else if (line.equals("contains")) {
-                    errorText.append("This username is not available.");
+                if(!boardname.equals("") && !(username.equals(""))) {
+	                // check that username is available
+	                out.println("username " + boardname  + " " + username);
+	
+	                String line = in.readLine();
+//	                if (line.equals("unavailable")) {
+//	                    errorText.append("Username field cannot be empty.");
+//	                    valid = false;
+//                }
+	                if (line.equals("contains")) {
+	                    errorText.append("This username is not available.");
+	                    valid = false;
+	                }
+                }
+                else {
+                	errorText.append("Username field cannot be empty.");
                     valid = false;
                 }
             } finally {

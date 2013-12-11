@@ -50,11 +50,17 @@ public class WhiteboardClient {
 
         System.out.println("add request");
         //create the WhiteboardGUI with the specified canvas
-        addRequest();
+        
 
         Canvas c = new Canvas();
         this.gui = new WhiteboardGUI(canvas, c, this);
+//        DefaultListModel<String> model = (DefaultListModel<String>) gui.usernamePanel.usernameList.getModel();
+//        model.addElement(username);
+//        gui.usernamePanel.usernameList.setModel(model);
         System.out.println("gui created");
+        
+        addRequest();
+        
         try {
             String line;
             while (!(line = dataIn.readLine()).equals("endinit")){
@@ -135,7 +141,9 @@ public class WhiteboardClient {
 
             //add username to username panel
             DefaultListModel<String> model = (DefaultListModel<String>) gui.usernamePanel.usernameList.getModel();
-            model.addElement(userName);
+            if (!model.contains(userName)) {
+            	model.addElement(userName);
+            }
             gui.usernamePanel.usernameList.setModel(model);
         }
 
