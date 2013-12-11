@@ -79,7 +79,6 @@ public class WhiteboardClient {
      * @throws IOException
      */
     public void stop() throws IOException {
-        System.out.println("stopped");
         byeRequest();
         if (dataIn != null) dataIn.close();
         if (dataOut != null) dataOut.close();
