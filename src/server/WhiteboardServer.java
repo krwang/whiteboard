@@ -10,6 +10,11 @@ import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 
+ * @author Kelly
+ *
+ */
 public class WhiteboardServer {
 	public static final int SERVER_PORT = 5050;
 
@@ -56,7 +61,6 @@ public class WhiteboardServer {
 	 * Never returns unless an exception is thrown.
 	 * @throws IOException if the main server socket is broken
 	 * (IOExceptions from individual clients do *not* terminate serve()).
-	 * 
 	 */
 	public void serve() throws IOException{
 		while(true){
@@ -85,8 +89,6 @@ public class WhiteboardServer {
 	 * Handles a single client connection and puts all client inputs 
 	 * into the queue.
 	 * 
-	 * TODO: EntryGUI communication
-	 * 
 	 * @param socket     socket through which the client is connected
 	 * @throws IOException
 	 * @throws InterruptedException
@@ -112,19 +114,10 @@ public class WhiteboardServer {
 	/**
 	 * Is called when an update is retrieved and removed from the queue,
 	 * calls handleRequest on the update and depending on what is returned
-	 * by handleRequest, sends necessary output back to clients
+	 * by handleRequest, sends necessary output back to all clients that are all
+	 * referencing the same boardName
 	 * 
-	 * handleRequest returns a String array of the form [sendAll, output,
-	 * filename]:
-	 * 		sendAll - true if output should be sent to all sockets reading
-	 * from or writing to that file, false if output should only be sent to
-	 * the current socket
-	 * 		output - output String to be sent to sockets, but if output is
-	 * "bye," then the socket is removed from the ArrayList of sockets
-	 * mapped to that File
-	 * 		fileName - name of file currently being edited
-	 * 
-	 * @param obj
+	 * @param obj   parsed input from the handleRequest method
 	 * @throws IOException
 	 */
 	@SuppressWarnings("unchecked")
@@ -143,6 +136,7 @@ public class WhiteboardServer {
 		String[] tokens = input.split(" ");
 
 		if (tokens[0].equals("bye")) {
+			 //removes socket and username from hashmaps
 			String userName = tokens[2];
 
 			ArrayList<Socket> connected = sockets.get(boardName);
@@ -152,6 +146,7 @@ public class WhiteboardServer {
 			}
 			connected.remove(socket);
 			usersOnCanvas.get(boardName).remove(userName);
+			
 		} else if (tokens[0].equals("add")) {
 			ArrayList<Socket> connected = sockets.get(boardName);
 			for(Socket otherSocket: connected) {
@@ -160,17 +155,20 @@ public class WhiteboardServer {
 					socketOut.println("add " + boardName + " " + user);
 				}
 			}
+			
 		} else if (tokens[0].equals("draw")) {
 			ArrayList<Socket> connected = sockets.get(boardName);
 			for(Socket otherSocket: connected) {
 				PrintWriter socketOut = new PrintWriter(otherSocket.getOutputStream(),true);
 				socketOut.println(input);
 			}
+			
 		} else if (tokens[0].equals("username")) {
 			String resp = output.get(0);
 			if (resp.equals("username good") || resp.equals("contains")) {
 				out.println(resp);
 			}
+			
 		} else if (tokens[0].equals("get")) {
 		    if (tokens[1].equals("board")) {
     			if (output != null) {
@@ -186,12 +184,20 @@ public class WhiteboardServer {
 	}
 
 	/**
-	 * open takes in whiteboard name and username
-	 * boardName must be valid already when this is called
-	 * handles the client's input and returns the corresponding output
-	 * puts out moves, boardname
-	 * @param input
-	 * @return
+	 * handleRequest takes in the input, performs the necessary operations 
+	 * on the master copies of the boardnames to their sockets, canvas moves, 
+	 * and usernames
+	 * 
+	 * @param input  input from the client
+	 * @param socket socket through which the server is connected to the client
+	 * @return output to be sent back to the client as an arraylist
+	 * 
+	 * for the input to be processed correctly, it must be entered in the following 
+	 * fashion with the following pieces of information: 
+	 * 		- add boardname userName
+	 * 		- draw color size x1 y1 x2 y2 boardName
+	 * 		- bye boardName userName
+	 * 		- username boardName userName
 	 */
 	private Object[] handleRequest(String input, Socket socket) {
 		String regex = "(add \\w+ \\w+)|"
@@ -210,16 +216,21 @@ public class WhiteboardServer {
 		if(tokens[0].equals("add")) {
 			/*
 			 * If the whiteboard already exists, then the new socket gets added
-			 * to the hashmap mapping whiteboard names to sockets
+			 * to the hashmap mapping whiteboard names to sockets, the past moves 
+			 * on that canvas are retrieved, and the username is added to a hashmap
+			 * mapping the board name to the usernames of those currently accessing
+			 * the board
 			 * 
-			 * If the whiteboard does not exist, then the whiteboard gets added
-			 * to the hashmap of whiteboard names to canvases. Also, the client
-			 * socket will be added to hashmap of whiteboard names to sockets
+			 * If the whiteboard does not exist, then the new socket gets added
+			 * to the hashmap mapping whiteboard names to sockets, the past moves are
+			 * empty (blank canvas), and the username is added to a hashmap
+			 * mapping the board name to the usernames of those currently accessing
+			 * the board
 			 */
 			String boardName = tokens[1];
 			String userName = tokens[2];
 
-			//add socket to boardname
+			//add socket to boardname in the sockets hashmap
 			ArrayList<Socket> socketValue = new ArrayList<Socket>();
 			socketValue.add(socket);
 			sockets.putIfAbsent(boardName, socketValue);
@@ -234,6 +245,8 @@ public class WhiteboardServer {
 
 			//sends over moves from existing canvas
 			ArrayList<String> canvasMoves = canvasMovesMap.get(boardName);
+			
+			//adds users to boardname in the boardname to users hashmap
 			if (!userName.equals("")) {
 				ArrayList<String> users = new ArrayList<String>();
 				users.add(userName);
@@ -247,19 +260,24 @@ public class WhiteboardServer {
 			}
 
 			return new Object[]{canvasMoves, boardName, userName};
+			
 		} else if(tokens[0].equals("draw")) {
 			/*
-			 * draws the draw input from the client onto the master copy of the
-			 * whiteboard that the client is referencing to update the master copy
+			 * copies the input into the arraylist of past moves conducted on this board
+			 * name
 			 */
 			String boardName = tokens[7];
 
 			ArrayList<String> pastCanvasMoves = canvasMovesMap.get(boardName);
 			pastCanvasMoves.add(input);
 			canvasMovesMap.put(boardName, pastCanvasMoves);
-
+			
 			return new Object[]{pastCanvasMoves, boardName};
+			
 		} else if(tokens[0].equals("bye")) {
+			/*
+			 * removes the username from the board to username hashmap
+			 */
 			String boardName = tokens[1];
 			String username = tokens[2];
 			usersOnCanvas.get(boardName).remove(username);
@@ -267,7 +285,13 @@ public class WhiteboardServer {
 			ArrayList<String> output = new ArrayList<String>();
 			output.add(input);
 			return new Object[] {output, boardName};
+			
 		} else if(tokens[0].equals("username")) {
+			/*
+			 *  checks if the username input is already contained in the hashmap
+			 *  of the boardname to the usernames of all clients currently accessing 
+			 *  the whitebard
+			 */
 			String boardName = tokens[1];
 			String username = tokens[2];
 			ArrayList<String> output = new ArrayList<String>();
@@ -280,7 +304,11 @@ public class WhiteboardServer {
 			}
 			output.add("username good");
 			return new Object[] {output};
+			
 		} else if(tokens[0].equals("get")) {
+			/*
+			 * gets either all the users on the whiteboard or the number of threads 
+			 */
 		    if(tokens[1].equals("board")) {
 		        return new Object[] {canvasMovesMap.get(tokens[2])};
 		    } else if(tokens[1].equals("thread")) {
