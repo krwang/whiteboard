@@ -12,11 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
-<<<<<<< HEAD
- * 
- * @author Kelly
- *
-=======
  * This class contains code for a WhiteboardServer.
  * A WhiteboardServer enables users to edit the same canvas across
  * a network. It will store actions performed on each canvas opened
