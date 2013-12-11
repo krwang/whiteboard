@@ -130,31 +130,7 @@ public class WhiteboardGUI extends JFrame implements WindowListener {
 		gbc.weighty = 0;
 		gbc.gridx = 2;
 		add(toolsPanel, gbc);
-
-		//		Container cp = this.getContentPane();
-		//		GroupLayout layout = new GroupLayout(cp);
-		//		cp.setLayout(layout);
-		//		layout.setAutoCreateGaps(true);
-		//		layout.setAutoCreateContainerGaps(true);
-		//	
-		//		layout.setHorizontalGroup(
-		//				layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-		//				.addComponent(switchButton)
-		//				.addGroup(layout.createSequentialGroup()
-		//						.addComponent(toolsPanel)
-		//						.addComponent(canvas)
-		//						.addComponent(usernamePanel))
-		//				);
-		//		
-		//		layout.setVerticalGroup(
-		//				layout.createSequentialGroup()
-		//				.addComponent(switchButton)
-		//				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-		//						.addComponent(toolsPanel)
-		//						.addComponent(canvas)
-		//						.addComponent(usernamePanel))
-		//				);  
-
+		
 		//assign the title of the WhiteboardGUI to be the name of the canvas being accessed
 		setTitle(name);
 		setResizable(false);

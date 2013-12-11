@@ -26,7 +26,7 @@ public class WhiteboardServer {
 	private final Thread thread;
 	private ServerSocket serverSocket;
 	/**
-	 * Make a SquareServer that listens for connections on port.
+	 * Make a WhiteboardServer that listens for connections on port.
 	 * It also takes commands put in the queue and sends the output
 	 * of them back to the client
 	 * @param port port number, requires 0 <= port <= 65535.
@@ -103,13 +103,10 @@ public class WhiteboardServer {
 	private void handle(Socket socket) throws IOException, InterruptedException{
 		System.out.println("client connected");
 		try{
-			System.out.println("before");
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
-			System.out.println("after");
 			try {
 				// each request from the client is whiteboardName
-				System.out.println("inside");
 				for (String line = in.readLine(); line != null; line = in.readLine()) {
 					System.err.println("request: " + line);
 
@@ -165,13 +162,19 @@ public class WhiteboardServer {
 			//where do i close the input stream???
 			//			out.close();
 			sockets.get(socket).remove(socket);
+		} else if (tokens[0].equals("add")) {
+		    for (String action : output) {
+	            PrintWriter socketOut = new PrintWriter(socket.getOutputStream(),true);
+	            socketOut.println(action);
+	        }
+		} else if (tokens[0].equals("draw")) {
+		    ArrayList<Socket> connected = sockets.get(boardName);
+		    for(Socket otherSocket: connected) {
+		        PrintWriter socketOut = new PrintWriter(otherSocket.getOutputStream(),true);
+		        socketOut.println(input);
+		    }
 		}
 		//		else{
-		for(Socket otherSocket: sockets.get(boardName)){
-			PrintWriter socketOut = new PrintWriter(otherSocket.getOutputStream(),true);
-			socketOut.println(output);
-			socketOut.flush();
-		}
 		//		}
 	}
 
@@ -217,7 +220,7 @@ public class WhiteboardServer {
 //			if(canvas== null){
 //				canvas = canvasMap.get(boardName);
 //			}
-			canvas = canvasMap.get(boardName);//if has alrady been created
+			//canvas = canvasMap.get(boardName);//if has alrady been created
 			
 			//add socket to boardname
 			ArrayList<Socket> socketValue = new ArrayList<Socket>();
