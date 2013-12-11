@@ -5,6 +5,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -368,74 +369,42 @@ public class ToolsPanel extends JPanel implements ActionListener {
             gui.setCurrentBrush(WhiteboardGUI.ERASE);
         } else if (command.equals("small")) {
             sizeButtons.get(gui.getCurrentSize()).setSelected(false);
-//            currentSize = SMALL;
             gui.setCurrentSize(WhiteboardGUI.SMALL);
         } else if (command.equals("medium")) {
             sizeButtons.get(gui.getCurrentSize()).setSelected(false);
-//            currentSize = MEDIUM;
             gui.setCurrentSize(WhiteboardGUI.MEDIUM);
         } else if (command.equals("large")) {
             sizeButtons.get(gui.getCurrentSize()).setSelected(false);
-//            currentSize = LARGE;
             gui.setCurrentSize(WhiteboardGUI.LARGE);
         } else if (command.equals("black")) {
             colorButtons.get(gui.getCurrentColor()).setSelected(false);
-//            currentColor = BLACK;
             gui.setCurrentColor(WhiteboardGUI.BLACK);
         } else if (command.equals("red")) {
             colorButtons.get(gui.getCurrentColor()).setSelected(false);
-//            currentColor = RED;
             gui.setCurrentColor(WhiteboardGUI.RED);
         } else if (command.equals("orange")) {
             colorButtons.get(gui.getCurrentColor()).setSelected(false);
-//            currentColor = ORANGE;
             gui.setCurrentColor(WhiteboardGUI.ORANGE);
         } else if (command.equals("yellow")) {
             colorButtons.get(gui.getCurrentColor()).setSelected(false);
-//            currentColor = YELLOW;
             gui.setCurrentColor(WhiteboardGUI.YELLOW);
         } else if (command.equals("green")) {
             colorButtons.get(gui.getCurrentColor()).setSelected(false);
-//            currentColor = GREEN;
             gui.setCurrentColor(WhiteboardGUI.GREEN);
         } else if (command.equals("blue")) {
             colorButtons.get(gui.getCurrentColor()).setSelected(false);
-//            currentColor = BLUE;
             gui.setCurrentColor(WhiteboardGUI.BLUE);
         } else if (command.equals("switch")) {
-        	new EntryGUI().setVisible(true);
-			gui.dispose();
+        	try {
+                new EntryGUI().setVisible(true);
+                gui.dispose();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
             System.out.println("Action not recognized");
         }
     }
-    
-//    /**
-//     * Gets the current size of the brush selected
-//     * 
-//     * @return current size of brush
-//     */
-//    private int getCurrentSize(){
-//    	return currentSize;
-//    }
-//    
-//    /**
-//     * Gets the current brush type selected
-//     * 
-//     * @return current brush type
-//     */
-//    private int getCurrentBrush(){
-//    	return currentBrush;
-//    }
-//   
-//    /**
-//     * Gets the current color of the brush selected
-//     * 
-//     * @return current brush color
-//     */
-//    private int getCurrentColor(){
-//    	return currentColor;
-//    }
     
 //    /**
 //     * For testing purposes

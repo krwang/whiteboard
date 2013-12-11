@@ -12,26 +12,30 @@ import javax.swing.JPanel;
  */
 @SuppressWarnings("serial")
 public class Canvas extends JPanel {
+    private static final int DEFAULT_WIDTH = 800;
+    private static final int DEFAULT_HEIGHT = 800;
+    private static final int SMALL_BRUSH_SIZE = 5;
+    private static final int MEDIUM_BRUSH_SIZE = 10;
+    private static final int LARGE_BRUSH_SIZE = 20;
+    
 	// image where the user's drawing is stored
 	private Image drawingBuffer;
-	private final int DEFAULT_WIDTH = 800;
-	private final int DEFAULT_HEIGHT = 600;
 
 	public Canvas(){
 		this.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 	}
 
-	/**
-	 * Make a canvas.
-	 * @param width width in pixels
-	 * @param height height in pixels
-	 */
-	public Canvas(int width, int height) {
-		this.setPreferredSize(new Dimension(width, height));
-		// note: we can't call makeDrawingBuffer here, because it only
-		// works *after* this canvas has been added to a window.  Have to
-		// wait until paintComponent() is first called.
-	}
+//	/**
+//	 * Make a canvas.
+//	 * @param width width in pixels
+//	 * @param height height in pixels
+//	 */
+//	public Canvas(int width, int height) {
+//		this.setPreferredSize(new Dimension(width, height));
+//		// note: we can't call makeDrawingBuffer here, because it only
+//		// works *after* this canvas has been added to a window.  Have to
+//		// wait until paintComponent() is first called.
+//	}
 
 	/**
 	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
@@ -48,7 +52,7 @@ public class Canvas extends JPanel {
 		g.drawImage(drawingBuffer, 0, 0, null);
 	}
 
-	/*
+	/**
 	 * Make the drawing buffer and draw some starting content for it.
 	 */
 	private void makeDrawingBuffer() {
@@ -56,7 +60,7 @@ public class Canvas extends JPanel {
 		fillWithWhite();
 	}
 
-	/*
+	/**
 	 * Make the drawing buffer entirely white.
 	 */
 	private void fillWithWhite() {
@@ -70,7 +74,7 @@ public class Canvas extends JPanel {
 		this.repaint();
 	}
 
-	/*
+	/**
 	 * Draw a line between two points (x1, y1) and (x2, y2), specified in
 	 * pixels relative to the upper-left corner of the drawing buffer.
 	 * this method is PUBLIC because it will only be accessed by unique references
@@ -87,41 +91,67 @@ public class Canvas extends JPanel {
 		// have to notify Swing to repaint this component on the screen.
 		this.repaint();
 	}
-
+	
+	/**
+	 * Returns the Color object corresponding to the passed in color code
+	 * 
+	 * @param userCurrentColor The user's current color code
+	 * @return The corresponding Color object
+	 */
 	private Color getColor(int userCurrentColor){
 		Color color;
-		switch(userCurrentColor){
-		case 0: color = Color.black;
-		break;
-		case 1: color = Color.red;
-		break;
-		case 2: color = Color.orange;
-		break;
-		case 3: color = Color.yellow;
-		break;
-		case 4: color = Color.green;
-		break;
-		case 5: color = Color.blue;
-		break;
-		case 6: color = Color.white;
-		break;
-		default: color = Color.black;
-		break;
+		switch(userCurrentColor) {
+		case WhiteboardGUI.BLACK:
+		    color = Color.black;
+		    break;
+		case WhiteboardGUI.RED:
+		    color = Color.red;
+		    break;
+		case WhiteboardGUI.ORANGE:
+		    color = Color.orange;
+		    break;
+		case WhiteboardGUI.YELLOW:
+		    color = Color.yellow;
+		    break;
+		case WhiteboardGUI.GREEN:
+		    color = Color.green;
+		    break;
+		case WhiteboardGUI.BLUE:
+		    color = Color.blue;
+		    break;
+		case WhiteboardGUI.WHITE:
+		    color = Color.white;
+		    break;
+		default:
+		    color = Color.black;
+		    System.out.println("Color not recognized, set to black");
+		    break;
 		}
 		return color;
 	}
 
+	/**
+	 * Returns the brush size corresponding to passed in size code
+	 * 
+	 * @param userCurrentSize The user's current size code
+	 * @return The integer value brush size
+	 */
 	private int getStroke(int userCurrentSize){
 		int size;
-		switch(userCurrentSize){
-		case 0: size = 5;
-		break;
-		case 1: size = 10;
-		break;
-		case 2: size = 20;
-		break;
-		default:size = 10;
-		break;
+		switch(userCurrentSize) {
+		case WhiteboardGUI.SMALL:
+		    size = SMALL_BRUSH_SIZE;
+		    break;
+		case WhiteboardGUI.MEDIUM:
+		    size = MEDIUM_BRUSH_SIZE;
+		    break;
+		case WhiteboardGUI.LARGE:
+		    size = LARGE_BRUSH_SIZE;
+		    break;
+		default:
+		    size = SMALL_BRUSH_SIZE;
+		    System.out.println("Size not recognized, set to medium");
+		    break;
 		}
 		return size;
 	}
