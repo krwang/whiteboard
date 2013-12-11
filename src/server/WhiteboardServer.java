@@ -167,6 +167,7 @@ public class WhiteboardServer {
 		else {
 			out.println("");
 		}
+		out.println("endinit");
 		String[] tokens = input.split(" ");
 
 		if (tokens[0].equals("bye")) {

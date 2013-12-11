@@ -266,18 +266,11 @@ public class WhiteboardGUI extends JFrame implements WindowListener {
 	public void windowActivated(WindowEvent we) {}
 
 	@Override
-	public void windowClosed(WindowEvent we) {
-		System.out.println("closed");
-		try {
-			client.stop();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+	public void windowClosed(WindowEvent we) {}
 
 	@Override
 	public void windowClosing(WindowEvent we) {
-		System.out.println("closing");
+		System.out.println("closed");
 		try {
 			client.stop();
 		} catch (IOException e) {

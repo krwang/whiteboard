@@ -53,6 +53,8 @@ public class WhiteboardClient {
         addRequest();
 
         Canvas c = new Canvas();
+        this.gui = new WhiteboardGUI(canvas, c, this);
+        System.out.println("gui created");
         try {
             String line;
             while (!(line = dataIn.readLine()).equals("endinit")){
@@ -76,8 +78,6 @@ public class WhiteboardClient {
             e.printStackTrace();
         }
         thread = new WhiteboardClientThread(socket, this);
-        this.gui = new WhiteboardGUI(canvas, c, this);
-        System.out.println("gui created");
     }
 
     /**
