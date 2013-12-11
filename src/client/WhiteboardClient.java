@@ -49,6 +49,8 @@ public class WhiteboardClient {
 		Canvas canvasCopy = WhiteboardServer.getBoard(canvas, user);
 		addRequest();
 		this.gui = new WhiteboardGUI(canvas, canvasCopy, this);
+		System.out.println(WhiteboardServer.getCanvasMapNames());
+		System.out.println(WhiteboardServer.containsUsername(user));
 	}
 	
 	/**
@@ -159,6 +161,7 @@ public class WhiteboardClient {
 	 * @throws IOException
 	 */
 	public void drawRequest(int x1, int y1, int x2, int y2, int size, int color) throws IOException {
+		System.out.println(WhiteboardServer.getCanvasMapNames());
 		String request = String.format("draw %s %s %d %d %d %d %s", color, size, x1, y1, x2, y2, gui.getTitle());
 		dataOut.println(request);
 		//dataOut.flush();

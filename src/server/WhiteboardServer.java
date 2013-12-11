@@ -101,6 +101,8 @@ public class WhiteboardServer {
 	 */
 	private void handle(Socket socket) throws IOException, InterruptedException{
 		System.out.println("client connected");
+		System.out.println("CANVASES: " + canvasMap);
+		System.out.println("USERS: " + usernames);
 		try{
 			System.out.println("before");
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -181,6 +183,7 @@ public class WhiteboardServer {
 	 * @return
 	 */
 	private String[] handleRequest(String input, Socket socket){
+		System.out.println(canvasMap);
 		System.out.println("handleRequest");
 		System.out.println("input: " + input);
 		String regex = "(add \\w+ \\w+)|(draw \\d+ \\d+ \\d+ \\d+ \\d+ \\d+ \\w+)|(bye \\w+ \\w+)";
@@ -271,7 +274,7 @@ public class WhiteboardServer {
 		canvasMap.putIfAbsent(boardName, new Canvas());
 		usernames.add(userName);
 		Canvas canvas = canvasMap.get(boardName);
-//		System.out.println(canvasMap.get(boardName));
+		System.out.println("MAP: " + canvasMap);
 		return canvas;
 	}
 
