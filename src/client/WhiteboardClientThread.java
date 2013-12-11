@@ -1,17 +1,18 @@
 package client;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Random;
 
-public class WhiteboardClientThread {
+public class WhiteboardClientThread extends Thread {
 	private final Socket socket;
 	private final int ID;
 	private final WhiteboardClient client;
-	private DataInputStream dataIn;
-	private DataOutputStream dataOut;
+	private BufferedReader dataIn;
+	private PrintWriter dataOut;
 	
 	public WhiteboardClientThread(Socket socket, WhiteboardClient client) {
 		this.socket = socket;
@@ -19,17 +20,22 @@ public class WhiteboardClientThread {
 		this.ID = Math.abs((new Random()).nextInt()); //TODO: check server for duplicates
 	}
 	
-	public void run() throws IOException {
+	@Override
+	public void run() {
 		System.out.println("Thread " + this.ID + " now running.");
-		while (true) {
-			//TODO: parse server message and update board
-			client.handle(dataIn.readUTF());
+		try {
+			open();
+			while (true) {
+				client.handle(dataIn.readLine());
+			}
+		} catch (Exception e) {
+			//e.printStackTrace();
 		}
 	}
 	
 	public void open() throws IOException {
-		this.dataIn = new DataInputStream(socket.getInputStream());
-		this.dataOut = new DataOutputStream(socket.getOutputStream());
+		this.dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		this.dataOut = new PrintWriter(socket.getOutputStream(), true);
 	}
 	
 	public void close() throws IOException {

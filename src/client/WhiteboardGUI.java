@@ -244,9 +244,9 @@ public class WhiteboardGUI extends JFrame implements WindowListener {
 			if (currentBrush == ERASE) {
 				color = WHITE;
 			}
-			canvas.drawLineSegment(color, currentSize, lastX, lastY, x, y);
+			//canvas.drawLineSegment(color, currentSize, lastX, lastY, x, y);
 			try {
-				client.drawRequest(lastX, lastY, x, y, color, currentSize);
+				client.drawRequest(lastX, lastY, x, y, currentSize, color);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}

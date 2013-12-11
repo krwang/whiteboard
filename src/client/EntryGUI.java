@@ -59,18 +59,11 @@ public class EntryGUI extends JFrame implements ActionListener {
      */
     private final JButton newButton;
     
-    /**
-     * Socket used to communicate with the WhiteboardServer
-     */
-    private final Socket socket;
-    
 	//List containing all Whiteboards available to load
 	//private final JList<String> availableCanvases;
 		
 	public EntryGUI() throws IOException {
 		super();
-		
-        socket = new Socket("localhost", 5050);
 		
 		panel = new JPanel();
         panel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -144,28 +137,31 @@ public class EntryGUI extends JFrame implements ActionListener {
 	    
 	    StringBuilder errorText = new StringBuilder("<html>");
 	    
-//	    try {
-//            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//            PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
-//            try {
-//                // check that username is available
-//                out.println("username " + username);
-//                
-//                String line = in.readLine();
-//                if (line.equals("unavailable")) {
-//                    errorText.append("Username field cannot be empty.");
-//                    valid = false;
-//                } else if (line.equals("contains")) {
-//                    errorText.append("This username is not available.");
-//                    valid = false;
-//                }
-//            } finally {
-//                out.close();
-//                in.close();
-//            }
-//        } catch(IOException e) {
-//            e.printStackTrace();
-//        }
+	    try {
+	        Socket socket = new Socket("localhost", 5050);
+	        
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
+            try {
+                // check that username is available
+                out.println("username " + boardname  + " " + username);
+                
+                String line = in.readLine();
+                if (line.equals("unavailable")) {
+                    errorText.append("Username field cannot be empty.");
+                    valid = false;
+                } else if (line.equals("contains")) {
+                    errorText.append("This username is not available.");
+                    valid = false;
+                }
+            } finally {
+                out.close();
+                in.close();
+                socket.close();
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
 	    
 	    if (boardname.isEmpty()) {
 	        if (errorText.length() > 5) {
@@ -180,7 +176,7 @@ public class EntryGUI extends JFrame implements ActionListener {
 	    
 	    if (valid) {
 	    	try {
-				new WhiteboardClient(username, boardname, socket);
+				new WhiteboardClient(username, boardname);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

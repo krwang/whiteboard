@@ -34,16 +34,16 @@ public class WhiteboardClient {
      * @param canvas is the canvas to be connected to. Either the server will create it or the client will load it
      * @throws IOException
      */
-    public WhiteboardClient(String user, String canvas, Socket s) throws IOException {
+    public WhiteboardClient(String user, String canvas) throws IOException {
         //TODO: need to figure out how to get the WhiteboardGUI in here...
         //maybe make the entry gui return the created or loaded WhiteboardGUI??
         username = user;
         canvasName = canvas;
 
         //creating a new socket and connecting it to the server
-        socket = s;
+        socket = new Socket("localhost", 5050);
 
-        // start();
+        //start();
 
         dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         dataOut = new PrintWriter(socket.getOutputStream(), true);
@@ -78,6 +78,7 @@ public class WhiteboardClient {
             e.printStackTrace();
         }
         thread = new WhiteboardClientThread(socket, this);
+        thread.start();
     }
 
     /**
@@ -113,13 +114,13 @@ public class WhiteboardClient {
      * @param message
      */
     public void handle(String message) {
-    	System.out.println("handling: ");
-        // NOTE: i don't think this regex is right..
-        String regex = "(add \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+)|(bye \\w+)";
-        if ( ! message.matches(regex)) {
+        String regex = "(add \\w+ \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+ \\w+)|(bye \\w+ \\w+)";
+        if (!message.matches(regex)) {
+        	System.out.println("handling bad message: " + message);
             // invalid input
             return;
         }
+        System.out.println("handling valid action: " + message);
 
         String[] tokens = message.split(" ");
 
@@ -127,8 +128,10 @@ public class WhiteboardClient {
          * if someone joins the canvas
          */
         if(tokens[0].equals("add")){
+        	System.out.println("handle add");
             //String boardName = tokens[1];
             String userName = tokens[2];
+            System.out.println("usernames client " + userName);
 
             //add username to username panel
             DefaultListModel<String> model = (DefaultListModel<String>) gui.usernamePanel.usernameList.getModel();
@@ -139,7 +142,8 @@ public class WhiteboardClient {
         /**
          * draws the draw input on the client canvas
          */
-        else if(tokens[0].equals("draw")){
+        else if(tokens[0].equals("draw")) {
+        	System.out.println("handle draw");
             //assuming canvas is already initialized, as in the open method 
             //has run first(is that bad?)
             int color = Integer.parseInt(tokens[1]);//<--will be the color represented as an int
@@ -156,7 +160,8 @@ public class WhiteboardClient {
          * if someone disconnects from the canvas
          */
         else if(tokens[0].equals("bye")){
-            String userName = tokens[1];
+        	System.out.println("handle bye");
+            String userName = tokens[2];
 
             //remove username from the username panel
             DefaultListModel<String> model = (DefaultListModel<String>) gui.usernamePanel.usernameList.getModel();
@@ -191,7 +196,7 @@ public class WhiteboardClient {
      * @throws IOException
      */
     public void drawRequest(int x1, int y1, int x2, int y2, int size, int color) throws IOException {
-        String request = String.format("draw %s %s %d %d %d %d %s", color, size, x1, y1, x2, y2, gui.getTitle());
+        String request = String.format("draw %d %d %d %d %d %d %s", color, size, x1, y1, x2, y2, gui.getTitle());
         dataOut.println(request);
         //dataOut.flush();
         System.out.println(request);
