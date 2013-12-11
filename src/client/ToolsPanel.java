@@ -13,10 +13,6 @@ import javax.swing.*;
 /**
  * Interface for user-customizable settings for drawing on the canvas. Contains
  * options for brush types, brush sizes, and colors.
- * 
- * TODO:
- *      Change size buttons to JSlider
- *      Change color buttons to JColorChooser
  */
 @SuppressWarnings("serial")
 public class ToolsPanel extends JPanel implements ActionListener {

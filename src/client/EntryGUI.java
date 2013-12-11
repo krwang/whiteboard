@@ -35,8 +35,6 @@ import javax.swing.border.EmptyBorder;
  * username, though the user is still the same in both
  * 
  * For testing strategy, please see the EntryGUITest.java class
- * 
- * TODO: threadsafe argument
  */
 @SuppressWarnings("serial")
 public class EntryGUI extends JFrame implements ActionListener {
@@ -144,7 +142,6 @@ public class EntryGUI extends JFrame implements ActionListener {
 	 * submission, popping up a JDialog that indicates the user error. If neither input
 	 * is empty, it sends the input to the server, which then checks that nobody
 	 * under the same username is currently connected to the canvas under the boardname.
-	 * TODO: ^this actually does happen........
 	 * If so, the server rejects the username and a JDialog box pops up indicating the 
 	 * error. Otherwise, a new WhiteboardGUI appears.
 	 * 
@@ -152,7 +149,10 @@ public class EntryGUI extends JFrame implements ActionListener {
 	 * 				 The server will hit an exception if either contains a non-alphanumeric. 
 	 */
 	public void actionPerformed(ActionEvent ae) {
-	    boolean valid = true;
+		
+		//indicator variable for whether the user inputs are valid
+		boolean valid = true;
+		
 	    String username = userField.getText();
 	    String boardname = boardField.getText();
 	    
@@ -205,6 +205,7 @@ public class EntryGUI extends JFrame implements ActionListener {
 
 	    errorText.append("</html>");
 	    
+	    //create a WhiteboardClient, which starts a WhiteboardGUI
 	    if (valid) {
 	    	try {
 				new WhiteboardClient(username, boardname);

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Random;
+import server.WhiteboardServer;
 
 public class WhiteboardClientThread extends Thread {
 	private final Socket socket;
@@ -17,7 +17,9 @@ public class WhiteboardClientThread extends Thread {
 	public WhiteboardClientThread(Socket socket, WhiteboardClient client) {
 		this.socket = socket;
 		this.client = client;
-		this.ID = Math.abs((new Random()).nextInt()); //TODO: check server for duplicates
+		this.ID = WhiteboardServer.threadCounter.incrementAndGet();
+		System.out.println(WhiteboardServer.threadCounter.get());
+		//this.ID = Math.abs((new Random()).nextInt()); //TODO: check server for duplicates
 	}
 	
 	@Override
@@ -48,5 +50,7 @@ public class WhiteboardClientThread extends Thread {
 		if (this.dataOut != null) {
 			this.dataOut.close();
 		}
+		WhiteboardServer.threadCounter.decrementAndGet();
+		System.out.println(WhiteboardServer.threadCounter.get());
 	}
 }

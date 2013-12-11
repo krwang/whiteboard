@@ -9,9 +9,11 @@ import java.net.Socket;
 import javax.swing.DefaultListModel;
 
 /**
- * TODO: class declaration
- * @author krwang
- *
+ * This class contains code for the WhiteboardClient, which
+ * will act as the controller in the MVC design on the client
+ * side. The WhiteboardClient can accept messages from the server
+ * and update the client canvas as well as send action messages
+ * to the server.
  */
 
 public class WhiteboardClient {
