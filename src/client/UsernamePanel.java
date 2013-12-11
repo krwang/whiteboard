@@ -18,7 +18,6 @@ import javax.swing.JPanel;
 public class UsernamePanel extends JPanel{
 	private final JLabel title;
 	final JList<String> usernameList;
-	//private final WhiteboardGUI gui;
 
 	/**
 	 * constructs a username panel
@@ -26,9 +25,7 @@ public class UsernamePanel extends JPanel{
 	 */
 	public UsernamePanel(WhiteboardGUI parent) {
 		super();
-		
-		//gui = parent;
-		
+				
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;

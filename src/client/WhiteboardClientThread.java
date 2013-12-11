@@ -29,7 +29,7 @@ public class WhiteboardClientThread extends Thread {
 				client.handle(dataIn.readLine());
 			}
 		} catch (Exception e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 	
