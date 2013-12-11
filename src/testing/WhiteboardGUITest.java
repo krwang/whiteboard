@@ -21,6 +21,8 @@ package testing;
  * 		d) The switch button closes the WhiteboardGUI and opens a new EntryGUI for the user to connect to another
  * 		   canvas
  * 		e) When toggling buttons on the ToolsPanel, the canvas should reflect those choices when drawing
+ * 
+ * @category no_didit
  */
 public class WhiteboardGUITest {
 

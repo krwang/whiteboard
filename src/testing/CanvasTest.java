@@ -11,6 +11,8 @@ package testing;
  * Also, the drawLineSegment method was already given to us as base code, which 
  * means that there is further support of our decision to not test the 
  * drawLineSegment method.
+ * 
+ * @category no_didit
  */
 public class CanvasTest {
 
