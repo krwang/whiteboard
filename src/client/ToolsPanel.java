@@ -5,6 +5,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -403,7 +404,11 @@ public class ToolsPanel extends JPanel implements ActionListener {
 //            currentColor = BLUE;
             gui.setCurrentColor(WhiteboardGUI.BLUE);
         } else if (command.equals("switch")) {
-        	new EntryGUI().setVisible(true);
+        	try {
+                new EntryGUI().setVisible(true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 			gui.dispose();
         } else {
             System.out.println("Action not recognized");
