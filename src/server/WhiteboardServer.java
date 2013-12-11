@@ -38,6 +38,7 @@ public class WhiteboardServer {
 	private ConcurrentHashMap<String,ArrayList<String>> canvasMovesMap;
 	private ConcurrentHashMap<String,ArrayList<Socket>> sockets;
 	private ConcurrentHashMap<String, ArrayList<String>> usersOnCanvas;
+	private int threadCount;
 	private final ArrayBlockingQueue<Object[]> queue;
 	private final Thread thread;
 	private ServerSocket serverSocket;
@@ -54,10 +55,10 @@ public class WhiteboardServer {
 		canvasMovesMap = new ConcurrentHashMap<String, ArrayList<String>>();
 		sockets = new ConcurrentHashMap<String,ArrayList<Socket>>();
 		usersOnCanvas = new ConcurrentHashMap<String, ArrayList<String>>();
+		threadCount = 0;
 		queue = new ArrayBlockingQueue<Object[]>(1000);
 
-		thread = new Thread(new Runnable(){
-
+		thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while(true){
@@ -67,9 +68,7 @@ public class WhiteboardServer {
 						e.printStackTrace();
 					}
 				}
-
 			}
-
 		});
 		thread.start();
 	}
@@ -150,9 +149,9 @@ public class WhiteboardServer {
 	 */
 	@SuppressWarnings("unchecked")
 	public void sendOutput(Object[] obj) throws IOException {
-		String input = (String)obj[0];
-		Socket socket = (Socket)obj[1];
-		PrintWriter out = (PrintWriter)obj[2];
+		String input = (String) obj[0];
+		Socket socket = (Socket) obj[1];
+		PrintWriter out = (PrintWriter) obj[2];
 
 		Object[] outputParsed = handleRequest(input, socket);
 		ArrayList<String> output = (ArrayList<String>)outputParsed[0];
@@ -189,16 +188,20 @@ public class WhiteboardServer {
 			}
 		} else if (tokens[0].equals("username")) {
 			String resp = output.get(0);
-			if (resp.equals("username good") || resp.equals("contains") || resp.equals("unavailable")) {
-				out.println(output);
+			if (resp.equals("username good") || resp.equals("contains")) {
+				out.println(resp);
 			}
 		} else if (tokens[0].equals("get")) {
-			if (output != null) {
-				for (String str: output) {
-					out.println(str);
-				}
-			}
-			out.println("endinit");
+		    if (tokens[1].equals("board")) {
+    			if (output != null) {
+    				for (String str: output) {
+    					out.println(str);
+    				}
+    			}
+    			out.println("endinit");
+		    } else if (tokens[1].equals("thread")) {
+		        out.println(output.get(0));
+		    }
 		}
 	}
 
@@ -211,8 +214,11 @@ public class WhiteboardServer {
 	 * @return
 	 */
 	private Object[] handleRequest(String input, Socket socket) {
-		String regex = "(add \\w+ \\w+)|(draw \\d+ \\d+ \\d+ \\d+ \\d+ \\d+ \\w+)|(bye \\w+ \\w+)|"
-				+ "(username \\w+ \\w+)|(get \\w+)";
+		String regex = "(add \\w+ \\w+)|"
+	                 + "(draw \\d+ \\d+ \\d+ \\d+ \\d+ \\d+ \\w+)|"
+	                 + "(bye \\w+ \\w+)|"
+	                 + "(username \\w+ \\w+)|"
+	                 + "(get \\w+ \\w+)";
 
 		if (!input.matches(regex)) {
 			// invalid input
@@ -266,7 +272,6 @@ public class WhiteboardServer {
 			 * draws the draw input from the client onto the master copy of the
 			 * whiteboard that the client is referencing to update the master copy
 			 */
-
 			String boardName = tokens[7];
 
 			ArrayList<String> pastCanvasMoves = canvasMovesMap.get(boardName);
@@ -274,7 +279,6 @@ public class WhiteboardServer {
 			canvasMovesMap.put(boardName, pastCanvasMoves);
 
 			return new Object[]{pastCanvasMoves, boardName};
-
 		} else if(tokens[0].equals("bye")) {
 			String boardName = tokens[1];
 			String username = tokens[2];
@@ -282,23 +286,30 @@ public class WhiteboardServer {
 			sockets.get(boardName).remove(socket);
 			ArrayList<String> output = new ArrayList<String>();
 			output.add(input);
-			return new Object[]{output, boardName};
-
-		} else if(tokens[0].equals("username")){
+			return new Object[] {output, boardName};
+		} else if(tokens[0].equals("username")) {
 			String boardName = tokens[1];
 			String username = tokens[2];
 			ArrayList<String> output = new ArrayList<String>();
 
 			if(usersOnCanvas.get(boardName) != null) {
-				if (usersOnCanvas.get(boardName).contains(username)){
+				if (usersOnCanvas.get(boardName).contains(username)) {
 					output.add("contains");
-					return new Object[]{output};
+					return new Object[] {output};
 				}
 			}
 			output.add("username good");
-			return new Object[]{output};
+			return new Object[] {output};
 		} else if(tokens[0].equals("get")) {
-			return new Object[] {canvasMovesMap.get(tokens[1])};
+		    if(tokens[1].equals("board")) {
+		        return new Object[] {canvasMovesMap.get(tokens[2])};
+		    } else if(tokens[1].equals("thread")) {
+		        ArrayList<String> output = new ArrayList<String>();
+		        output.add("" + (threadCount++));
+		        return new Object[] {output};
+		    } else {
+		        throw new UnsupportedOperationException();
+		    }
 		} else {
 			throw new UnsupportedOperationException();
 		}		

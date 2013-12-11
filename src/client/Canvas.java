@@ -1,6 +1,7 @@
 package client;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
@@ -23,7 +24,7 @@ public class Canvas extends JPanel {
     private static final int LARGE_BRUSH_SIZE = 20;
     
 	// image where the user's drawing is stored
-	private Image drawingBuffer;
+	private BufferedImage drawingBuffer;
 	
 	/**
 	 * default constructor of canvas. Creates a canvas of width 800 
@@ -52,7 +53,7 @@ public class Canvas extends JPanel {
 	 * Make the drawing buffer and draw some starting content for it.
 	 */
 	private void makeDrawingBuffer() {
-		drawingBuffer = createImage(getWidth(), getHeight());
+		drawingBuffer = (BufferedImage) createImage(getWidth(), getHeight());
 		fillWithWhite();
 	}
 
