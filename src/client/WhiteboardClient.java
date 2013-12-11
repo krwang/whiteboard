@@ -58,7 +58,7 @@ public class WhiteboardClient {
             while (!(line = dataIn.readLine()).equals("endinit")){
             	System.out.println("DataIn: " + line);
             	if (!line.equals("")) {
-            		System.out.println("empty line");
+            		System.out.println("line: " + line);
 	                String[] args = line.split(" ");
 	                int color = Integer.parseInt(args[1]);//<--will be the color represented as an int
 	                int size = Integer.parseInt(args[2]);//size represented as an int
