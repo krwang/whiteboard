@@ -4,7 +4,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.*;
+import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
 
 /**
  * This class contains code for the username panel that displays
@@ -15,7 +18,7 @@ import javax.swing.*;
 public class UsernamePanel extends JPanel{
 	private final JLabel title;
 	final JList<String> usernameList;
-	private final WhiteboardGUI gui;
+	//private final WhiteboardGUI gui;
 
 	/**
 	 * constructs a username panel
@@ -24,7 +27,7 @@ public class UsernamePanel extends JPanel{
 	public UsernamePanel(WhiteboardGUI parent) {
 		super();
 		
-		gui = parent;
+		//gui = parent;
 		
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();

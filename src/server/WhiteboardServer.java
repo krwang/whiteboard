@@ -3,16 +3,12 @@ package server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-
-import client.Canvas;
 
 public class WhiteboardServer {
 	public static final int SERVER_PORT = 5050;
@@ -23,6 +19,7 @@ public class WhiteboardServer {
 	private final ArrayBlockingQueue<Object[]> queue;
 	private final Thread thread;
 	private ServerSocket serverSocket;
+	
 	/**
 	 * Make a WhiteboardServer that listens for connections on port.
 	 * It also takes commands put in the queue and sends the output
@@ -220,7 +217,7 @@ public class WhiteboardServer {
 		String regex = "(add \\w+ \\w+)|(draw \\d+ \\d+ \\d+ \\d+ \\d+ \\d+ \\w+)|(bye \\w+ \\w+)|"
 				+ "(username \\w+ \\w+)|(get \\w+)";
 	
-		if ( ! input.matches(regex)) {
+		if (!input.matches(regex)) {
 			// invalid input
 			return null;
 		}
@@ -277,8 +274,8 @@ public class WhiteboardServer {
 			 */
 
 			System.out.println("draw");
-			int color = Integer.parseInt(tokens[1]);//<--will be the color represented as an int
-			int size = Integer.parseInt(tokens[2]);//size represented as an int
+			int color = Integer.parseInt(tokens[1]);
+			int size = Integer.parseInt(tokens[2]);
 			int x1 = Integer.parseInt(tokens[3]);
 			int y1 = Integer.parseInt(tokens[4]);
 			int x2 = Integer.parseInt(tokens[5]);
