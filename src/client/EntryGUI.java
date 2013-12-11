@@ -24,8 +24,11 @@ import javax.swing.border.EmptyBorder;
 
 /**
  * This class contains code for a EntryGUI. The EntryGUI allows the user to 
- * either create a new Whiteboard and input the name of the Whiteboard
- * or load a previously created Whiteboard by name. 
+ * enter a name of a canvas and an username. If the canvas exists on the server,
+ * the canvas will be loaded from the server. Otherwise, a new canvas is created.
+ * 
+ * The username is used by the server to identify a user and to indicate to other users
+ * connected to the canvas that a new user has connected
  * 
  * TODO: testing strategy
  */
@@ -58,10 +61,13 @@ public class EntryGUI extends JFrame implements ActionListener {
      * Button for user to click on to create a new Whiteboard
      */
     private final JButton newButton;
-    
-	//List containing all Whiteboards available to load
-	//private final JList<String> availableCanvases;
-		
+	
+    /**
+     * Initializes and organizes all elements of the EntryGUI,
+     * using a GridBag layout
+     *  
+     * @throws IOException
+     */
 	public EntryGUI() throws IOException {
 		super();
 		
@@ -114,12 +120,6 @@ public class EntryGUI extends JFrame implements ActionListener {
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.anchor = GridBagConstraints.EAST;
         panel.add(newButton, gbc);
-        
-        //DefaultListModel<String> model = new DefaultListModel<String>();
-		//availableCanvases = new JList<String>(model);
-		
-		//fill availableCanvases with canvases saved on the server
-		//fillList();
 		
 		//frame the JottoGUI around the default components
 		setContentPane(panel);
@@ -130,6 +130,20 @@ public class EntryGUI extends JFrame implements ActionListener {
 		pack();
 	}
 	
+	/**
+	 * This method is called any time the user hits the enter key or 
+	 * mouse clicks on the load button. It parses the inputs into the username 
+	 * and boardname text fields and does one of two things with the inputs.
+	 * If one of the inputs is empty (ie. is the empty string ""), the GUI rejects that
+	 * submission, popping up a JDialog that indicates the user error. If neither input
+	 * is empty, it sends the input to the server, which then checks that nobody
+	 * under the same username is currently connected to the canvas under the boardname.
+	 * If so, the server rejects the username and a JDialog box pops up indicating the 
+	 * error. Otherwise, a new WhiteboardGUI appears.
+	 * 
+	 * Precondition: Boardname and username must contain only alphanumerics (no symbols). 
+	 * 				 The server will hit an exception if either contains a non-alphanumeric. 
+	 */
 	public void actionPerformed(ActionEvent ae) {
 	    boolean valid = true;
 	    String username = userField.getText();
@@ -138,47 +152,50 @@ public class EntryGUI extends JFrame implements ActionListener {
 	    StringBuilder errorText = new StringBuilder("<html>");
 	    
 	    try {
+	    	//create a socket for communication with the server
 	        Socket socket = new Socket("localhost", 5050);
 	        
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
+            
             try {
+            	
+            	//if neither input is empty
                 if(!boardname.equals("") && !(username.equals(""))) {
-	                // check that username is available
+                	
+                	//send a request to the server through the socket output stream
 	                out.println("username " + boardname  + " " + username);
 	
+	                //read the response from the server
 	                String line = in.readLine();
-//	                if (line.equals("unavailable")) {
-//	                    errorText.append("Username field cannot be empty.");
-//	                    valid = false;
-//                }
 	                if (line.equals("contains")) {
 	                    errorText.append("This username is not available.");
 	                    valid = false;
 	                }
                 }
+                
+                //if either input is empty
                 else {
-                	errorText.append("Username field cannot be empty.");
+                	if (boardname.equals("")) {
+                		errorText.append("Boardname field cannot be empty <br>");
+                	}
+                	if (username.equals("")) {
+                		errorText.append("Username field cannot be empty.");
+                	}
                     valid = false;
                 }
-            } finally {
+                
+            } 
+            finally {
                 out.close();
                 in.close();
                 socket.close();
             }
-        } catch(IOException e) {
+        } 
+	    catch(IOException e) {
             e.printStackTrace();
         }
-	    
-	    if (boardname.isEmpty()) {
-	        if (errorText.length() > 5) {
-	            errorText.append("<br>");
-	        }
-	        
-	        errorText.append("Whiteboard field cannot be empty.");
-	        valid = false;
-	    }
-	    
+
 	    errorText.append("</html>");
 	    
 	    if (valid) {
@@ -188,7 +205,10 @@ public class EntryGUI extends JFrame implements ActionListener {
 				e.printStackTrace();
 			}
 	    	dispose();
-	    } else {
+	    } 
+	    
+	    //if the server says the username is in use or there is an empty input
+	    else {
 	        final JDialog error = new JDialog(this, "Error", true);
 	        error.setLayout(new GridBagLayout());
 	        error.add(new JLabel(errorText.toString(), SwingConstants.CENTER));
@@ -205,7 +225,11 @@ public class EntryGUI extends JFrame implements ActionListener {
 	    }
 	}
 	
-	//DELETE THIS AT SOME POINT maybe...
+	/**
+	 * To start a new EntryGUI, which allows the user to 
+	 * connect to the server and open a WhiteboardGUI with
+	 * a canvas
+	 */
 	public static void main(final String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

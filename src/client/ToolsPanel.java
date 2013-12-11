@@ -14,93 +14,18 @@ import javax.swing.*;
  * Interface for user-customizable settings for drawing on the canvas. Contains
  * options for brush types, brush sizes, and colors.
  * 
- * Each toolsPanel is linked with a User that keeps track ot the currentBrush and size and 
- * color selected....is this even necessary?????????
  * TODO:
  *      Change size buttons to JSlider
  *      Change color buttons to JColorChooser
  */
 @SuppressWarnings("serial")
 public class ToolsPanel extends JPanel implements ActionListener {
-//    // CLASS CONSTANTS
-//    // all values refer to respective index in relevant list
-//    /**
-//     * Brush setting to draw
-//     */
-//    public static final int DRAW = 0;
-//    
-//    /**
-//     * Brush setting to erase
-//     */
-//    public static final int ERASE = 1;
-//    
-//    /**
-//     * Brush size to small
-//     */
-//    public static final int SMALL = 0;
-//    
-//    /**
-//     * Brush size to medium
-//     */
-//    public static final int MEDIUM = 1;
-//    
-//    /**
-//     * Brush size to large
-//     */
-//    public static final int LARGE = 2;
-//    
-//    /**
-//     * Brush color to black (#000000)
-//     */
-//    public static final int BLACK = 0;
-//    
-//    /**
-//     * Brush color to red (#FF0000)
-//     */
-//    public static final int RED = 1;
-//    
-//    /**
-//     * Brush color to orange (#FF7700)
-//     */
-//    public static final int ORANGE = 2;
-//    
-//    /**
-//     * Brush color to yellow (#FFFF00)
-//     */
-//    public static final int YELLOW = 3;
-//    
-//    /**
-//     * Brush color to green (#00FF00)
-//     */
-//    public static final int GREEN = 4;
-//    
-//    /**
-//     * Brush color to blue (#0000FF)
-//     */
-//    public static final int BLUE = 5;
     
     /**
      * Maximum number of buttons allowed in one row
      */
     private static final int MAX_ROW_BUTTONS = 3;
-    
-//    // INSTANCE VARIABLES
-//    /**
-//     * Current brush setting (see brush constants)
-//     */
-//    private int currentBrush;
-//    
-//    /**
-//     * Current brush size (see size constants)
-//     */
-//    private int currentSize;
-//    
-//    /**
-//     * Current brush color (see color constants)
-//     */
-//    private int currentColor;
-    
-    
+        
     // GUI COMPONENTS
     /**
      * Toggle button for selecting the draw function
@@ -185,6 +110,7 @@ public class ToolsPanel extends JPanel implements ActionListener {
     // METHODS
     /**
      * Default constructor for creating a ToolsPanel
+     * Initializes all elements of a ToolsPanel and organizes them
      */
     public ToolsPanel(WhiteboardGUI parent) {
         super();
@@ -319,14 +245,9 @@ public class ToolsPanel extends JPanel implements ActionListener {
      *      drawing brush, small size, black color
      */
     private void initialize() {
-        drawButton.setSelected(true);
-//        currentBrush = DRAW;<-done in the user class
-        
-        smallButton.setSelected(true);
-//        currentSize = SMALL;
-        
+        drawButton.setSelected(true);      
+        smallButton.setSelected(true);       
         blackButton.setSelected(true);
-//        currentColor = BLACK;
     }
     
     /**
@@ -334,8 +255,8 @@ public class ToolsPanel extends JPanel implements ActionListener {
      * a new row when the maximum number of buttons are added to a row. Uses
      * GridBagLayout to add the buttons.
      * 
-     * @param buttons The list of buttons to be added
-     * @param gbc The GridBagConstraints currently in use
+     * @param buttons is the list of buttons to be added
+     * @param gbc is the GridBagConstraints currently in use
      */
     private void addButtons(ArrayList<JToggleButton> buttons, 
                                                     GridBagConstraints gbc) {
@@ -355,7 +276,7 @@ public class ToolsPanel extends JPanel implements ActionListener {
      * user setting to the user-selected button and deselects the previous
      * user selection.
      * 
-     * @param ae The ActionEvent that occurred
+     * @param ae is the ActionEvent that occurred
      */
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -405,23 +326,4 @@ public class ToolsPanel extends JPanel implements ActionListener {
             System.out.println("Action not recognized");
         }
     }
-    
-//    /**
-//     * For testing purposes
-//     * 
-//     * @param args Standard command line input
-//     */
-//    public static void main(String[] args) {
-//        final JFrame frame = new JFrame();
-//        frame.add(new ToolsPanel());
-//        frame.pack();
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setLocationRelativeTo(null);
-//        SwingUtilities.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                frame.setVisible(true);
-//            }
-//        });
-//    }
 }
