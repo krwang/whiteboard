@@ -9,14 +9,36 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+<<<<<<< HEAD
  * 
  * @author Kelly
  *
+=======
+ * This class contains code for a WhiteboardServer.
+ * A WhiteboardServer enables users to edit the same canvas across
+ * a network. It will store actions performed on each canvas opened
+ * on the server and will keep these changes as long as the server 
+ * is running.
+ * 
+ * Thread Safety - WhiteboardServer is threadsafe for the following reasons:
+ * 
+ * 1. There cannot be any deadlocks because WhiteboardClients are not dependent on other WhiteboardClients
+ * 	  and no WhiteboardClients are dependent on the server or other classes in the package
+ * 2. Race conditions between WhiteboardClients sending actions on the canvas are allowed to occur naturally
+ * 	  This will only affect the order in which the actions are placed on the server action queue, and this
+ * 	  order will be reflected for all clients, regardless of what the local client version displayed.
+ * 3. Interleaving is protected against in the server action queue. All local client canvases will be updated
+ * 	  in the order that the server queue receives the action, so all local versions will display
+ * 	  the same image.
+ * 
+ * For the testing strategy, see WhiteboardServerTest.java
  */
 public class WhiteboardServer {
 	public static final int SERVER_PORT = 5050;
+	public static AtomicInteger threadCounter = new AtomicInteger(0);
 
 	private ConcurrentHashMap<String,ArrayList<String>> canvasMovesMap;
 	private ConcurrentHashMap<String,ArrayList<Socket>> sockets;
@@ -89,7 +111,11 @@ public class WhiteboardServer {
 	 * Handles a single client connection and puts all client inputs 
 	 * into the queue.
 	 * 
+<<<<<<< HEAD
 	 * @param socket     socket through which the client is connected
+=======
+	 * @param socket is the socket through which the client is connected
+>>>>>>> dd11dd8af2cbb292b4fbcaf4086c366d6434a4b2
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */

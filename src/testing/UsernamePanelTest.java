@@ -1,4 +1,4 @@
-package client;
+package testing;
 
 /**
  * To test the UsernamePanel class, we will be testing that the username panel outputs the

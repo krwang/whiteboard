@@ -14,18 +14,10 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 /**
-<<<<<<< HEAD
- * This class combines the canvas and tools panel in one JFrame
- *  to present a unified appearance for the GUI
-=======
  * this class combines the canvas and tools panel in one 
  * JFrame to present a unified appearance for the GUI
- *
- *TODO: Testing Strategy: 
- *
- *
- *
->>>>>>> 8503807a8383a6f5151d1828887c4761d98db30f
+ * 
+ * For the testing strategy, see WhiteboardGUITest.java
  */
 @SuppressWarnings("serial")
 public class WhiteboardGUI extends JFrame implements WindowListener {
@@ -283,7 +275,6 @@ public class WhiteboardGUI extends JFrame implements WindowListener {
 	 */
 	@Override
 	public void windowClosed(WindowEvent we) {
-		System.out.println("closed");
 		try {
 			client.stop();
 		} catch (IOException e) {
@@ -293,7 +284,6 @@ public class WhiteboardGUI extends JFrame implements WindowListener {
 
 	@Override
 	public void windowClosing(WindowEvent we) {
-		System.out.println("closed");
 		try {
 			client.stop();
 		} catch (IOException e) {

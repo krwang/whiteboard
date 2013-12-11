@@ -34,8 +34,6 @@ import javax.swing.border.EmptyBorder;
  * The client can only also open multiple copies of the same canvas, but only 
  * under different usernames  * 
  * For testing strategy, please see the EntryGUITest.java class
- * 
- * TODO: threadsafe argument
  */
 @SuppressWarnings("serial")
 public class EntryGUI extends JFrame implements ActionListener {
@@ -143,7 +141,6 @@ public class EntryGUI extends JFrame implements ActionListener {
      * submission, popping up a JDialog that indicates the user error. If neither input
      * is empty, it sends the input to the server, which then checks that nobody
      * under the same username is currently connected to the canvas under the boardname.
-     * TODO: ^this actually does happen........
      * If so, the server rejects the username and a JDialog box pops up indicating the 
      * error. Otherwise, a new WhiteboardGUI appears.
      * 
@@ -201,43 +198,44 @@ public class EntryGUI extends JFrame implements ActionListener {
             e.printStackTrace();
         }
 
-        errorText.append("</html>");
-
-        if (valid) {
-            try {
-                new WhiteboardClient(username, boardname);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            dispose();
-        } 
-
-        //if the server says the username is in use or there is an empty input
-        else {
-            final JDialog error = new JDialog(this, "Error", true);
-            error.setLayout(new GridBagLayout());
-            error.add(new JLabel(errorText.toString(), SwingConstants.CENTER));
-            error.pack();
-            error.setSize(new Dimension(250, 100));
-            error.setResizable(false);
-            error.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            error.setLocationRelativeTo(this);
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    error.setVisible(true);
-                }
-            });
-        }
-    }
-
-    /**
-     * To start a new EntryGUI, which allows the user to 
-     * connect to the server and open a WhiteboardGUI with
-     * a canvas
-     */
-    public static void main(final String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
+	    errorText.append("</html>");
+	    
+	    //create a WhiteboardClient, which starts a WhiteboardGUI
+	    if (valid) {
+	    	try {
+				new WhiteboardClient(username, boardname);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    	dispose();
+	    } 
+	    
+	    //if the server says the username is in use or there is an empty input
+	    else {
+	        final JDialog error = new JDialog(this, "Error", true);
+	        error.setLayout(new GridBagLayout());
+	        error.add(new JLabel(errorText.toString(), SwingConstants.CENTER));
+	        error.pack();
+	        error.setSize(new Dimension(250, 100));
+	        error.setResizable(false);
+	        error.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	        error.setLocationRelativeTo(this);
+	        SwingUtilities.invokeLater(new Runnable() {
+	            public void run() {
+	                error.setVisible(true);
+	            }
+	        });
+	    }
+	}
+	
+	/**
+	 * To start a new EntryGUI, which allows the user to 
+	 * connect to the server and open a WhiteboardGUI with
+	 * a canvas
+	 */
+	public static void main(final String[] args) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
                 try {
                     new EntryGUI().setVisible(true);
                 } catch (IOException e) {

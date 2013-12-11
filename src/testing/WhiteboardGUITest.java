@@ -1,4 +1,4 @@
-package client;
+package testing;
 /**
  * To test the GUI, we will test several things: 
  * 1) that the GUI setup from the EntryGUI to the WhiteboardGUI are all correct

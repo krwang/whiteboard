@@ -1,4 +1,4 @@
-package client;
+package testing;
 
 /**
  * To test the whiteboard client, 
