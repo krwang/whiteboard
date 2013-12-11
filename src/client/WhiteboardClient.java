@@ -22,8 +22,6 @@ public class WhiteboardClient {
     private WhiteboardClientThread thread;
     private BufferedReader dataIn;
     private PrintWriter dataOut;
-    //private DataInputStream dataIn;
-    //private DataOutputStream dataOut;
 
     /**
      * creates a local Whiteboard Client. Connects to the localhost server through a socket
@@ -33,34 +31,23 @@ public class WhiteboardClient {
      * @throws IOException
      */
     public WhiteboardClient(String user, String canvas) throws IOException {
-        //TODO: need to figure out how to get the WhiteboardGUI in here...
-        //maybe make the entry gui return the created or loaded WhiteboardGUI??
         username = user;
         canvasName = canvas;
 
         //creating a new socket and connecting it to the server
         socket = new Socket("localhost", 5050);
-
-        //start();
-
+        
         dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         dataOut = new PrintWriter(socket.getOutputStream(), true);
-
-        System.out.println("add request");
-        //create the WhiteboardGUI with the specified canvas
         
-
         Canvas c = new Canvas();
         this.gui = new WhiteboardGUI(canvas, c, this);
-        System.out.println("gui created");
         
         dataOut.println("get " + canvas);
         try {
             String line;
             while (!(line = dataIn.readLine()).equals("endinit")){
-            	System.out.println("DataIn: " + line);
             	if (!line.equals("")) {
-            		System.out.println("line: " + line);
 	                String[] args = line.split(" ");
 	                int color = Integer.parseInt(args[1]);
 	                int size = Integer.parseInt(args[2]);
@@ -118,11 +105,9 @@ public class WhiteboardClient {
     public void handle(String message) {
         String regex = "(add \\w+ \\w+)|(draw \\w+ \\w+ \\d+ \\d+ \\d+ \\d+ \\w+)|(bye \\w+ \\w+)";
         if (!message.matches(regex)) {
-        	System.out.println("handling bad message: " + message);
             // invalid input
             return;
         }
-        System.out.println("handling valid action: " + message);
 
         String[] tokens = message.split(" ");
 
@@ -130,10 +115,7 @@ public class WhiteboardClient {
          * if someone joins the canvas
          */
         if(tokens[0].equals("add")){
-        	System.out.println("handle add");
-            //String boardName = tokens[1];
             String userName = tokens[2];
-            System.out.println("usernames client " + userName);
 
             //add username to username panel
             DefaultListModel<String> model = (DefaultListModel<String>) gui.usernamePanel.usernameList.getModel();
@@ -147,16 +129,12 @@ public class WhiteboardClient {
          * draws the draw input on the client canvas
          */
         else if(tokens[0].equals("draw")) {
-        	System.out.println("handle draw");
-            //assuming canvas is already initialized, as in the open method 
-            //has run first(is that bad?)
             int color = Integer.parseInt(tokens[1]);
             int size = Integer.parseInt(tokens[2]);
             int x1 = Integer.parseInt(tokens[3]);
             int y1 = Integer.parseInt(tokens[4]);
             int x2 = Integer.parseInt(tokens[5]);
             int y2 = Integer.parseInt(tokens[6]);
-            //String boardName = tokens[7];
             gui.canvas.drawLineSegment(color,size, x1,y1,x2,y2);
         }
 
@@ -164,7 +142,6 @@ public class WhiteboardClient {
          * if someone disconnects from the canvas
          */
         else if(tokens[0].equals("bye")){
-        	System.out.println("handle bye");
             String userName = tokens[2];
 
             //remove username from the username panel
@@ -183,10 +160,8 @@ public class WhiteboardClient {
      */
     public void addRequest() throws IOException {
         String request = "add " + canvasName + " " + username;
-        System.out.println("canvas: " + canvasName + " Username: " + username);
         dataOut.println(request);
         dataOut.flush();
-        System.out.println("Client Request: " + request);
     }
 
     /**
@@ -202,8 +177,6 @@ public class WhiteboardClient {
     public void drawRequest(int x1, int y1, int x2, int y2, int size, int color) throws IOException {
         String request = String.format("draw %d %d %d %d %d %d %s", color, size, x1, y1, x2, y2, gui.getTitle());
         dataOut.println(request);
-        //dataOut.flush();
-        System.out.println(request);
     }
 
     /**
@@ -214,7 +187,5 @@ public class WhiteboardClient {
     public void byeRequest() throws IOException {
         String request = "bye " + canvasName + " " + username;
         dataOut.println(request);
-        //dataOut.flush();
-        System.out.println(request);
     }
 }
