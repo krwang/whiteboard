@@ -153,24 +153,7 @@ public class WhiteboardServer {
 		if (outputParsed.length > 1) {
 			boardName = (String)outputParsed[1];
 		}
-
-		if (!output.isEmpty()) {
-			if (output.equals("username good") || output.equals("contains") || output.equals("unavailable")) {
-				System.out.println("username: " + output);
-				out.println(output);
-			}
-			else {
-				for (String str: output) {
-					System.out.println("String: " + str);
-					out.println(str);
-				}
-			}
-		}
-		else {
-			out.println("");
-		}
 		
-		out.println("endinit");
 		String[] tokens = input.split(" ");
 
 		if (tokens[0].equals("bye")) {
@@ -206,6 +189,20 @@ public class WhiteboardServer {
 				socketOut.println(input);
 				System.out.println("sending draw command: " + input);
 			}
+		} else if (tokens[0].equals("username")) {
+		    String resp = output.get(0);
+		    if (resp.equals("username good") || resp.equals("contains") || resp.equals("unavailable")) {
+		        System.out.println("username: " + resp);
+		        out.println(output);
+		    }
+		} else if (tokens[0].equals("get")) {
+		    if (output != null) {
+		        for (String str: output) {
+	                System.out.println("String: " + str);
+	                out.println(str);
+	            }
+		    }
+	        out.println("endinit");
 		}
 	}
 
@@ -221,7 +218,7 @@ public class WhiteboardServer {
 		System.out.println("handleRequest");
 		System.out.println("input: " + input);
 		String regex = "(add \\w+ \\w+)|(draw \\d+ \\d+ \\d+ \\d+ \\d+ \\d+ \\w+)|(bye \\w+ \\w+)|"
-				+ "(username \\w+ \\w+)";
+				+ "(username \\w+ \\w+)|(get \\w+)";
 	
 		if ( ! input.matches(regex)) {
 			// invalid input
@@ -331,8 +328,9 @@ public class WhiteboardServer {
 			}
 			output.add("username good");
 			return new Object[]{output};
-		}
-		else {
+		} else if(tokens[0].equals("get")) {
+		    return new Object[] {canvasMovesMap.get(tokens[1])};
+		} else {
 			throw new UnsupportedOperationException();
 		}		
 	}

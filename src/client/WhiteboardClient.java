@@ -59,8 +59,7 @@ public class WhiteboardClient {
 //        gui.usernamePanel.usernameList.setModel(model);
         System.out.println("gui created");
         
-        addRequest();
-        
+        dataOut.println("get " + canvas);
         try {
             String line;
             while (!(line = dataIn.readLine()).equals("endinit")){
@@ -83,6 +82,8 @@ public class WhiteboardClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
+        addRequest();
         thread = new WhiteboardClientThread(socket, this);
         thread.start();
     }
