@@ -145,6 +145,7 @@ public class WhiteboardClient {
             	model.addElement(userName);
             }
             gui.usernamePanel.usernameList.setModel(model);
+            gui.repaint();
         }
 
         /**

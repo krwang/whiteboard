@@ -209,7 +209,7 @@ public class WhiteboardServer {
 		        	socketOut.println("add " + boardName + " " + user);
 	            	System.out.println("sending add command: " + "add " + boardName + " " + user);
 		        }
-//				System.out.println("users connected: " + usersOnCanvas.get(boardName).toString());
+				System.out.println("users connected: " + usersOnCanvas.get(boardName).toString());
 //				socketOut.println(input);
 //				System.out.println("sending add command: " + input);
 			}
