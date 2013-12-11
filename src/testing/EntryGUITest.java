@@ -1,4 +1,4 @@
-package client;
+package testing;
 
 /**
  * To test the entryGUI, we make sure that every input the user enters produces the 

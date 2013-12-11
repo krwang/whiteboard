@@ -1,4 +1,4 @@
-package client;
+package testing;
 
 /**
  * We will not be testing the canvas class solely on its own. The only public 

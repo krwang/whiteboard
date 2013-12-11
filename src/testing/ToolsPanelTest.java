@@ -1,4 +1,4 @@
-package client;
+package testing;
 
 /**
  * To test the ToolsPanel class, we will be testing that all of the corresponding

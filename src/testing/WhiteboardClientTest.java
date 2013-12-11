@@ -1,4 +1,4 @@
-package client;
+package testing;
 
 public class WhiteboardClientTest {
 
