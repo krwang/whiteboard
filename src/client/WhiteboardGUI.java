@@ -17,6 +17,10 @@ import javax.swing.SwingUtilities;
  * this class combines the canvas and tools panel in one 
  * JFrame to present a unified appearance for the GUI
  *
+ *TODO: Testing Strategy: 
+ *
+ *
+ *
  */
 @SuppressWarnings("serial")
 public class WhiteboardGUI extends JFrame implements WindowListener {
