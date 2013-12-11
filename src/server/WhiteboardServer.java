@@ -15,17 +15,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import client.Canvas;
 
 public class WhiteboardServer {
-	private static ConcurrentHashMap<String,Canvas> canvasMap = new ConcurrentHashMap<String, Canvas>();
-	private static ConcurrentHashMap<String,ArrayList<Socket>> sockets = new ConcurrentHashMap<String,ArrayList<Socket>>();;//by using sockets, you can only 
-	//really user one username the whole time
-
+    public static final int SERVER_PORT = 5050;
+    
+	private ConcurrentHashMap<String,Canvas> canvasMap;
+	private ConcurrentHashMap<String,ArrayList<String>> canvasMovesMap;
+	private ConcurrentHashMap<String,ArrayList<Socket>> sockets;
+	private HashSet<String> usernames;
 	private final ArrayBlockingQueue<Object[]> queue;
-	private static HashSet<String> usernames = new HashSet<String>();
-	public static final int SERVER_PORT = 5050;
 	private final Thread thread;
 	private ServerSocket serverSocket;
 	/**
-	 * Make a SquareServer that listens for connections on port.
+	 * Make a WhiteboardServer that listens for connections on port.
 	 * It also takes commands put in the queue and sends the output
 	 * of them back to the client
 	 * @param port port number, requires 0 <= port <= 65535.
@@ -33,7 +33,11 @@ public class WhiteboardServer {
 	public WhiteboardServer(int port) throws IOException{
 		System.out.println("server started in port " + port);
 		serverSocket = new ServerSocket(port);
-
+		
+		canvasMap = new ConcurrentHashMap<String, Canvas>();
+	    canvasMovesMap = new ConcurrentHashMap<String, ArrayList<String>>();
+	    sockets = new ConcurrentHashMap<String,ArrayList<Socket>>();
+	    usernames = new HashSet<String>();
 		queue = new ArrayBlockingQueue<Object[]>(1000);
 
 		thread = new Thread(new Runnable(){
@@ -52,7 +56,6 @@ public class WhiteboardServer {
 
 		});
 		thread.start();
-
 	}
 
 	/**
@@ -66,35 +69,32 @@ public class WhiteboardServer {
 		while(true){
 			final Socket socket = serverSocket.accept();
 			//creating a new thread for each client
-			Thread thread = new Thread(new Runnable(){
-				public void run(){
-					try{
+			Thread thread = new Thread(new Runnable() {
+				public void run() {
+					try {
 						handle(socket);
-					}catch(IOException e){
-						e.printStackTrace();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}finally{
+					} catch(Exception e) {
+					    e.printStackTrace();
+					} finally {
 						try {
 							socket.close();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
 				}
-
 			});
 			thread.start();
 		}
-
 	}
 
 	//where will the server get it's input from??what will read to it?
 	/**
 	 * Handles a single client connection and puts all client inputs 
 	 * into the queue.
+	 * 
+	 * TODO: EntryGUI communication
+	 * 
 	 * @param socket     socket through which the client is connected
 	 * @throws IOException
 	 * @throws InterruptedException
@@ -104,27 +104,20 @@ public class WhiteboardServer {
 		System.out.println("CANVASES: " + canvasMap);
 		System.out.println("USERS: " + usernames);
 		try{
-			System.out.println("before");
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
-			System.out.println("after");
 			try {
 				// each request from the client is whiteboardName
-				System.out.println("inside");
 				for (String line = in.readLine(); line != null; line = in.readLine()) {
 					System.err.println("request: " + line);
 
 					queue.put(new Object[]{line, socket, out});
 				}
-			} catch(Exception e){
-				e.printStackTrace();
-			}
-			finally {        
-
+			} finally {
 				out.close();
 				in.close();
 			}
-		}catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -147,86 +140,109 @@ public class WhiteboardServer {
 	 * @param obj
 	 * @throws IOException
 	 */
-	public void sendOutput(Object[] obj) throws IOException{
+	public void sendOutput(Object[] obj) throws IOException {
 		System.out.println("send output");
 		String input = (String)obj[0];
 		Socket socket = (Socket)obj[1];
 		PrintWriter out = (PrintWriter)obj[2];
 
-		String[] outputParsed = handleRequest(input, socket);
-		String output = outputParsed[0];
-		String boardName = outputParsed[1];
+		Object[] outputParsed = handleRequest(input, socket);
+		ArrayList<String> output = (ArrayList<String>)outputParsed[0];
+		String boardName = (String)outputParsed[1];
+		//okay, right now i'm passing out the whole list of all the moves for that particular canvas..idk if that's the right way to go about this
 
 		//		out.println(output);
 		//		out.flush();<-might not need this
 		String[] tokens = input.split(" ");
 
-		if(tokens[0].equals("bye")){
+		if (tokens[0].equals("bye")) {
 			//where do i close the input stream???
 			//			out.close();
 			sockets.get(socket).remove(socket);
+		} else if (tokens[0].equals("add")) {
+		    for (String action : output) {
+	            PrintWriter socketOut = new PrintWriter(socket.getOutputStream(),true);
+	            socketOut.println(action);
+	        }
+		} else if (tokens[0].equals("draw")) {
+		    ArrayList<Socket> connected = sockets.get(boardName);
+		    for(Socket otherSocket: connected) {
+		        PrintWriter socketOut = new PrintWriter(otherSocket.getOutputStream(),true);
+		        socketOut.println(input);
+		    }
 		}
-		//		else{
-		for(Socket otherSocket: sockets.get(boardName)){
-			PrintWriter socketOut = new PrintWriter(otherSocket.getOutputStream(),true);
-			socketOut.println(output);
-			socketOut.flush();
-		}
-		//		}
 	}
 
 	/**
 	 * open takes in whiteboard name and username
 	 * boardName must be valid already when this is called
 	 * handles the client's input and returns the corresponding output
+	 * 
 	 * @param input
 	 * @return
 	 */
-	private String[] handleRequest(String input, Socket socket){
-		System.out.println(canvasMap);
+	private Object[] handleRequest(String input, Socket socket) {
 		System.out.println("handleRequest");
 		System.out.println("input: " + input);
 		String regex = "(add \\w+ \\w+)|(draw \\d+ \\d+ \\d+ \\d+ \\d+ \\d+ \\w+)|(bye \\w+ \\w+)";
 		Object[] output;
 		Canvas canvas;
-		if ( ! input.matches(regex)) {
+		if (!input.matches(regex)) {
 			// invalid input
 			return null;
 		}
 
 		String[] tokens = input.split(" ");
 
-		/**
-		 * If the whiteboard already exists, then the new socket gets added
-		 * to the hashmap mapping whiteboard names to sockets
-		 * 
-		 * If the whiteboard does not exist, then the whiteboard gets added
-		 * to the hashmap of whiteboard names to canvases. Also, the client
-		 * socket will be added to hashmap of whiteboard names to sockets
-		 */
-		if(tokens[0].equals("add")){
+		if(tokens[0].equals("add")) {
+		    /*
+	         * If the whiteboard already exists, then the new socket gets added
+	         * to the hashmap mapping whiteboard names to sockets
+	         * 
+	         * If the whiteboard does not exist, then the whiteboard gets added
+	         * to the hashmap of whiteboard names to canvases. Also, the client
+	         * socket will be added to hashmap of whiteboard names to sockets
+	         */
 			System.out.println("add");
 			String boardName = tokens[1];
 			String userName = tokens[2];
 			System.out.println("add boardName " + boardName);
 			System.out.println("add userName " + userName);
-			//assume that the canvas is already in canvas map no matter what
+			
+			//add canvas to boardname
+//			canvas = canvasMap.putIfAbsent(boardName, new Canvas());//if hasn't been created
+			canvasMap.putIfAbsent(boardName, new Canvas());//if hasn't been created
+
+//			if(canvas== null){
+//				canvas = canvasMap.get(boardName);
+//			}
+			//canvas = canvasMap.get(boardName);//if has alrady been created
+			
+			//add socket to boardname
 			ArrayList<Socket> socketValue = new ArrayList<Socket>();
 			socketValue.add(socket);
 			sockets.putIfAbsent(boardName, socketValue);
+			
 			ArrayList<Socket> priorSocketValue = sockets.get(boardName);
-			if(!priorSocketValue.contains(socket)){
+			if (!priorSocketValue.contains(socket)) {
 				priorSocketValue.add(socket);
 				sockets.put(boardName, priorSocketValue);
 			}
-			return new String[]{input, boardName};
-		}
-
-		/**
-		 * draws the draw input from the client onto the master copy of the
-		 * whiteboard that the client is referencing to update the master copy
-		 */
-		else if(tokens[0].equals("draw")){
+			
+			canvasMovesMap.putIfAbsent(boardName, new ArrayList<String>());//is this null right now??
+//			if(canvasMovesMap.get(boardName)== null){
+//				canvasMovesMap.put(boardName, value)
+//			}
+			
+			//sends over moves from existing canvas
+			ArrayList<String> canvasMoves = canvasMovesMap.get(boardName);
+			return new Object[]{canvasMoves, boardName};
+		} else if(tokens[0].equals("draw")) {
+		    /*
+	         * draws the draw input from the client onto the master copy of the
+	         * whiteboard that the client is referencing to update the master copy
+	         */
+		    
 			System.out.println("draw");
 			//assuming canvas is already initialized, as in the open method 
 			//has run first(is that bad?)
@@ -251,53 +267,55 @@ public class WhiteboardServer {
 			output = new Object[]{"draw", tokens[1], tokens[2], tokens[3], tokens[4],
 					tokens[5], tokens[6]};
 			System.out.println("draw output");
-			for(int i = 0; i < output.length; i++){
+			for (int i = 0; i < output.length; i++) {
 				System.out.print(output[i] + ",");
 			}
 			System.out.println("boardName " + boardName);
-			return new String[]{input, boardName};
-		}
-
-		else if(tokens[0].equals("bye")){
+			
+			ArrayList<String> pastCanvasMoves = canvasMovesMap.get(boardName);
+			pastCanvasMoves.add(input);
+			canvasMovesMap.put(boardName, pastCanvasMoves);
+			
+			return new Object[]{pastCanvasMoves, boardName};
+		} else if(tokens[0].equals("bye")) {
 			System.out.println("bye");
 			String userName = tokens[1];
 			String boardName = tokens[2];
-			return new String[]{input, boardName};
-		}
-		else{
+			return new Object[]{input, boardName};
+		} else {
 			throw new UnsupportedOperationException();
-		}
-		
+		}		
 	}
 
-	public static Canvas getBoard(String boardName, String userName){
-		canvasMap.putIfAbsent(boardName, new Canvas());
-		usernames.add(userName);
-		Canvas canvas = canvasMap.get(boardName);
-		System.out.println("MAP: " + canvasMap);
-		return canvas;
-	}
+//	public static Canvas getBoard(String boardName, String userName){
+//		canvasMap.putIfAbsent(boardName, new Canvas());
+//		usernames.add(userName);
+//		Canvas canvas = canvasMap.get(boardName);
+////		System.out.println(canvasMap.get(boardName));
+//		return canvas;
+//	}
 
-	public static boolean containsUsername(String username){
-		return(usernames.contains(username));
-	}
+//	public static boolean containsUsername(String username){
+//		return(usernames.contains(username));
+//	}
 
-	public static ArrayList<String> getCanvasMapNames(){
-		ArrayList<String> names = new ArrayList<String>();
-		for(String key : canvasMap.keySet()){
-			names.add(key);
-		}
-		return names;
-	}
-	/**
+//	public static ArrayList<String> getCanvasMapNames(){
+//		ArrayList<String> names = new ArrayList<String>();
+//		for(String key : canvasMap.keySet()){
+//			names.add(key);
+//		}
+//		return names;
+//	}
+	
+	/*
 	 * make tokens so that first word is the command, words after are the parameter
 	 * username  name
 	 * draw     color, size
 	 * erase    color, size
 	 * whiteboard   whiteboardname
 	 * somehow need to send location as well
-	 * 
 	 */
+	
 	/**
 	 * Start a WhiteboardServer running on the default port.
 	 */
