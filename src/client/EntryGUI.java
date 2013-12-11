@@ -1,13 +1,26 @@
 package client;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-
-import server.WhiteboardServer;
 
 //TODO: add swing workers
 
@@ -19,9 +32,6 @@ import server.WhiteboardServer;
  * TODO: thread safety argument
  * 
  * TODO: testing strategy
- * 
- * @author krwang
- *
  */
 @SuppressWarnings("serial")
 public class EntryGUI extends JFrame implements ActionListener {
@@ -53,11 +63,18 @@ public class EntryGUI extends JFrame implements ActionListener {
      */
     private final JButton newButton;
     
+    /**
+     * Socket used to communicate with the WhiteboardServer
+     */
+    private final Socket socket;
+    
 	//List containing all Whiteboards available to load
 	//private final JList<String> availableCanvases;
 		
-	public EntryGUI() {
+	public EntryGUI() throws IOException {
 		super();
+		
+        socket = new Socket("localhost", 5050);
 		
 		panel = new JPanel();
         panel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -133,13 +150,28 @@ public class EntryGUI extends JFrame implements ActionListener {
 	    
 	    StringBuilder errorText = new StringBuilder("<html>");
 	    
-	    if (username.isEmpty()) {
-	        errorText.append("Username field cannot be empty.");
-	        valid = false;
-	    } else if (WhiteboardServer.containsUsername(username)) {
-	        errorText.append("This username is not available.");
-	        valid = false;
-	    }
+	    try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
+            try {
+                // check that username is available
+                out.println("username " + username);
+                
+                String line = in.readLine();
+                if (line.equals("unavailable")) {
+                    errorText.append("Username field cannot be empty.");
+                    valid = false;
+                } else if (line.equals("contains")) {
+                    errorText.append("This username is not available.");
+                    valid = false;
+                }
+            } finally {
+                out.close();
+                in.close();
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
 	    
 	    if (boardname.isEmpty()) {
 	        if (errorText.length() > 5) {
@@ -154,7 +186,7 @@ public class EntryGUI extends JFrame implements ActionListener {
 	    
 	    if (valid) {
 	    	try {
-				new WhiteboardClient(username, boardname);
+				new WhiteboardClient(username, boardname, socket);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -380,8 +412,11 @@ public class EntryGUI extends JFrame implements ActionListener {
 	public static void main(final String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				EntryGUI gui = new EntryGUI();
-				gui.setVisible(true);
+                try {
+                    new EntryGUI().setVisible(true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 			}
 		});
 	}	

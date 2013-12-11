@@ -12,26 +12,27 @@ import javax.swing.JPanel;
  */
 @SuppressWarnings("serial")
 public class Canvas extends JPanel {
+    private static final int DEFAULT_WIDTH = 800;
+    private static final int DEFAULT_HEIGHT = 800;
+    
 	// image where the user's drawing is stored
 	private Image drawingBuffer;
-	private final int DEFAULT_WIDTH = 800;
-	private final int DEFAULT_HEIGHT = 600;
 
 	public Canvas(){
 		this.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 	}
 
-	/**
-	 * Make a canvas.
-	 * @param width width in pixels
-	 * @param height height in pixels
-	 */
-	public Canvas(int width, int height) {
-		this.setPreferredSize(new Dimension(width, height));
-		// note: we can't call makeDrawingBuffer here, because it only
-		// works *after* this canvas has been added to a window.  Have to
-		// wait until paintComponent() is first called.
-	}
+//	/**
+//	 * Make a canvas.
+//	 * @param width width in pixels
+//	 * @param height height in pixels
+//	 */
+//	public Canvas(int width, int height) {
+//		this.setPreferredSize(new Dimension(width, height));
+//		// note: we can't call makeDrawingBuffer here, because it only
+//		// works *after* this canvas has been added to a window.  Have to
+//		// wait until paintComponent() is first called.
+//	}
 
 	/**
 	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)

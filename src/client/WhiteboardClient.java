@@ -34,21 +34,21 @@ public class WhiteboardClient {
 	 * @param canvas is the canvas to be connected to. Either the server will create it or the client will load it
 	 * @throws IOException
 	 */
-	public WhiteboardClient(String user, String canvas) throws IOException {
+	public WhiteboardClient(String user, String canvas, Socket s) throws IOException {
 		//TODO: need to figure out how to get the WhiteboardGUI in here...
 		//maybe make the entry gui return the created or loaded WhiteboardGUI??
 		username = user;
 		canvasName = canvas;
 		
 		//creating a new socket and connecting it to the server
-		socket = new Socket("localhost", 5050);
+		socket = s;
 		
 		start();
 		
 		//create the WhiteboardGUI with the specified canvas
 		addRequest();
-		Canvas canvasCopy = WhiteboardServer.getBoard(canvas, user);
-		this.gui = new WhiteboardGUI(canvas, canvasCopy, this);
+		Canvas c = new Canvas();
+		this.gui = new WhiteboardGUI(canvas, c, this);
 	}
 	
 	/**

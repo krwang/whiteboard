@@ -118,7 +118,7 @@ public class WhiteboardGUI extends JFrame implements WindowListener {
 		gbc.gridy = 0;
 		add(usernamePanel, gbc);
 
-		canvas = new Canvas(800,800);
+		canvas = new Canvas();
 		addDrawingController(canvas);
 		gbc.gridx = 1;
 		gbc.weightx = 1;
