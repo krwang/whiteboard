@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Random;
 
 public class WhiteboardClientThread extends Thread {
 	private final Socket socket;
@@ -14,10 +13,10 @@ public class WhiteboardClientThread extends Thread {
 	private BufferedReader dataIn;
 	private PrintWriter dataOut;
 	
-	public WhiteboardClientThread(Socket socket, WhiteboardClient client) {
+	public WhiteboardClientThread(Socket socket, int threadID, WhiteboardClient client) {
 		this.socket = socket;
 		this.client = client;
-		this.ID = Math.abs((new Random()).nextInt()); //TODO: check server for duplicates
+		this.ID = threadID;
 	}
 	
 	@Override

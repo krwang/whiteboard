@@ -43,7 +43,7 @@ public class WhiteboardClient {
         Canvas c = new Canvas();
         this.gui = new WhiteboardGUI(canvas, c, this);
         
-        dataOut.println("get " + canvas);
+        dataOut.println("get board " + canvas);
         try {
             String line;
             while (!(line = dataIn.readLine()).equals("endinit")){
@@ -64,24 +64,11 @@ public class WhiteboardClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+        dataOut.println("get thread " + canvas);
+        int threadNum = Integer.parseInt(dataIn.readLine());
         addRequest();
-        thread = new WhiteboardClientThread(socket, this);
+        thread = new WhiteboardClientThread(socket, threadNum, this);
         thread.start();
-    }
-
-    /**
-     * opens all data streams and opens a client thread
-     * @throws IOException
-     */
-    public void start() throws IOException {
-        // change input stream to Server output stream?
-        dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        dataOut = new PrintWriter(socket.getOutputStream(), true);
-        if (thread == null) {
-            thread = new WhiteboardClientThread(socket, this);
-        }
-        thread.run();
     }
 
     /**
