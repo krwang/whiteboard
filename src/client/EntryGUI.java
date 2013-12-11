@@ -30,7 +30,13 @@ import javax.swing.border.EmptyBorder;
  * The username is used by the server to identify a user and to indicate to other users
  * connected to the canvas that a new user has connected
  * 
- * TODO: testing strategy
+ * Clients can open two different canvases using the same username. 
+ * The client can only also open multiple copies of the same canvas under the same 
+ * username, though the user is still the same in both
+ * 
+ * For testing strategy, please see the EntryGUITest.java class
+ * 
+ * TODO: threadsafe argument
  */
 @SuppressWarnings("serial")
 public class EntryGUI extends JFrame implements ActionListener {
@@ -138,6 +144,7 @@ public class EntryGUI extends JFrame implements ActionListener {
 	 * submission, popping up a JDialog that indicates the user error. If neither input
 	 * is empty, it sends the input to the server, which then checks that nobody
 	 * under the same username is currently connected to the canvas under the boardname.
+	 * TODO: ^this actually does happen........
 	 * If so, the server rejects the username and a JDialog box pops up indicating the 
 	 * error. Otherwise, a new WhiteboardGUI appears.
 	 * 
