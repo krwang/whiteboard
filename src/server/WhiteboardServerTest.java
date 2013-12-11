@@ -9,10 +9,23 @@ public class WhiteboardServerTest {
 	 * 
 	 * To test the handleRequest method with one client: 
 	 * 1) To test "add" token:
-	 * 	  a)input = "add boardname" when boardname already exists in canvasMap
-	 * 	  check that output = {{"add", boardname}, boardname}
-	 * 	  check that list of sockets under that boardname in the sockets hashmap
+	 * 	  a)input = "add boardname username" when boardname does not exist in canvasMap
+	 * 	  -check that output = {canvas moves, boardname, username}
+	 * 	  -check that list of sockets under that boardname in the sockets hashmap
 	 *    contains the new socket
+	 *    -check that there exists a new blank arraylist of canvas moves mapped to the board name 
+	 *    in the canvas moves map
+	 *    -check the boardnames to users hashmap maps the input boardname to the input username
+	 *    
+	 * 	  b)input = "add boardname username" when boardname already exists in canvasMap
+	 *    -check that output = {canvas moves, boardname, username}
+	 * 	  -check that list of sockets under that boardname in the sockets hashmap
+	 *    contains the new socket
+	 *    -check that there exists an arraylist of canvas moves that corresponds to the canvas 
+	 *    moves made by prior clients to that whiteboard, which ismapped to the board name 
+	 *    in the canvas moves map
+	 *    -check that the input boardname is mapped to an arraylist containing the input username in
+	 *    the usersOnCanvas hashmap
 	 * 
 	 * 2) To test "draw" token:
 	 *    a)input = "draw 2 0 1 1 18 20 boardname" (draws a red small line from (1,1) to (18,20)
