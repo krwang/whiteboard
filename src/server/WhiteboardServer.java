@@ -106,11 +106,7 @@ public class WhiteboardServer {
 	 * Handles a single client connection and puts all client inputs 
 	 * into the queue.
 	 * 
-<<<<<<< HEAD
-	 * @param socket     socket through which the client is connected
-=======
 	 * @param socket is the socket through which the client is connected
->>>>>>> dd11dd8af2cbb292b4fbcaf4086c366d6434a4b2
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
