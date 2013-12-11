@@ -14,6 +14,10 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 /**
+<<<<<<< HEAD
+ * This class combines the canvas and tools panel in one JFrame
+ *  to present a unified appearance for the GUI
+=======
  * this class combines the canvas and tools panel in one 
  * JFrame to present a unified appearance for the GUI
  *
@@ -21,6 +25,7 @@ import javax.swing.SwingUtilities;
  *
  *
  *
+>>>>>>> 8503807a8383a6f5151d1828887c4761d98db30f
  */
 @SuppressWarnings("serial")
 public class WhiteboardGUI extends JFrame implements WindowListener {
@@ -105,52 +110,21 @@ public class WhiteboardGUI extends JFrame implements WindowListener {
 	final Canvas canvas;
 	private final WhiteboardClient client;
 
-	public WhiteboardGUI(String name, WhiteboardClient client){
-		this.client = client;
-		
-		currentBrush = DRAW;
-		currentSize = SMALL;
-		currentColor = BLACK;
-
-		setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = new Insets(3, 3, 3, 3);
-
-		usernamePanel = new UsernamePanel(this);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		add(usernamePanel, gbc);
-
-		canvas = new Canvas();
-		addDrawingController(canvas);
-		gbc.gridx = 1;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		add(canvas, gbc);
-
-		toolsPanel = new ToolsPanel(this);
-		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbc.gridx = 2;
-		add(toolsPanel, gbc);
-		
-		//assign the title of the WhiteboardGUI to be the name of the canvas being accessed
-		setTitle(name);
-		setResizable(false);
-		pack();
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		addWindowListener(this);
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				setVisible(true);
-			}
-		});
-	}
-
+	/**
+	  * constructs a whiteboard gui under the given name, with the given canvas, 
+	  * for the given client
+	 * @param name    name of the whiteboard
+	 * 			name!= null, name cannot be empty string
+	 * 			name can only contain the characters [a-z],[A-Z], or [0-9]		
+	 * @param canvas	canvas for the whiteboard
+	 * 			canvas != null
+	 * @param client  client for which the whiteboard gui is created
+	 * 			client != null
+	 */
 	public WhiteboardGUI(String name, Canvas canvas, WhiteboardClient client){
 		this.client = client;
 		
+		//default whiteboard settings
 		currentBrush = DRAW;
 		currentSize = SMALL;
 		currentColor = BLACK;
@@ -191,30 +165,66 @@ public class WhiteboardGUI extends JFrame implements WindowListener {
 		});
 	}
 
+	/**
+	 * sets the current Brush type (either draw or erase)
+	 * @param newBrush   brush type
+	 * 			newBrush != null, can only be Whiteboard.DRAW or 
+	 * 			Whiteboard.ERASE
+	 */
 	public void setCurrentBrush(int newBrush) {
 		currentBrush = newBrush;
 	}
 	
+	/**
+	 * sets the current Brush size (either smalle, medium or large)
+	 * @param newSize  brush size
+	 * 			newSize != null, can only be Whiteboard.SMALL, Whiteboard.MEDIUM, or 
+	 * 			Whiteboard.LARGE
+	 */
 	public void setCurrentSize(int newSize) {
 		currentSize = newSize;
 	}
 	
+	/**
+	 * sets the current Brush color
+	 * @param newColor   brush color
+	 * 			newColor != null, can only be Whiteboard.RED, Whiteboard.ORANGE, 
+	 * 			Whiteboard.YELLOW, Whiteboard.GREEN, Whiteboard.BLUE, Whiteboard.BLACK, 
+	 * 			or Whiteboard.WHITE
+	 */
 	public void setCurrentColor(int newColor) {
 		currentColor = newColor;
 	}
 	
+	/**
+	 * gets client brush type as an int 0 or 1
+	 * @return client brush type
+	 */
 	public int getCurrentBrush() {
 		return currentBrush;
 	}
 	
+	/**
+	 * gets client brush size as an int 0, 1, or 2
+	 * @return client brush size
+	 */
 	public int getCurrentSize() {
 		return currentSize;
 	}
 	
+	/**
+	 * gets the client's brush color as an int 0 through 6
+	 * @return client brush color
+	 */
 	public int getCurrentColor() {
 		return currentColor;
 	}
 	
+	/**
+	 * adds drawing controller to the gui
+	 * @param canvas   canvas that will have the drawing controller
+	 * 			canvas!=null
+	 */
 	private void addDrawingController(Canvas canvas) {
 		DrawingController controller = new DrawingController();
 		canvas.addMouseListener(controller);
@@ -258,7 +268,6 @@ public class WhiteboardGUI extends JFrame implements WindowListener {
 			lastY = y;
 		}
 
-		// Ignore all these other mouse events.
 		public void mouseMoved(MouseEvent e) { }
 		public void mouseClicked(MouseEvent e) { }
 		public void mouseReleased(MouseEvent e) { }
@@ -269,6 +278,9 @@ public class WhiteboardGUI extends JFrame implements WindowListener {
 	@Override
 	public void windowActivated(WindowEvent we) {}
 
+	/**
+	 * stops the client if the window is closed
+	 */
 	@Override
 	public void windowClosed(WindowEvent we) {
 		System.out.println("closed");

@@ -4,24 +4,30 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.*;
+import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
 
 /**
- * this class contains code for the username panel
- * that will be contained in the WhiteboardGUI
- * @author bschang
- *
+ * This class contains code for the username panel that displays
+ * the usernames of all of the clients currently accessing the 
+ * same whiteboard. The panel will be contained in the WhiteboardGUI
  */
 @SuppressWarnings("serial")
 public class UsernamePanel extends JPanel{
 	private final JLabel title;
 	final JList<String> usernameList;
-	private final WhiteboardGUI gui;
+	//private final WhiteboardGUI gui;
 
+	/**
+	 * constructs a username panel
+	 * @param parent   whiteboard gui that the username panel will be added to
+	 */
 	public UsernamePanel(WhiteboardGUI parent) {
 		super();
 		
-		gui = parent;
+		//gui = parent;
 		
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();

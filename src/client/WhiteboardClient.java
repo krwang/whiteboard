@@ -8,8 +8,6 @@ import java.net.Socket;
 
 import javax.swing.DefaultListModel;
 
-import server.WhiteboardServer;
-
 /**
  * TODO: class declaration
  * @author krwang
@@ -54,13 +52,9 @@ public class WhiteboardClient {
 
         Canvas c = new Canvas();
         this.gui = new WhiteboardGUI(canvas, c, this);
-//        DefaultListModel<String> model = (DefaultListModel<String>) gui.usernamePanel.usernameList.getModel();
-//        model.addElement(username);
-//        gui.usernamePanel.usernameList.setModel(model);
         System.out.println("gui created");
         
-        addRequest();
-        
+        dataOut.println("get " + canvas);
         try {
             String line;
             while (!(line = dataIn.readLine()).equals("endinit")){
@@ -68,8 +62,8 @@ public class WhiteboardClient {
             	if (!line.equals("")) {
             		System.out.println("line: " + line);
 	                String[] args = line.split(" ");
-	                int color = Integer.parseInt(args[1]);//<--will be the color represented as an int
-	                int size = Integer.parseInt(args[2]);//size represented as an int
+	                int color = Integer.parseInt(args[1]);
+	                int size = Integer.parseInt(args[2]);
 	                int x1 = Integer.parseInt(args[3]);
 	                int y1 = Integer.parseInt(args[4]);
 	                int x2 = Integer.parseInt(args[5]);
@@ -83,6 +77,8 @@ public class WhiteboardClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
+        addRequest();
         thread = new WhiteboardClientThread(socket, this);
         thread.start();
     }
@@ -155,8 +151,8 @@ public class WhiteboardClient {
         	System.out.println("handle draw");
             //assuming canvas is already initialized, as in the open method 
             //has run first(is that bad?)
-            int color = Integer.parseInt(tokens[1]);//<--will be the color represented as an int
-            int size = Integer.parseInt(tokens[2]);//size represented as an int
+            int color = Integer.parseInt(tokens[1]);
+            int size = Integer.parseInt(tokens[2]);
             int x1 = Integer.parseInt(tokens[3]);
             int y1 = Integer.parseInt(tokens[4]);
             int x2 = Integer.parseInt(tokens[5]);

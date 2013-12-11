@@ -6,9 +6,13 @@ import javax.swing.JPanel;
 
 /**
  * Canvas represents a drawing surface that allows the user to draw
- * on it freehand, with the mouse.
+ * on it freehand, with the mouse. It essentially listens for the actions on 
+ * the screen and passes these actions to the client for processing
  * 
  * @param drawingBuffer: stores the instance of the drawn image on the canvas
+ * This instance is saved for the duration that the server is open
+ * so every time the user accesses a preexisting canvas object, the image will 
+ * contain all of the history saved with it 
  */
 @SuppressWarnings("serial")
 public class Canvas extends JPanel {
@@ -20,22 +24,14 @@ public class Canvas extends JPanel {
     
 	// image where the user's drawing is stored
 	private Image drawingBuffer;
-
+	
+	/**
+	 * default constructor of canvas. Creates a canvas of width 800 
+	 * and height 800
+	 */
 	public Canvas(){
 		this.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 	}
-
-//	/**
-//	 * Make a canvas.
-//	 * @param width width in pixels
-//	 * @param height height in pixels
-//	 */
-//	public Canvas(int width, int height) {
-//		this.setPreferredSize(new Dimension(width, height));
-//		// note: we can't call makeDrawingBuffer here, because it only
-//		// works *after* this canvas has been added to a window.  Have to
-//		// wait until paintComponent() is first called.
-//	}
 
 	/**
 	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
@@ -68,9 +64,6 @@ public class Canvas extends JPanel {
 
 		g.setColor(Color.WHITE);
 		g.fillRect(0,  0,  getWidth(), getHeight());
-
-		// IMPORTANT!  every time we draw on the internal drawing buffer, we
-		// have to notify Swing to repaint this component on the screen.
 		this.repaint();
 	}
 
@@ -87,9 +80,6 @@ public class Canvas extends JPanel {
 		g.setColor(getColor(currentColor));
 		g.setStroke(new BasicStroke(getStroke(currentSize)));
 		g.drawLine(x1, y1, x2, y2);
-
-		// IMPORTANT!  every time we draw on the internal drawing buffer, we
-		// have to notify Swing to repaint this component on the screen.
 		this.repaint();
 	}
 	
