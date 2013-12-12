@@ -20,6 +20,7 @@ public class WhiteboardClient {
     private final String canvasName;
     private final Socket socket;
     private final String username;
+    private final String ipaddress;
     //private final int threadID;
     private BufferedReader dataIn;
     private PrintWriter dataOut;
@@ -29,14 +30,16 @@ public class WhiteboardClient {
      * and sends a request to connect to board
      * @param user is the username inputted into the EntryGUI, used to identify the user on the server
      * @param canvas is the canvas to be connected to. Either the server will create it or the client will load it
+     * @param ip The IP address to open the socket on, should correspond to the IP of the server host
      * @throws IOException
      */
-    public WhiteboardClient(String user, String canvas) throws IOException {
+    public WhiteboardClient(String user, String canvas, String ip) throws IOException {
         username = user;
         canvasName = canvas;
-
+        ipaddress = ip;
+        
         //creating a new socket and connecting it to the server
-        socket = new Socket("localhost", 5050);
+        socket = new Socket(ipaddress, 5050);
         
         dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         dataOut = new PrintWriter(socket.getOutputStream(), true);
@@ -89,6 +92,14 @@ public class WhiteboardClient {
                 }
             }
         }).start();
+    }
+    
+    /**
+     * Accessor to the IP address field
+     * @return the ip address
+     */
+    public String getIP() {
+        return ipaddress;
     }
     
     /**

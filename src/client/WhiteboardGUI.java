@@ -213,6 +213,14 @@ public class WhiteboardGUI extends JFrame implements WindowListener {
 	}
 	
 	/**
+	 * Intermediary method for requesting the IP address of the client socket
+	 * @return The client ip address
+	 */
+	public String getClientIP() {
+	    return client.getIP();
+	}
+	
+	/**
 	 * adds drawing controller to the gui
 	 * @param canvas   canvas that will have the drawing controller
 	 * 			canvas!=null

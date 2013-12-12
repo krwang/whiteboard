@@ -313,7 +313,7 @@ public class ToolsPanel extends JPanel implements ActionListener {
             gui.setCurrentColor(WhiteboardGUI.BLUE);
         } else if (command.equals("switch")) {
         	try {
-                new EntryGUI().setVisible(true);
+                new EntryGUI(gui.getClientIP()).setVisible(true);
                 gui.dispose();
             } catch (IOException e) {
                 e.printStackTrace();

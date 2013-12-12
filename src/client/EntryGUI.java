@@ -64,16 +64,23 @@ public class EntryGUI extends JFrame implements ActionListener {
      * Button for user to click on to create a new Whiteboard
      */
     private final JButton newButton;
-
+    
+    /**
+     * IP address to open the socket on
+     */
+    private final String ip;
+    
     /**
      * Initializes and organizes all elements of the EntryGUI,
      * using a GridBag layout
      *  
      * @throws IOException
      */
-    public EntryGUI() throws IOException {
+    public EntryGUI(String ipaddress) throws IOException {
         super();
-
+        
+        ip = ipaddress;
+        
         panel = new JPanel();
         panel.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -202,7 +209,7 @@ public class EntryGUI extends JFrame implements ActionListener {
 	    //create a WhiteboardClient, which starts a WhiteboardGUI
 	    if (valid) {
 	    	try {
-				new WhiteboardClient(username, boardname);
+				new WhiteboardClient(username, boardname, ip);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -233,10 +240,23 @@ public class EntryGUI extends JFrame implements ActionListener {
 	 * a canvas
 	 */
 	public static void main(final String[] args) {
+	    String ippattern = 
+	            "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+                "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+                "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+                "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+	    
+	    final String ipaddress;
+	    if (args.length == 1 && args[0].matches(ippattern)) {
+	        ipaddress = args[0];
+	    } else {
+	        ipaddress = "localhost";
+	    }
+	    
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
                 try {
-                    new EntryGUI().setVisible(true);
+                    new EntryGUI(ipaddress).setVisible(true);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
