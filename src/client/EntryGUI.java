@@ -32,7 +32,8 @@ import javax.swing.border.EmptyBorder;
  * 
  * Clients can open two different canvases using the same username. 
  * The client can only also open multiple copies of the same canvas, but only 
- * under different usernames  * 
+ * under different usernames  
+ *  
  * For testing strategy, please see the EntryGUITest.java class
  */
 @SuppressWarnings("serial")
