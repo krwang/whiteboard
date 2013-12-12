@@ -33,6 +33,7 @@ package testing;
  * 		expect userpanel from Whiteboard 2 to display user B
  * 		expect userpanel 3 to display user A and user C
  * 
+ * @category no_didit
  */
 public class UsernamePanelTest {
 
