@@ -27,7 +27,6 @@ public class WhiteboardClient {
     private final Socket socket;
     private final String username;
     private final String ipaddress;
-    //private final int threadID;
     private BufferedReader dataIn;
     private PrintWriter dataOut;
 
@@ -53,7 +52,7 @@ public class WhiteboardClient {
         Canvas c = new Canvas();
         this.gui = new WhiteboardGUI(canvas, c, this);
         
-        dataOut.println("get board " + canvas);
+        dataOut.println("get " + canvas);
         try {
             String line;
             while (!(line = dataIn.readLine()).equals("endinit")){
