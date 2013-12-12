@@ -61,10 +61,10 @@ public class WhiteboardServer {
 		thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while(true){
-					try{
+				while (true) {
+					try {
 						sendOutput(queue.take());
-					}catch(Exception e){
+					} catch(Exception e) {
 						e.printStackTrace();
 					}
 				}
@@ -117,7 +117,7 @@ public class WhiteboardServer {
 			try {
 				// each request from the client is whiteboardName
 				for (String line = in.readLine(); line != null; line = in.readLine()) {
-					queue.put(new Object[]{line, socket, out});
+					queue.put(new Object[] {line, socket, out});
 				}
 			} finally {
 				out.close();
@@ -153,17 +153,14 @@ public class WhiteboardServer {
 		String[] tokens = input.split(" ");
 
 		if (tokens[0].equals("bye")) {
-			 //removes socket and username from hashmaps
-			String userName = tokens[2];
-
+			// signal to client to close connection
+			out.println("end");
+			
 			ArrayList<Socket> connected = sockets.get(boardName);
 			for (Socket otherSocket: connected) {
 				PrintWriter socketOut = new PrintWriter(otherSocket.getOutputStream(), true);
 				socketOut.println(input);
 			}
-			connected.remove(socket);
-			usersOnCanvas.get(boardName).remove(userName);
-			
 		} else if (tokens[0].equals("add")) {
 			ArrayList<Socket> connected = sockets.get(boardName);
 			for(Socket otherSocket: connected) {
@@ -172,20 +169,17 @@ public class WhiteboardServer {
 					socketOut.println("add " + boardName + " " + user);
 				}
 			}
-			
 		} else if (tokens[0].equals("draw")) {
 			ArrayList<Socket> connected = sockets.get(boardName);
 			for(Socket otherSocket: connected) {
 				PrintWriter socketOut = new PrintWriter(otherSocket.getOutputStream(),true);
 				socketOut.println(input);
 			}
-			
 		} else if (tokens[0].equals("username")) {
 			String resp = output.get(0);
 			if (resp.equals("username good") || resp.equals("contains")) {
 				out.println(resp);
 			}
-			
 		} else if (tokens[0].equals("get")) {
 		    if (tokens[1].equals("board")) {
     			if (output != null) {

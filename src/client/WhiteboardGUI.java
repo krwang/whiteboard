@@ -213,6 +213,14 @@ public class WhiteboardGUI extends JFrame implements WindowListener {
 	}
 	
 	/**
+	 * Intermediary method for requesting the IP address of the client socket
+	 * @return The client ip address
+	 */
+	public String getClientIP() {
+	    return client.getIP();
+	}
+	
+	/**
 	 * adds drawing controller to the gui
 	 * @param canvas   canvas that will have the drawing controller
 	 * 			canvas!=null
@@ -222,8 +230,26 @@ public class WhiteboardGUI extends JFrame implements WindowListener {
 		canvas.addMouseListener(controller);
 		canvas.addMouseMotionListener(controller);
 	}
+	
+	/**
+	 * stops the client if exiting window
+	 */
+	public void windowClosing(WindowEvent we) {
+	    try {
+	        client.byeRequest();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
 
-	/*
+	public void windowActivated(WindowEvent we) { }
+	public void windowClosed(WindowEvent we) { }
+	public void windowDeactivated(WindowEvent we) { }
+	public void windowDeiconified(WindowEvent we) { }
+	public void windowIconified(WindowEvent we) { }
+	public void windowOpened(WindowEvent we) { }
+
+	/**
 	 * DrawingController handles the user's freehand drawing.
 	 */
 	public class DrawingController implements MouseListener, MouseMotionListener {
@@ -266,40 +292,4 @@ public class WhiteboardGUI extends JFrame implements WindowListener {
 		public void mouseEntered(MouseEvent e) { }
 		public void mouseExited(MouseEvent e) { }
 	}
-
-	@Override
-	public void windowActivated(WindowEvent we) {}
-
-	/**
-	 * stops the client if the window is closed
-	 */
-	@Override
-	public void windowClosed(WindowEvent we) {
-		try {
-			client.stop();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void windowClosing(WindowEvent we) {
-		try {
-			client.stop();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent we) {}
-
-	@Override
-	public void windowDeiconified(WindowEvent we) {}
-
-	@Override
-	public void windowIconified(WindowEvent we) {}
-
-	@Override
-	public void windowOpened(WindowEvent we) {}
 }
