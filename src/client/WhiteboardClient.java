@@ -15,13 +15,12 @@ import javax.swing.DefaultListModel;
  * and update the client canvas as well as send action messages
  * to the server.
  */
-
 public class WhiteboardClient {
     private final WhiteboardGUI gui;
     private final String canvasName;
     private final Socket socket;
     private final String username;
-    private WhiteboardClientThread thread;
+    //private final int threadID;
     private BufferedReader dataIn;
     private PrintWriter dataOut;
 
@@ -66,27 +65,32 @@ public class WhiteboardClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        dataOut.println("get thread " + canvas);
-        int threadNum = Integer.parseInt(dataIn.readLine());
+        
+        //dataOut.println("get thread " + canvas);
+        //threadID = Integer.parseInt(dataIn.readLine());
+        
         addRequest();
-        thread = new WhiteboardClientThread(socket, threadNum, this);
-        thread.start();
+        
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String line;
+                    while (!((line = dataIn.readLine()).equals("end"))) {
+                        handle(line);
+                    }
+                    
+                    // close connections
+                    dataIn.close();
+                    dataOut.close();
+                    socket.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
-
-    /**
-     * sends notice to the server about disconnecting and closes
-     * the data streams, the socket, and the thread	
-     * @throws IOException
-     */
-    public void stop() throws IOException {
-        System.out.println("stopped");
-        byeRequest();
-        if (dataIn != null) dataIn.close();
-        if (dataOut != null) dataOut.close();
-        if (socket != null) socket.close();
-        thread.close();
-    }
-
+    
     /**
      * handles requests from the server and updates the canvas accordingly
      * @param message

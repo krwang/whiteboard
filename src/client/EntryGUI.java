@@ -170,7 +170,6 @@ public class EntryGUI extends JFrame implements ActionListener {
 
                     //read the response from the server
                     String line = in.readLine();
-                    System.out.println(line);
                     if (line.equals("contains")) {
                         errorText.append("This username is not available.");
                         valid = false;
