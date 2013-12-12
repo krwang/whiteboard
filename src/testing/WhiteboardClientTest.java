@@ -14,6 +14,8 @@ package testing;
  * 		a) the request should be formatted in a way the server action grammar can understand
  * 		b) we should be able to receive the server response, close the canvas, and all other clients
  * 		   should see that the client disconnected by the UsernamePanel updating
+ * 
+ * @category no_didit
  */
 public class WhiteboardClientTest {
 

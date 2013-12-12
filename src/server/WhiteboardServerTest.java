@@ -1,6 +1,5 @@
 package server;
 
-public class WhiteboardServerTest {
 	/**
 	 * To test the server, we want to make sure that the correct output string 
 	 * is produced when the client's input string is entered. We will test this by
@@ -98,5 +97,9 @@ public class WhiteboardServerTest {
 	 * 5) 1 closes, see if 2's username list updates
 	 * 6) 1 is open, then open 2 and see if 1's list updates
 	 * 
+	 * @category no_didit
+	 * 
 	 */
+public class WhiteboardServerTest {
+
 }

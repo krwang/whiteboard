@@ -52,6 +52,8 @@ package testing;
  * To test that the GUI buttons are working:
  * 1)test that pressing enter or the load button inputs data and outputs correct whiteboard with
  * correct username
+ * 
+ * @category no_didit
  */
 public class EntryGUITest {
 

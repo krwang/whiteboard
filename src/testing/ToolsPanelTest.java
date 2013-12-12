@@ -35,6 +35,8 @@ package testing;
  * 		directly uses the brush size returned by the tools panel 
  * 			so the user will be drawing in color if they click the draw button and in white if 
  * 			they click the erase button
+ * 
+ * @category no_didit
  */
 public class ToolsPanelTest {
 
