@@ -6,6 +6,14 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+/**
+ * This class creates the thread from which the client runs and 
+ * handles the inputs from the server so that the client's whiteboard
+ * GUI can update 
+ * 
+ * 
+ *
+ */
 public class WhiteboardClientThread extends Thread {
 	private final Socket socket;
 	private final int ID;
