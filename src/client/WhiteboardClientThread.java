@@ -9,7 +9,9 @@ import java.net.Socket;
 /**
  * This class creates the thread from which the client runs and 
  * handles the inputs from the server so that the client's whiteboard
- * GUI can update 
+ * GUI can update  
+ * 
+ * Each client will only contain one of these threads
  *
  */
 public class WhiteboardClientThread extends Thread {

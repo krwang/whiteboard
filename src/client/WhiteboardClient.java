@@ -14,6 +14,12 @@ import javax.swing.DefaultListModel;
  * side. The WhiteboardClient can accept messages from the server
  * and update the client canvas as well as send action messages
  * to the server.
+ * 
+ * This class is threadsafe because each client is separate and each 
+ * client only contains one thread that is not accessed by anything else.
+ * Also, each request from the data that is read is is handled one line at 
+ * a time, so there are no race conditions. Also, the input is read through 
+ * a buffer reader. 
  */
 public class WhiteboardClient {
     private final WhiteboardGUI gui;
@@ -68,9 +74,6 @@ public class WhiteboardClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
-        //dataOut.println("get thread " + canvas);
-        //threadID = Integer.parseInt(dataIn.readLine());
         
         addRequest();
         
