@@ -215,6 +215,7 @@ public class WhiteboardServer {
 	 * 		- draw color size x1 y1 x2 y2 boardName
 	 * 		- bye boardName userName
 	 * 		- username boardName userName
+	 * 		-get board boardName | get thread boardName
 	 */
 	private Object[] handleRequest(String input, Socket socket) {
 		String regex = "(add \\w+ \\w+)|"

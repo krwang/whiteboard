@@ -7,7 +7,7 @@ public class WhiteboardServerTest {
 	 * inserting print statements in our code and making sure that the printed
 	 * lines correctly correspond with the input
 	 * 
-	 * To test the handleRequest method with one client: 
+	 * To test the handleRequest method: 
 	 * 1) To test "add" token:
 	 * 	  a)input = "add boardname username" when boardname does not exist in canvasMap
 	 * 	  -check that output = {canvas moves, boardname, username}
@@ -29,17 +29,58 @@ public class WhiteboardServerTest {
 	 * 
 	 * 2) To test "draw" token:
 	 *    a)input = "draw 2 0 1 1 18 20 boardname" (draws a red small line from (1,1) to (18,20)
-	 *    check that output = {{draw 2 0 1 1 18 20}, {boardname}}
-	 *  
-	 *  do i need to check that the master copy has it drawn on it?
+	 *    -check that output = {draw 2 0 1 1 18 20, boardname}
+	 *    -check that the input is added to the hashmap mapping boardnames to past canvas moves
 	 *    
 	 * 4) To test "bye" token: 
-	 * 		a)input = "bye"
-	 * 		check that output = {bye}
+	 * 		a)input = "bye boardName userName"
+	 * 		check that output = {bye boardName userName, boardName}
+	 * 		-check that the username is removed from the usersOnCanvas hashmap
+	 * 		-check that the socket is removed from the sockets hashmap
+	 *	
+	 * 5) To test "username" token:
+	 * 		a)input = "username boardName userName" when userName is already contained in the 
+	 * 		boardName to usernames hashmap
+	 * 		- check that output = "contains"
 	 * 
-	 * To test containsUsername method:
-	 * 1) test when username is in the arraylist--should return true
-	 * 2) test when username is not in arraylist--should return false
+	 * 		b)input = "username boardName userName" when userName is not contained in the 
+	 * 		usersOnCanvas hashmap
+	 * 		- check that output = "username good"
+	 * 
+	 * 6) To test "get" token
+	 * 		a)input = "get board boardname"
+	 * 		- check that output is the arraylist of moves that are mapped to that boardname
+	 * 
+	 * 		b)input = "get thread boardname"
+	 * 		- check that output is an integers that equals the threadcount
+	 * 
+	 * to test the sendOutput method, we will send in dummy inputs that would have been processed
+	 * by handleRequest and then further processed in this method
+	 * 1) to test input = {bye boardName userName, socket, printwriter}
+	 * 		check that tokens[0] = "bye" with a print line
+	 * 		check usersOnCanvas no longer contains the input unserName as mapped to boardName
+	 * 		check that the arraylist of sockets for the boardname no longer contains input socket 
+	 * 
+	 * 2) test input = {add boardName userName, socket, printwriter} 
+	 * 		check that tokens[0] = "add"
+	 * 		check that line is being printed out for all sockets connected to same board
+	 * 
+	 * 3) test input = {draw color size x1 y1 x2 y2 boardName, socket, printwriter} 
+	 * 		check that tokens[0] = "input"
+	 * 		check that line is being printed out for all sockets connected to same board
+	 * 
+	 * 4) test input = {username boardName userName, socket, printwriter} 
+	 * 		check that tokens[0] = username
+	 * 		check that line is being printed out for all sockets connected to same board
+	 * 
+	 * 5) test input = {get board boardname, socket, printwriter} 
+	 * 		check that tokens[0] = get, tokens[1] = board
+	 * 		check that line is being printed out for all sockets connected to same board
+	 * 
+	 * 6)test input = {get thread boardname, socket, printwriter} 
+	 * 		check that tokens[0] = get, tokens[1] = thread
+	 * 		check that line is being printed out for all sockets connected to same board
+	 * 
 	 * 
 	 * To test server in general:
 	 * 1) adding a new whiteboard and updating canvasMap accordingly
@@ -57,7 +98,5 @@ public class WhiteboardServerTest {
 	 * 5) 1 closes, see if 2's username list updates
 	 * 6) 1 is open, then open 2 and see if 1's list updates
 	 * 
-	 * 
-	 ** open a new board--make sure that the canvas is added to the canvasMap under
 	 */
 }
