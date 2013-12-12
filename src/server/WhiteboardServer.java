@@ -38,7 +38,6 @@ public class WhiteboardServer {
 	private ConcurrentHashMap<String,ArrayList<String>> canvasMovesMap;
 	private ConcurrentHashMap<String,ArrayList<Socket>> sockets;
 	private ConcurrentHashMap<String, ArrayList<String>> usersOnCanvas;
-	private int threadCount;
 	private final ArrayBlockingQueue<Object[]> queue;
 	private final Thread thread;
 	private ServerSocket serverSocket;
@@ -55,7 +54,6 @@ public class WhiteboardServer {
 		canvasMovesMap = new ConcurrentHashMap<String, ArrayList<String>>();
 		sockets = new ConcurrentHashMap<String,ArrayList<Socket>>();
 		usersOnCanvas = new ConcurrentHashMap<String, ArrayList<String>>();
-		threadCount = 0;
 		queue = new ArrayBlockingQueue<Object[]>(1000);
 
 		thread = new Thread(new Runnable() {
@@ -181,16 +179,12 @@ public class WhiteboardServer {
 				out.println(resp);
 			}
 		} else if (tokens[0].equals("get")) {
-		    if (tokens[1].equals("board")) {
-    			if (output != null) {
-    				for (String str: output) {
-    					out.println(str);
-    				}
-    			}
-    			out.println("endinit");
-		    } else if (tokens[1].equals("thread")) {
-		        out.println(output.get(0));
+		    if (output != null) {
+		        for (String str: output) {
+		            out.println(str);
+		        }
 		    }
+		    out.println("endinit");
 		}
 	}
 
@@ -216,7 +210,7 @@ public class WhiteboardServer {
 	                 + "(draw \\d+ \\d+ \\d+ \\d+ \\d+ \\d+ \\w+)|"
 	                 + "(bye \\w+ \\w+)|"
 	                 + "(username \\w+ \\w+)|"
-	                 + "(get \\w+ \\w+)";
+	                 + "(get \\w+)";
 
 		if (!input.matches(regex)) {
 			// invalid input
@@ -318,18 +312,7 @@ public class WhiteboardServer {
 			return new Object[] {output};
 			
 		} else if(tokens[0].equals("get")) {
-			/*
-			 * gets either all the users on the whiteboard or the number of threads 
-			 */
-		    if(tokens[1].equals("board")) {
-		        return new Object[] {canvasMovesMap.get(tokens[2])};
-		    } else if(tokens[1].equals("thread")) {
-		        ArrayList<String> output = new ArrayList<String>();
-		        output.add("" + (threadCount++));
-		        return new Object[] {output};
-		    } else {
-		        throw new UnsupportedOperationException();
-		    }
+			return new Object[] {canvasMovesMap.get(tokens[1])};
 		} else {
 			throw new UnsupportedOperationException();
 		}		
